@@ -24,8 +24,9 @@ class Ui_TaskPage(object):
         if not TaskPage.objectName():
             TaskPage.setObjectName(u"TaskPage")
         self.page_layout = QVBoxLayout(TaskPage)
+        self.page_layout.setSpacing(12)
         self.page_layout.setObjectName(u"page_layout")
-        self.page_layout.setContentsMargins(24, 24, 24, 24)
+        self.page_layout.setContentsMargins(32, 24, 32, 24)
         self.heading = QLabel(TaskPage)
         self.heading.setObjectName(u"heading")
         font = QFont()

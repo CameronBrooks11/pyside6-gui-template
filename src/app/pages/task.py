@@ -3,6 +3,7 @@
 from PySide6.QtCore import QThread
 from PySide6.QtWidgets import QWidget
 
+from app.theme import make_primary
 from app.ui.ui_task_page import Ui_TaskPage
 from app.worker import Worker
 
@@ -16,6 +17,7 @@ class TaskPage(QWidget):
         self.ui.setupUi(self)
         self._thread: QThread | None = None
         self._worker: Worker | None = None
+        make_primary(self.ui.start_button)
         self.ui.start_button.clicked.connect(self.start)
         self.ui.cancel_button.clicked.connect(self.cancel)
 

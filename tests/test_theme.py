@@ -1,5 +1,5 @@
-from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QColor, QPalette
+from PySide6.QtWidgets import QApplication, QPushButton
 
 from app import theme
 from app.pages.settings import SettingsPage
@@ -48,3 +48,24 @@ def test_choosing_a_theme_applies_and_remembers_it(qtbot):
     reopened = SettingsPage()
     qtbot.addWidget(reopened)
     assert reopened.ui.theme_combo.currentText() == theme.DARK
+
+
+def test_the_sidebar_follows_a_change_of_theme(window, qtbot):
+    def sidebar_lightness() -> int:
+        navigation = window.ui.navigation
+        return navigation.grab().toImage().pixelColor(navigation.width() - 5, 3).lightness()
+
+    theme.apply_theme(theme.LIGHT)
+    qtbot.waitUntil(lambda: sidebar_lightness() > 200)
+    theme.apply_theme(theme.DARK)
+    qtbot.waitUntil(lambda: sidebar_lightness() < 80)
+
+
+def test_a_primary_button_is_the_accent_colour_in_both_themes(qtbot):
+    button = QPushButton("Save")
+    qtbot.addWidget(button)
+    theme.make_primary(button)
+    for name in (theme.LIGHT, theme.DARK):
+        theme.apply_theme(name)
+        assert button.palette().color(QPalette.ColorRole.Button) == QColor(0, 143, 150)
+        assert button.palette().color(QPalette.ColorRole.ButtonText) == QColor("white")

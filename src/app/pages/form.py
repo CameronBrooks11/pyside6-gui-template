@@ -7,6 +7,7 @@ from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QMessageBox, QWidget
 
 from app.contacts import Contact
+from app.theme import make_primary
 from app.ui.ui_form_page import Ui_FormPage
 
 _EMAIL = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
@@ -24,6 +25,7 @@ class FormPage(QWidget):
         palette.setColor(QPalette.ColorRole.WindowText, QColor(220, 60, 60))
         self.ui.error_label.setPalette(palette)
 
+        make_primary(self.ui.save_button)
         self.ui.save_button.clicked.connect(self.save)
         self.ui.clear_button.clicked.connect(self.clear)
         self.ui.name_edit.returnPressed.connect(self.save)

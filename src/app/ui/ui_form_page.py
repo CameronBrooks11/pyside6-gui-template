@@ -24,8 +24,9 @@ class Ui_FormPage(object):
         if not FormPage.objectName():
             FormPage.setObjectName(u"FormPage")
         self.page_layout = QVBoxLayout(FormPage)
+        self.page_layout.setSpacing(12)
         self.page_layout.setObjectName(u"page_layout")
-        self.page_layout.setContentsMargins(24, 24, 24, 24)
+        self.page_layout.setContentsMargins(32, 24, 32, 24)
         self.heading = QLabel(FormPage)
         self.heading.setObjectName(u"heading")
         font = QFont()

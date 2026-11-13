@@ -23,8 +23,9 @@ class Ui_SettingsPage(object):
         if not SettingsPage.objectName():
             SettingsPage.setObjectName(u"SettingsPage")
         self.page_layout = QVBoxLayout(SettingsPage)
+        self.page_layout.setSpacing(12)
         self.page_layout.setObjectName(u"page_layout")
-        self.page_layout.setContentsMargins(24, 24, 24, 24)
+        self.page_layout.setContentsMargins(32, 24, 32, 24)
         self.heading = QLabel(SettingsPage)
         self.heading.setObjectName(u"heading")
         font = QFont()
