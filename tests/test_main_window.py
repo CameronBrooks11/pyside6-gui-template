@@ -8,7 +8,7 @@ from app.main_window import MainWindow
 
 def test_every_sidebar_row_shows_its_own_page(window):
     navigation, pages = window.ui.navigation, window.ui.pages
-    assert navigation.count() == pages.count() == 5
+    assert navigation.count() == pages.count() > 1
     assert pages.currentIndex() == 0
     for row in range(navigation.count()):
         navigation.setCurrentRow(row)

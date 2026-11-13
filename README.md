@@ -64,8 +64,9 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    (`uv run pyside6-designer src/app/ui/form_page.ui`), run `just uic` to
    regenerate the `ui_*.py` modules, and wire the widgets up in the page's
    module in `src/app/pages/`. `just test` fails when a generated module is
-   out of date with its form, as long as the installed PySide6 is the version
-   that generated it; the lock file keeps the two the same.
+   out of date with its form. Where the installed PySide6 is not the version
+   that generated the modules, that test skips, or fails in CI: after
+   upgrading PySide6, run `just uic`.
 3. To add a page, make a form and a module for it the same way and give it a
    line in `MainWindow.__init__`, which lists the pages in sidebar order.
 4. Change the colours in `src/app/theme.py`. The application uses Qt's Fusion
