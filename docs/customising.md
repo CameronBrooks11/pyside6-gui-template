@@ -86,6 +86,27 @@ thread.
 [Widgets and stylesheets](widgets.md) lists the calls and the stylesheet for
 each widget type.
 
+## Add an icon
+
+The icons are Qt resources: `resources.qrc` lists them, `just uic` compiles
+them into `resources_rc.py`, and the application refers to them by a path that
+starts with `:/`, which works from any directory.
+
+1. Put the image in `src/app/resources/icons/`.
+2. Add a line for it to `src/app/resources/resources.qrc`:
+
+    ```xml
+    <file>icons/settings.png</file>
+    ```
+
+3. Run `just uic`.
+4. Use it as `:/icons/settings.png`: in Qt Designer through the resource
+   browser, in Python as `QIcon(":/icons/settings.png")`, in a stylesheet as
+   `url(:/icons/settings.png)`.
+
+`just check` fails if a listed file is missing, if `resources_rc.py` is out of
+date with the list, or if the code names a resource that is not there.
+
 ## Call the dialog box
 
 `MainWindow.dialogexec` sets the heading, the message, the icon and the text
@@ -97,7 +118,7 @@ the first button or the close button:
 if self.dialogexec(
     "Warning",
     "The contact information will be deleted. Do you want to continue?",
-    "icons/1x/errorAsset 55.png",
+    ":/icons/warning.png",
     "Cancel",
     "Yes",
 ):
@@ -111,7 +132,7 @@ if self.dialogexec(
 `MainWindow.errorexec` takes the heading, the icon and the button text:
 
 ```python
-self.errorexec("Incorrect Credentials", "icons/1x/errorAsset 55.png", "Retry")
+self.errorexec("Incorrect Credentials", ":/icons/warning.png", "Retry")
 ```
 
 ## Change a dialog's design

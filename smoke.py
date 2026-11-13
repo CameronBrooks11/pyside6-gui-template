@@ -15,6 +15,7 @@ from pathlib import Path
 
 from PySide6.QtCore import (
     QEvent,
+    QFile,
     QPoint,
     QPointF,
     Qt,
@@ -40,6 +41,8 @@ ICON_SOURCES = (
     "src/app/ui/ui_dialog.py",
     "src/app/ui/ui_error.py",
 )
+
+RESOURCES = "src/app/resources/resources.qrc"
 
 # An image path as the sources write one: a quoted string, a stylesheet url()
 # or the text of an element in a .ui file. Prose in a comment is not matched.
@@ -163,9 +166,21 @@ def check_icons():
         text = Path(source).read_text(encoding="utf-8")
         for match in IMAGE_PATH.finditer(text):
             path = next(group for group in match.groups() if group)
-            if path.startswith(":"):  # a Qt resource, not a file
-                continue
-            expect(Path(path).is_file(), f"{source} names {path}, which is not a file")
+            if path.startswith(":"):  # a Qt resource, compiled into resources_rc.py
+                expect(QFile.exists(path), f"{source} names {path}, which is not a resource")
+            else:
+                expect(Path(path).is_file(), f"{source} names {path}, which is not a file")
+    listed = re.findall(r"<file>([^<]+)</file>", Path(RESOURCES).read_text(encoding="utf-8"))
+    expect(listed, f"{RESOURCES} lists no files")
+    for name in listed:
+        expect(
+            (Path(RESOURCES).parent / name).is_file(),
+            f"{RESOURCES} lists {name}, which is not a file",
+        )
+        expect(
+            QFile.exists(":/" + name),
+            f"{name} is not in resources_rc.py: run `just uic`",
+        )
 
 
 HIGHLIGHT = "rgb(91,90,90)"
@@ -265,7 +280,7 @@ def check_window_state(window):
         "the maximise button did not follow a maximise it did not make",
     )
     expect(
-        shows(ui.bn_max, "icons/1x/restore.png"),
+        shows(ui.bn_max, ":/icons/restore.png"),
         "the maximise button does not show the restore icon while maximised",
     )
     window.showNormal()
@@ -275,7 +290,7 @@ def check_window_state(window):
         "the maximise button did not follow a restore it did not make",
     )
     expect(
-        shows(ui.bn_max, "icons/1x/max.png"),
+        shows(ui.bn_max, ":/icons/maximize.png"),
         "the maximise button does not show the maximise icon when restored",
     )
 

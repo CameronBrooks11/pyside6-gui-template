@@ -18,6 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QDialog, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QPushButton, QSizePolicy,
     QVBoxLayout, QWidget)
+from . import resources_rc
 
 class Ui_Error(object):
     def setupUi(self, Error):

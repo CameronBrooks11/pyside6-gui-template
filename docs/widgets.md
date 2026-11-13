@@ -41,7 +41,7 @@ button.setMaximumSize(QSize(55, 55))
 button.setEnabled(False)  # True to enable
 button.setText("Start")
 button.setStyleSheet("QPushButton { border: none; }")
-button.setIcon(QIcon("icons/1x/homeAsset 46.png"))
+button.setIcon(QIcon(":/icons/home.png"))
 button.setIconSize(QSize(22, 22))
 button.setFlat(True)
 button.setToolTip("Name")
@@ -207,7 +207,7 @@ QComboBox::drop-down {
     border-bottom-right-radius: 5px;
 }
 QComboBox::down-arrow {
-    image: url(icons/1x/arrow.png);
+    image: url(:/icons/arrow.png);
 }
 QComboBox::down-arrow:on { /* shift the arrow when popup is open */
     top: 1px;
@@ -218,8 +218,8 @@ QComboBox::drop-down {
 }
 ```
 
-The arrow image is a relative path, like the icons, so it resolves against the
-working directory.
+The arrow image is a Qt resource, like the icons; see
+[Add an icon](customising.md#add-an-icon).
 
 Reference: [QComboBox](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QComboBox.html).
 
