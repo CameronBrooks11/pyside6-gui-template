@@ -249,7 +249,7 @@ QCheckBox::indicator:checked:pressed {
 }
 ----------------------------------------------------------------------------------------------------
 
-							-------->SLIDER: HORIZONDAL
+							-------->SLIDER: HORIZONTAL
 QSlider::groove:horizontal {
     	height:5px;
     	background: rgb(51,51,51);

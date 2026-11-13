@@ -66,12 +66,28 @@ def dragBy(window, handle, beforeMove=None):
     handle.mouseMoveEvent = moveWindow
 
 
+# ----> FONT FALLBACK
+# THE .ui FILES ASK FOR SEGOE UI, WHICH SHIPS WITH WINDOWS. WHERE IT IS MISSING, THE FIRST OF THESE THAT IS INSTALLED STANDS IN
+# FOR ALL THREE OF ITS FAMILIES, AND THE SYSTEM'S OWN FONT IF NONE IS, SO A WINDOW DOES NOT END UP MIXING TWO TYPEFACES.
+# A SUBSTITUTE HAS TO BE THE NAME OF AN INSTALLED FAMILY: A GENERIC NAME LIKE "Sans Serif" IS IGNORED.
+# EACH WINDOW CALLS THIS BEFORE IT BUILDS ITS WIDGETS, BECAUSE A WIDGET KEEPS THE FONT IT RESOLVED WHEN IT WAS BUILT.
+FONT_FALLBACKS = ["Noto Sans", "Helvetica Neue", "Arial"]
+
+
+def setFontFallbacks():
+    # QFontInfo GIVES THE FAMILY THE SYSTEM FONT RESOLVES TO; THE FONT ITSELF MAY ONLY SAY "Sans Serif".
+    systemFamily = QtGui.QFontInfo(QtGui.QFontDatabase.systemFont(QtGui.QFontDatabase.SystemFont.GeneralFont)).family()
+    for family in ("Segoe UI", "Segoe UI Light", "Segoe UI Semilight"):
+        QtGui.QFont.insertSubstitutions(family, FONT_FALLBACKS + [systemFamily])
+
+
 # DIALOGBOX CLASS WHICH MAKE THE DIALOGBOX WHEN CALLED.
 # ------> DIALOG BOX CLASS : DIALOGBOX CONTAINING TWO BUTTONS, ONE MAEEAGE BAR, ONE ICON HOLDER, ONE HEADING DEFINING
 class dialogUi(QDialog):
     def __init__(self, parent=None):
 
         super(dialogUi, self).__init__(parent)
+        setFontFallbacks()
         self.d = Ui_Dialog()
         self.d.setupUi(self)
         self.setWindowFlags(
@@ -128,6 +144,7 @@ class errorUi(QDialog):
     def __init__(self, parent=None):
 
         super(errorUi, self).__init__(parent)
+        setFontFallbacks()
         self.e = Ui_Error()
         self.e.setupUi(self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -154,9 +171,6 @@ class errorUi(QDialog):
         self.e.lab_icon.setPixmap(pixmap2)
 
 
-FONT_FALLBACKS = ["Noto Sans", "Helvetica Neue", "Arial", "Sans Serif"]
-
-
 # OUR APPLICATION MAIN WINDOW :
 # -----> MAIN APPLICATION CLASS
 class MainWindow(QMainWindow):
@@ -164,11 +178,7 @@ class MainWindow(QMainWindow):
 
         super(MainWindow, self).__init__()
 
-        # ----> FONT FALLBACK
-        # THE .ui FILES ASK FOR SEGOE UI, WHICH ONLY WINDOWS HAS. WHERE IT IS MISSING, THE FIRST OF THESE THAT IS INSTALLED
-        # STANDS IN FOR ALL THREE OF ITS FAMILIES, SO THE WINDOW DOES NOT END UP MIXING TWO TYPEFACES.
-        for family in ("Segoe UI", "Segoe UI Light", "Segoe UI Semilight"):
-            QtGui.QFont.insertSubstitutions(family, FONT_FALLBACKS)
+        setFontFallbacks()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
