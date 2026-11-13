@@ -34,9 +34,9 @@ pytest and [pytest-qt](https://pytest-qt.readthedocs.io/) on Qt's offscreen
 platform. They click the buttons and read the widgets of the real pages. A
 Python or Qt warning raised while a test runs fails it, as a failed assertion
 does, and one test fails when a generated `ui_*.py` module is out of date with
-its form. That test skips when the installed PySide6 is not the version that
-generated the modules; the lock file keeps the two the same. The tests do not
-show what the GUI looks like.
+its form. Where the installed PySide6 is not the version that generated the
+modules, that test skips, or fails in CI. The tests do not show what the GUI
+looks like.
 
 A pull request into `main` runs `just check`, `just test` and
 `just docs-build` in GitHub Actions.
