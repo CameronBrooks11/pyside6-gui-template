@@ -136,6 +136,16 @@ QDialog QPushButton[variant="window"]:pressed {
     background-color: rgb(51,51,51);
 }
 
+/* ---- The line around each window ----
+   A frameless window gets no border from the system, so frameless.py lays
+   this frame over the window's content. */
+
+#window_outline {
+    background: transparent;
+    border: 1px solid;
+    border-color: rgb(112,112,112);
+}
+
 /* ---- The resize grip in the bottom right corner ---- */
 
 QSizeGrip {

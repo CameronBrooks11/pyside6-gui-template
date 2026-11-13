@@ -19,8 +19,10 @@ from [`docs/`](docs/index.md).
 
 ## What is in it
 
-- Frameless window with its own title bar: drag, minimise, maximise, restore
-  and close.
+- Frameless window with its own title bar: minimise, maximise, restore and
+  close, an outline, and moving and resizing done by the window manager, so
+  dragging to a screen edge snaps as it does for any other window. One
+  constant switches back to the system's title bar.
 - Side menu with four example pages (Home, Bug, Android, Cloud) on a stacked
   widget, and a toggle that widens the menu and swaps each page for its About
   page.
@@ -62,7 +64,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 | `src/app/main_window.py`                         | The main window: title bar, menu, switching pages                  |
 | `src/app/pages.py`                               | What the widgets on the example pages do; replace with your own    |
 | `src/app/dialogs.py`                             | The dialog box and the error box                                   |
-| `src/app/frameless.py`                           | Dragging and the frameless window flags the three windows share    |
+| `src/app/frameless.py`                           | Moving, resizing and outlining a window without a system frame     |
 | `src/app/theme.py`                               | Loading `style.qss`, and the font fallbacks                        |
 | `src/app/about.py`                               | Text shown in the About panel of each page                         |
 | `src/app/ui/*.ui`                                | Qt Designer sources                                                |

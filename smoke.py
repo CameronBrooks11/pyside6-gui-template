@@ -28,7 +28,15 @@ from PySide6.QtCore import (
     QtMsgType,
     qInstallMessageHandler,
 )
-from PySide6.QtGui import QColor, QFontDatabase, QFontInfo, QIcon, QMouseEvent, QPixmap
+from PySide6.QtGui import (
+    QColor,
+    QFontDatabase,
+    QFontInfo,
+    QIcon,
+    QMouseEvent,
+    QPixmap,
+    QWindow,
+)
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import (
     QApplication,
@@ -137,14 +145,16 @@ def really_exec(dialog, show, button):
         QDialog.exec = fake_exec
 
 
-def drag(handle, held=Qt.MouseButton.LeftButton):
+def drag(handle, held=Qt.MouseButton.LeftButton, press=True):
     """Press on `handle` at (105, 105), then move to (140, 140) and on to
-    (150, 160), in screen coordinates."""
-    for kind, target, global_pos in (
+    (150, 160), in screen coordinates. With `press` off, only the two moves:
+    what a handle sees when the button state it is told is stale."""
+    steps = (
         (QEvent.Type.MouseButtonPress, handle.mousePressEvent, QPointF(105, 105)),
         (QEvent.Type.MouseMove, handle.mouseMoveEvent, QPointF(140, 140)),
         (QEvent.Type.MouseMove, handle.mouseMoveEvent, QPointF(150, 160)),
-    ):
+    )
+    for kind, target, global_pos in steps if press else steps[1:]:
         target(
             QMouseEvent(
                 kind,
@@ -166,6 +176,46 @@ def check_drag(name, window, handle):
         window.testAttribute(Qt.WidgetAttribute.WA_TranslucentBackground),
         f"the {name} does not have a translucent background",
     )
+
+    # Where the window manager can move the window, the drag is handed to it:
+    # that is what makes edge snapping work and keeps the title bar in reach.
+    asked = []
+    real = QWindow.startSystemMove
+    QWindow.startSystemMove = lambda native: asked.append(native) or True
+    try:
+        before = window.pos()
+        drag(handle)
+    finally:
+        QWindow.startSystemMove = real
+    expect(
+        asked and asked[0] is window.windowHandle() and window.pos() == before,
+        f"dragging the {name} did not hand the move to the window manager",
+    )
+    # Once per press. A second request reaches the window manager after the
+    # button is released and starts a move that nothing ends, so the window
+    # stays stuck to the pointer until the next click.
+    expect(
+        len(asked) == 1,
+        f"one drag of the {name} asked the window manager to move it {len(asked)} times",
+    )
+    QWindow.startSystemMove = lambda native: asked.append(native) or True
+    try:
+        drag(handle, press=False)
+    finally:
+        QWindow.startSystemMove = real
+    expect(
+        len(asked) == 1 and window.pos() == before,
+        f"moves over the {name}'s title bar with no new press started another move",
+    )
+    asked.clear()
+    QWindow.startSystemMove = lambda native: asked.append(native) or True
+    try:
+        drag(handle, held=Qt.MouseButton.RightButton)
+    finally:
+        QWindow.startSystemMove = real
+    expect(not asked, f"a right-button drag of the {name} started a move")
+
+    # Where it cannot, as on the offscreen platform, the window follows the mouse.
     before = window.pos()
     drag(handle)
     moved = window.pos() - before
@@ -178,6 +228,126 @@ def check_drag(name, window, handle):
     expect(window.pos() == before, f"the {name} moved with no mouse button held")
     drag(handle, held=Qt.MouseButton.LeftButton | Qt.MouseButton.RightButton)
     expect(window.pos() == before, f"the {name} moved with two mouse buttons held")
+
+
+def check_outline(name, window, content):
+    """A frameless window draws its own edge, in the colour style.qss gives."""
+    outline = content.findChild(QFrame, "window_outline")
+    expect(outline is not None, f"the {name} has no outline")
+    if outline is None:
+        return
+    window.show()
+    QApplication.processEvents()
+    expect(outline.geometry() == content.rect(), f"the outline of the {name} does not fit it")
+    colour = qss_colour("#window_outline", "border")
+    image = window.grab().toImage()
+    w, h = image.width(), image.height()
+    edge = {
+        image.pixelColor(x, y).getRgb()[:3]
+        for x, y in ((0, h // 2), (w - 1, h // 2), (w // 2, 0), (w // 2, h - 1))
+    }
+    if colour is not None:
+        expect(edge == {colour}, f"the edge of the {name} is painted {edge}, not {colour}")
+    expect(
+        outline.testAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents),
+        f"the outline of the {name} takes mouse clicks",
+    )
+
+
+def check_resize_edges(window):
+    """Every side and corner of the main window starts a resize by the window manager."""
+    w, h = window.width(), window.height()
+    asked = []
+    real = QWindow.startSystemResize
+    QWindow.startSystemResize = lambda native, edges: asked.append(edges) or True
+    left, right, top, bottom = (
+        Qt.Edge.LeftEdge,
+        Qt.Edge.RightEdge,
+        Qt.Edge.TopEdge,
+        Qt.Edge.BottomEdge,
+    )
+    try:
+        for point, edges in (
+            (QPoint(1, h // 2), left),
+            (QPoint(w - 2, h // 2), right),
+            (QPoint(w // 2, 1), top),
+            (QPoint(w // 2, h - 2), bottom),
+            (QPoint(1, 1), top | left),
+            (QPoint(w - 2, 1), top | right),
+            (QPoint(1, h - 2), bottom | left),
+            (QPoint(w - 2, h - 2), bottom | right),
+        ):
+            strip = window.childAt(point)
+            if strip is None or strip.objectName() != "resize_edge":
+                fail(f"there is no resize edge at {point.toTuple()} of the main window")
+                continue
+            asked.clear()
+            QTest.mousePress(strip, Qt.MouseButton.LeftButton)
+            QTest.mouseRelease(strip, Qt.MouseButton.LeftButton)
+            expect(asked == [edges], f"the edge at {point.toTuple()} asked to resize {asked}")
+    finally:
+        QWindow.startSystemResize = real
+    middle = window.childAt(QPoint(w // 2, h // 2))
+    expect(
+        middle is None or middle.objectName() != "resize_edge",
+        "a resize edge covers the middle of the main window",
+    )
+    window.showMaximized()
+    QApplication.processEvents()
+    shown = [e for e in window.findChildren(QWidget, "resize_edge") if e.isVisible()]
+    expect(not shown, "the resize edges show while the window is maximised")
+    window.showNormal()
+    QApplication.processEvents()
+
+
+def check_rescue(window):
+    """A window that starts with its close button off every screen is brought back."""
+    frameless = importlib.import_module(f"{PACKAGE}.frameless")
+    home = window.pos()
+    window.move(0, 0)
+    frameless.keep_on_screen(window)
+    expect(window.pos() == QPoint(0, 0), "keep_on_screen moved a window that was on screen")
+    window.move(-5000, -5000)
+    frameless.keep_on_screen(window)
+    button = window.frameGeometry().topRight() + QPoint(-20, 20)
+    expect(
+        any(s.availableGeometry().contains(button) for s in QApplication.screens()),
+        "keep_on_screen left the close button off screen",
+    )
+    window.move(home)
+
+
+def check_native_frame(window):
+    """With FRAMELESS off, the windows keep the system frame and hide their own."""
+    frameless = importlib.import_module(f"{PACKAGE}.frameless")
+    dialogs = importlib.import_module(f"{PACKAGE}.dialogs")
+    frameless.FRAMELESS = False
+    try:
+        plain, box = type(window)(), dialogs.DialogBox()
+    finally:
+        frameless.FRAMELESS = True
+    for made in (plain, box, plain.error_box):
+        expect(
+            not made.windowFlags() & Qt.WindowType.FramelessWindowHint
+            and made.findChild(QFrame, "window_outline") is None,
+            f"with FRAMELESS off, {type(made).__name__} is still frameless or outlined",
+        )
+    hidden = [plain.ui.frame_min, plain.ui.frame_max, plain.ui.frame_close, plain.ui.frame_drag]
+    hidden += [box.ui.bn_min, box.ui.bn_close]
+    expect(
+        all(widget.isHidden() for widget in hidden),
+        "with FRAMELESS off, the windows still show their own title bar buttons",
+    )
+    expect(
+        not plain.findChildren(QWidget, "resize_edge"),
+        "with FRAMELESS off, the main window still has resize edges",
+    )
+    plain.showMaximized()
+    QApplication.processEvents()
+    expect(plain.ui.frame_drag.isHidden(), "with FRAMELESS off, the grip came back")
+    plain.close()
+    plain.deleteLater()
+    box.deleteLater()
 
 
 def check_fonts(window):
@@ -820,6 +990,14 @@ def drive(*_):
     check_dialog_result(window)
     check_window_state(window)
 
+    check_outline("main window", window, ui.centralwidget)
+    check_outline("dialog box", window.dialog, window.dialog.ui.frame_2)
+    check_outline("error box", window.error_box, window.error_box.ui.frame)
+    window.dialog.hide()
+    window.error_box.hide()
+    check_resize_edges(window)
+    check_rescue(window)
+    check_native_frame(window)
     check_drag("main window", window, ui.frame_appname)
     check_drag("dialog box", window.dialog, window.dialog.ui.frame_top)
     check_drag("error box", window.error_box, window.error_box.ui.frame_top)

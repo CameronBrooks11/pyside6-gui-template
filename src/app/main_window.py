@@ -10,7 +10,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QFrame, QMainWindow, QSizeGrip
 
 from .dialogs import DialogBox, ErrorBox
-from .frameless import drag_by, make_frameless
+from .frameless import add_outline, add_resize_edges, drag_by, make_frameless
 from .pages import ExamplePages
 from .theme import load_style, set_font_fallbacks
 from .ui.ui_main import Ui_MainWindow
@@ -80,14 +80,23 @@ class MainWindow(QMainWindow):
     def _set_up_title_bar(self):
         """Stand in for the system title bar the window gives up: buttons to
         minimise, maximise and close, a frame to drag by, a double click to
-        maximise, and a grip to resize by."""
-        make_frameless(self)
+        maximise, edges and a grip to resize by, and an outline. With
+        FRAMELESS off in frameless.py the system provides all of that, and
+        the window's own buttons and grip are hidden."""
+        self.frameless = make_frameless(self)
+        if not self.frameless:
+            for frame in ("frame_min", "frame_max", "frame_close", "frame_drag"):
+                getattr(self.ui, frame).hide()
+            return
+        add_outline(self, self.ui.centralwidget)
+        add_resize_edges(self)
 
         self.ui.bn_min.clicked.connect(self.showMinimized)
         self.ui.bn_max.clicked.connect(self.toggle_maximized)
         self.ui.bn_close.clicked.connect(self.close)
 
-        # Dragging a maximised window restores it first.
+        # Where the window has to move itself, dragging it while it is
+        # maximised restores it first.
         drag_by(
             self,
             self.ui.frame_appname,
@@ -114,7 +123,7 @@ class MainWindow(QMainWindow):
     def changeEvent(self, event):
         """Keep the maximise button and the resize grip in step with the
         window, whether the button or the window manager changed its state."""
-        if event.type() == QEvent.Type.WindowStateChange:
+        if event.type() == QEvent.Type.WindowStateChange and self.frameless:
             if self.isMaximized():
                 self.ui.bn_max.setToolTip("Restore")
                 self.ui.bn_max.setIcon(QIcon(":/icons/restore.png"))

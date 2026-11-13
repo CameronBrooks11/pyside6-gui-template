@@ -16,8 +16,10 @@ See [Credits](credits.md).
 ## What is in it
 
 - Flat, two-tone design with one accent colour.
-- Frameless window with its own title bar: drag, minimise, maximise, restore
-  and close.
+- Frameless window with its own title bar: minimise, maximise, restore and
+  close, an outline, and moving and resizing done by the window manager, so
+  dragging to a screen edge snaps as it does for any other window. One
+  constant switches back to the system's title bar.
 - Side menu with four example pages (Home, Bug, Android, Cloud) on a stacked
   widget, and a toggle that widens the menu and swaps each page for its About
   page.

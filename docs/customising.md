@@ -171,6 +171,19 @@ takes the heading, the icon and the button text:
 self.window.error_box.show_error("Incorrect Credentials", ":/icons/warning.png", "Retry")
 ```
 
+## Use the system title bar
+
+The three windows have no system frame: they draw their own title bar and
+buttons, and `frameless.py` gives them back what the frame provided. Dragging
+the title bar and pressing on an edge ask the window manager to move or resize
+the window, so snapping and tiling work as usual; the window only moves itself
+where the platform cannot do that. A one-pixel outline, `#window_outline` in
+`style.qss`, marks the window's edge.
+
+To use the system's title bar and border instead, set `FRAMELESS = False` at
+the top of `frameless.py`. The windows then hide their own minimise, maximise
+and close buttons and the resize grip.
+
 ## Change a dialog's design
 
 Open `ui_dialog.ui` or `ui_error.ui` in Qt Designer, run `just uic`, and put

@@ -53,7 +53,7 @@ The other pages name its files without the directory.
 | `src/app/main_window.py`                    | The main window: title bar, menu, switching pages                 |
 | `src/app/pages.py`                          | What the widgets on the example pages do; replace with your own   |
 | `src/app/dialogs.py`                        | The dialog box and the error box                                  |
-| `src/app/frameless.py`                      | Dragging and the frameless window flags the three windows share   |
+| `src/app/frameless.py`                      | Moving, resizing and outlining a window without a system frame    |
 | `src/app/theme.py`                          | Loading `style.qss`, and the font fallbacks                       |
 | `src/app/about.py`                          | Text shown in the About panel of each page                        |
 | `src/app/ui/*.ui`                           | Qt Designer sources                                               |
