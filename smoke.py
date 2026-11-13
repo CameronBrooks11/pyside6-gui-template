@@ -44,20 +44,17 @@ from PySide6.QtWidgets import (
 PACKAGE = "app"
 SRC = f"src/{PACKAGE}"
 
-ui_function = importlib.import_module(f"{PACKAGE}.ui_function")
+package = importlib.import_module(PACKAGE)
 
 UI_FILES = (f"{SRC}/ui/ui_main.ui", f"{SRC}/ui/ui_dialog.ui", f"{SRC}/ui/ui_error.ui")
 
-# Every file that can name an image: the Designer sources, what is generated
-# from them, and the Python that sets one at run time.
-ICON_SOURCES = (
-    f"{SRC}/main.py",
-    f"{SRC}/ui_function.py",
-    *UI_FILES,
-    f"{SRC}/ui/ui_main.py",
-    f"{SRC}/ui/ui_dialog.py",
-    f"{SRC}/ui/ui_error.py",
-    f"{SRC}/resources/style.qss",
+# Every file that can name an image: the Python (what is generated from the
+# Designer sources included), the Designer sources and the stylesheet.
+ICON_SOURCES = sorted(
+    str(path)
+    for pattern in ("*.py", "*.ui", "*.qss")
+    for path in Path(SRC).rglob(pattern)
+    if path.name != "resources_rc.py"
 )
 
 RESOURCES = f"{SRC}/resources/resources.qrc"
@@ -72,15 +69,10 @@ IMAGE_PATH = re.compile(
 problems = []
 dialogs_shown = []
 
-# ui_function has to import without main: when it needed main, the two modules
-# imported each other and only one import order worked.
-if f"{PACKAGE}.main" in sys.modules:
-    problems.append(f"importing {PACKAGE}.ui_function imported {PACKAGE}.main")
-
 # The check reads the sources under src/, so the package it runs has to be that
 # one and not a copy installed somewhere else.
-if Path(ui_function.__file__).resolve().parent != Path(SRC).resolve():
-    problems.append(f"the {PACKAGE} package imported is {ui_function.__file__}, not {SRC}")
+if Path(package.__file__).resolve().parent != Path(SRC).resolve():
+    problems.append(f"the {PACKAGE} package imported is {package.__file__}, not {SRC}")
 
 # What app.exec() returns, to see that the app passes it on as its exit status.
 STATUS = 7
@@ -144,10 +136,13 @@ def really_exec(dialog, show, button):
         QDialog.exec = fake_exec
 
 
-def drag(press_target, move_target, held=Qt.MouseButton.LeftButton):
+def drag(handle, held=Qt.MouseButton.LeftButton):
+    """Press on `handle` at (105, 105), then move to (140, 140) and on to
+    (150, 160), in screen coordinates."""
     for kind, target, global_pos in (
-        (QEvent.Type.MouseButtonPress, press_target.mousePressEvent, QPointF(105, 105)),
-        (QEvent.Type.MouseMove, move_target.mouseMoveEvent, QPointF(140, 140)),
+        (QEvent.Type.MouseButtonPress, handle.mousePressEvent, QPointF(105, 105)),
+        (QEvent.Type.MouseMove, handle.mouseMoveEvent, QPointF(140, 140)),
+        (QEvent.Type.MouseMove, handle.mouseMoveEvent, QPointF(150, 160)),
     ):
         target(
             QMouseEvent(
@@ -162,15 +157,19 @@ def drag(press_target, move_target, held=Qt.MouseButton.LeftButton):
 
 
 def check_drag(name, window, handle):
-    before = window.pos()
-    drag(window, handle)  # pressed at (105, 105) and moved to (140, 140)
-    moved = window.pos() - before
     expect(
-        moved == QPoint(35, 35),
-        f"dragging the {name} by (35, 35) moved it by {moved.toTuple()}",
+        bool(window.windowFlags() & Qt.WindowType.FramelessWindowHint),
+        f"the {name} still has the system title bar",
     )
     before = window.pos()
-    drag(window, handle, held=Qt.MouseButton.NoButton)
+    drag(handle)
+    moved = window.pos() - before
+    expect(
+        moved == QPoint(45, 55),
+        f"dragging the {name} by (45, 55) in two moves moved it by {moved.toTuple()}",
+    )
+    before = window.pos()
+    drag(handle, held=Qt.MouseButton.NoButton)
     expect(window.pos() == before, f"the {name} moved with no mouse button held")
 
 
@@ -180,7 +179,7 @@ def check_fonts(window):
         return
     resolved = {
         QFontInfo(w.font()).family()
-        for top in (window, window.diag, window.error)
+        for top in (window, window.dialog, window.error_box)
         for w in top.findChildren(QWidget)
         if w.font().family().startswith("Segoe UI")
     }
@@ -300,8 +299,8 @@ def check_style(window):
         (ui.frame_toodle, "#frame_toodle", "the toggle"),
         (ui.frame_home, 'QFrame[selected="true"]', "the frame of the selected menu button"),
         (ui.frame_bug, 'QFrame[selected="false"]', "the frame of an unselected menu button"),
-        (window.diag.d.frame_top, "QDialog #frame_top", "the bar of the dialog box"),
-        (window.error.e.frame_top, "QDialog #frame_top", "the bar of the error box"),
+        (window.dialog.ui.frame_top, "QDialog #frame_top", "the bar of the dialog box"),
+        (window.error_box.ui.frame_top, "QDialog #frame_top", "the bar of the error box"),
     ):
         got, colour = colour_at(widget), qss_colour(selector)
         if colour is not None:
@@ -345,7 +344,7 @@ def check_style(window):
         (ui.frame_bottom_west, "menu"),
         (ui.frame_android_menu, "menu"),
         (ui.frame_top_east, "window"),
-        (window.diag.d.frame_top, "window"),
+        (window.dialog.ui.frame_top, "window"),
     ):
         for button in container.findChildren(QPushButton):
             expect(
@@ -358,7 +357,7 @@ def check_style(window):
     # one with no parent is, and no sheet sits on the application.
     expect(QApplication.instance().styleSheet() == "", "a stylesheet is set on the QApplication")
     plain = QMessageBox().style().metaObject().className()
-    for parent in (window, window.diag, window.error):
+    for parent in (window, window.dialog, window.error_box):
         box = QMessageBox(QMessageBox.Icon.NoIcon, "Title", "Some text", parent=parent)
         box.ensurePolished()
         drawn_by = box.style().metaObject().className()
@@ -506,7 +505,7 @@ def check_window_state(window):
     QTest.mouseDClick(ui.frame_appname, Qt.MouseButton.LeftButton)
     wait_until(window.isMaximized)  # the double click maximises after 250 ms
     expect(window.isMaximized(), "double-clicking the title bar did not maximise")
-    drag(window, ui.frame_appname)
+    drag(ui.frame_appname)
     QApplication.processEvents()
     expect(
         not window.isMaximized() and ui.bn_max.toolTip() == "Maximize",
@@ -563,12 +562,12 @@ def check_page_widgets(ui):
     expect(ui.progressBar_bug.value() == 100, "Start did not fill the progress bar")
     expect(ui.bn_bug_start.isEnabled(), "Start stayed disabled after the run")
     expect(
-        not ui.bn_bug_start.window().bugTimer.isActive(),
+        not ui.bn_bug_start.window().pages.progress_timer.isActive(),
         "the progress timer kept running after 100%",
     )
     # A second call while the first still runs must take over cleanly.
-    ui_function.APFunction.addNumbers(ui.bn_bug_start.window(), "100000")
-    ui_function.APFunction.addNumbers(ui.bn_bug_start.window(), "100000")
+    ui.bn_bug_start.window().pages.start_progress("100000")
+    ui.bn_bug_start.window().pages.start_progress("100000")
     expect(
         len(ui.bn_bug_start.window().findChildren(QTimer)) == 1,
         "starting the progress bar twice left more than one timer",
@@ -582,8 +581,8 @@ def check_page_widgets(ui):
     ui.bn_cloud_connect.click()
     expect(
         len(dialogs_shown) == shown + 1
-        and dialogs_shown[-1] is window.error
-        and window.error.e.lab_heading.text() == "Incorrect Credentials",
+        and dialogs_shown[-1] is window.error_box
+        and window.error_box.ui.lab_heading.text() == "Incorrect Credentials",
         "Connect did not raise the error box saying Incorrect Credentials",
     )
     for field in cloud_fields:
@@ -640,8 +639,8 @@ def check_page_widgets(ui):
     ui.bn_android_contact_delete.click()
     expect(
         len(dialogs_shown) == shown + 1
-        and dialogs_shown[-1] is window.diag
-        and window.diag.d.lab_heading.text() == "Warning",
+        and dialogs_shown[-1] is window.dialog
+        and window.dialog.ui.lab_heading.text() == "Warning",
         "Delete did not raise the dialog box headed Warning",
     )
 
@@ -650,7 +649,7 @@ def check_page_widgets(ui):
         shown = len(dialogs_shown)
         box.setChecked(True)
         expect(
-            len(dialogs_shown) == shown + 1 and dialogs_shown[-1] is window.error,
+            len(dialogs_shown) == shown + 1 and dialogs_shown[-1] is window.error_box,
             f"{name} did not raise the error box",
         )
         box.setChecked(False)
@@ -662,16 +661,16 @@ def check_page_widgets(ui):
 def check_dialog_result(window):
     for button, expected in (("bn_east", True), ("bn_west", False), ("bn_close", False)):
         result = really_exec(
-            window.diag,
-            lambda: window.dialogexec("Heading", "Message", "", "No", "Yes"),
-            getattr(window.diag.d, button),
+            window.dialog,
+            lambda: window.dialog.ask("Heading", "Message", "", "No", "Yes"),
+            getattr(window.dialog.ui, button),
         )
-        expect(result is expected, f"dialogexec returned {result!r} after {button}")
+        expect(result is expected, f"DialogBox.ask returned {result!r} after {button}")
     expect(
-        (window.diag.d.bn_west.text(), window.diag.d.bn_east.text()) == ("No", "Yes"),
-        "dialogexec put the button texts on the wrong buttons",
+        (window.dialog.ui.bn_west.text(), window.dialog.ui.bn_east.text()) == ("No", "Yes"),
+        "DialogBox.ask put the button texts on the wrong buttons",
     )
-    really_exec(window.error, lambda: window.errorexec("Heading", "", "Ok"), window.error.e.bn_ok)
+    really_exec(window.error_box, lambda: window.error_box.show_error("Heading", "", "Ok"), window.error_box.ui.bn_ok)
 
     ui = window.ui
     fields = (
@@ -707,6 +706,7 @@ def drive(*_):
         ui.lab_appname.text() == window.windowTitle() != "",
         "the title bar does not show the application name",
     )
+    expect(ui.text_about_home.toPlainText() != "", "the About page of Home has no text")
 
     check_generated()
     check_icons()
@@ -744,8 +744,8 @@ def drive(*_):
     check_window_state(window)
 
     check_drag("main window", window, ui.frame_appname)
-    check_drag("dialog box", window.diag, window.diag.d.frame_top)
-    check_drag("error box", window.error, window.error.e.frame_top)
+    check_drag("dialog box", window.dialog, window.dialog.ui.frame_top)
+    check_drag("error box", window.error_box, window.error_box.ui.frame_top)
 
     ui.bn_close.click()
     expect(not window.isVisible(), "the close button did not close the window")

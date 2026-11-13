@@ -47,9 +47,12 @@ The other pages name its files without the directory.
 
 | File                                        | Purpose                                                           |
 | ------------------------------------------- | ----------------------------------------------------------------- |
-| `src/app/__main__.py`                       | Entry point for `python -m app`                                   |
-| `src/app/main.py`                           | The main window, the dialog box, the error box, and `main()`      |
-| `src/app/ui_function.py`                    | Behaviour: menu, page switching, window controls, widget handlers |
+| `src/app/__main__.py`                       | Entry point for `python -m app` and the `app` command             |
+| `src/app/main_window.py`                    | The main window: title bar, menu, switching pages                 |
+| `src/app/pages.py`                          | What the widgets on the example pages do; replace with your own   |
+| `src/app/dialogs.py`                        | The dialog box and the error box                                  |
+| `src/app/frameless.py`                      | Dragging and the frameless window flags the three windows share   |
+| `src/app/theme.py`                          | Loading `style.qss`, and the font fallbacks                       |
 | `src/app/about.py`                          | Text shown in the About panel of each page                        |
 | `src/app/ui/*.ui`                           | Qt Designer sources                                               |
 | `src/app/ui/ui_*.py`                        | Generated from the `.ui` files; do not edit by hand               |
@@ -58,12 +61,10 @@ The other pages name its files without the directory.
 | `src/app/ui/resources_rc.py`                | The resources compiled from `resources.qrc`; do not edit by hand    |
 | `smoke.py`                                  | The check behind `just check`                                     |
 
-`main.py` holds the three window classes: `MainWindow`, `dialogUi` and
-`errorUi`. It connects the menu buttons and registers what the user enters.
-`ui_function.py` is where the application acts on that: `UIFunction` holds the
-window behaviour (menu toggle, page switching, maximise and restore) and
-`APFunction` holds the example application logic behind the buttons on each
-page. Put the code for your own application there.
+`MainWindow` in `main_window.py` is the window: its title bar buttons, the
+menu toggle, switching pages, maximise and restore. `ExamplePages` in
+`pages.py` is the example application logic behind the buttons on each page.
+Put the code for your own application there.
 
 ## The edit loop
 
@@ -75,10 +76,9 @@ page. Put the code for your own application there.
 2. Change colours and widget styles in `style.qss`; see
    [Change the look](customising.md#change-the-look).
 3. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
-4. Wire the widgets up in `main.py` and `ui_function.py`.
-   `UIFunction.stackPage` in `ui_function.py` wires up the example pages and
-   is the place to copy from.
-5. Set the application name in `MainWindow.__init__` in `main.py`.
+4. Wire the widgets up in `pages.py`. `ExamplePages.__init__` connects the
+   widgets of the example pages and is the place to copy from.
+5. Set the application name, `APP_NAME`, in `main_window.py`.
 
 [Customising](customising.md) walks through the common changes, and
 [Layout](layout.md) gives the object name of every widget you will need to

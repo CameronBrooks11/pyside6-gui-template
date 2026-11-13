@@ -1,7 +1,18 @@
-"""Entry point: `python -m app`."""
+"""Entry point: `python -m app`, and the `app` command."""
 
 import sys
 
-from .main import main
+from PySide6.QtWidgets import QApplication
 
-sys.exit(main())
+from .main_window import MainWindow
+
+
+def main():
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    return app.exec()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

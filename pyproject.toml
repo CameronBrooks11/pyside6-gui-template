@@ -8,7 +8,7 @@ license = "MIT"
 dependencies = ["pyside6>=6.7"]
 
 [project.scripts]
-app = "app.main:main"
+app = "app.__main__:main"
 
 [dependency-groups]
 docs = ["mkdocs-material>=9.5"]

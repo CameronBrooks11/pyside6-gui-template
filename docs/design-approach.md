@@ -54,8 +54,8 @@ widgets do.
 
 ## What comes out
 
-- `main.py`
-- `ui_function.py`
+- `main.py` and `ui_function.py`, since reorganised into the modules listed
+  under [Getting started](getting-started.md#the-files)
 - `ui_main.py`, generated from `ui_main.ui` with `pyside6-uic`
 - `ui_dialog.py`, generated from `ui_dialog.ui`
 - `ui_error.py`, generated from `ui_error.ui`

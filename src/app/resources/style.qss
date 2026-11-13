@@ -1,8 +1,8 @@
-/* The one stylesheet of the application. main.py sets it on the frame that
-   holds the content of each of the three windows, not on the windows or the
-   application, so a dialog of Qt's opened with a window as its parent keeps
-   its normal look. After editing it, run `just uic` to compile it into the
-   resources.
+/* The one stylesheet of the application. Each of the three windows sets it on
+   the frame that holds its content (load_style in theme.py), not on itself
+   or on the application, so a dialog of Qt's opened with a window as its
+   parent keeps its normal look. After editing it, run `just uic` to compile
+   it into the resources.
 
    The colours:
      rgb(51,51,51)    title bar, menu, buttons and fields at rest
@@ -48,7 +48,7 @@ QStackedWidget .QFrame {
     background: rgb(91,90,90);
 }
 
-/* The frames around the menu buttons. ui_function.py sets `selected` to true
+/* The frames around the menu buttons. main_window.py sets `selected` to true
    on the one whose page is showing and to false on the rest. These rules
    come after the one above so that they win inside a page as well. */
 QFrame[selected="false"] {

@@ -33,7 +33,7 @@ To recolour the GUI, change these in `src/app/resources/style.qss` and run
 ![Font samples](images/fonts.png)
 
 The `.ui` files ask for Segoe UI, Segoe UI Light and Segoe UI Semilight. Segoe
-UI ships with Windows. Where it is not installed, `FONT_FALLBACKS` in `main.py`
+UI ships with Windows. Where it is not installed, `FONT_FALLBACKS` in `theme.py`
 names the fonts to use instead, in order of preference, with the system's own
 font as the last resort, and all three families fall back to the same one. A
 name in the list has to be an installed family; a generic name such as
@@ -114,9 +114,9 @@ each of these widget types.
 
 ## Dialog box and error box
 
-| Window              | Class in `main.py` | Widgets                                                                    |
-| ------------------- | ------------------ | -------------------------------------------------------------------------- |
-| `ui_dialog.ui`      | `dialogUi`         | `lab_heading`, `lab_message`, `lab_icon`, `bn_west`, `bn_east`, `bn_min`, `bn_close` |
-| `ui_error.ui`       | `errorUi`          | `lab_heading`, `lab_icon`, `bn_ok`                                         |
+| Window              | Class in `dialogs.py` | Widgets                                                                    |
+| ------------------- | --------------------- | -------------------------------------------------------------------------- |
+| `ui_dialog.ui`      | `DialogBox`           | `lab_heading`, `lab_message`, `lab_icon`, `bn_west`, `bn_east`, `bn_min`, `bn_close` |
+| `ui_error.ui`       | `ErrorBox`            | `lab_heading`, `lab_icon`, `bn_ok`                                         |
 
 Both have a `frame_top` that drags the box and a `frame_bottom` under it.
