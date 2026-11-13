@@ -154,12 +154,21 @@ class errorUi(QDialog):
         self.e.lab_icon.setPixmap(pixmap2)
 
 
+FONT_FALLBACKS = ["Noto Sans", "Helvetica Neue", "Arial", "Sans Serif"]
+
+
 # OUR APPLICATION MAIN WINDOW :
 # -----> MAIN APPLICATION CLASS
 class MainWindow(QMainWindow):
     def __init__(self):
 
         super(MainWindow, self).__init__()
+
+        # ----> FONT FALLBACK
+        # THE .ui FILES ASK FOR SEGOE UI, WHICH ONLY WINDOWS HAS. WHERE IT IS MISSING, THE FIRST OF THESE THAT IS INSTALLED
+        # STANDS IN FOR ALL THREE OF ITS FAMILIES, SO THE WINDOW DOES NOT END UP MIXING TWO TYPEFACES.
+        for family in ("Segoe UI", "Segoe UI Light", "Segoe UI Semilight"):
+            QtGui.QFont.insertSubstitutions(family, FONT_FALLBACKS)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 

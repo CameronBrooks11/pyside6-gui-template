@@ -19,9 +19,9 @@ from PySide6.QtCore import (
     QtMsgType,
     qInstallMessageHandler,
 )
-from PySide6.QtGui import QMouseEvent
+from PySide6.QtGui import QFontDatabase, QFontInfo, QMouseEvent
 from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip
+from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip, QWidget
 
 import ui_function  # noqa: F401  first and on its own: it must not need main
 import main
@@ -69,6 +69,19 @@ def check_drag(name, window, handle):
     before = window.pos()
     drag(window, handle)
     expect(window.pos() != before, f"dragging the {name} did not move it")
+
+
+def check_fonts(window):
+    """Where Segoe UI is missing, its three families must fall back to one typeface."""
+    if "Segoe UI" in QFontDatabase.families():
+        return
+    resolved = {
+        QFontInfo(w.font()).family()
+        for top in (window, window.diag, window.error)
+        for w in top.findChildren(QWidget)
+        if w.font().family().startswith("Segoe UI")
+    }
+    expect(len(resolved) == 1, f"the Segoe UI families fall back to {sorted(resolved)}")
 
 
 def check_icons():
@@ -244,6 +257,7 @@ def drive(window):
     ui = window.ui
 
     check_icons()
+    check_fonts(window)
 
     pages = (
         ("bn_bug", "page_bug", "Bug"),
