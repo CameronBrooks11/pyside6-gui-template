@@ -1,7 +1,4 @@
-"""Run main.py as a script, without a display, and drive what needs no user.
-
-main.py and ui_function.py import each other, which only resolves when main.py
-is the entry script, so this runs it that way and takes over at app.exec().
+"""Build the windows without a display and drive what needs no user.
 
 Run through `just check`, which sets QT_QPA_PLATFORM=offscreen and turns Python
 warnings into errors so a deprecated Qt call fails here. Qt's own warnings, an
@@ -10,7 +7,6 @@ window and an icon path with no file behind it fail it too.
 """
 
 import re
-import runpy
 import sys
 from pathlib import Path
 
@@ -26,6 +22,8 @@ from PySide6.QtCore import (
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip
+
+import main
 
 ICON_SOURCES = ("ui_main.py", "ui_dialog.py", "ui_error.py", "ui_function.py")
 
@@ -132,6 +130,17 @@ def check_window_state(window):
         f"restore gave {window.size().toTuple()}, not the {size.toTuple()} it had",
     )
 
+    QTest.mouseDClick(ui.frame_appname, Qt.MouseButton.LeftButton)
+    QTest.qWait(300)  # the double click maximises after 250 ms
+    expect(window.isMaximized(), "double-clicking the title bar did not maximise")
+    ui.bn_max.click()
+    QApplication.processEvents()
+
+    ui.bn_min.click()
+    expect(window.isMinimized(), "the minimise button did not minimise")
+    window.showNormal()
+    QApplication.processEvents()
+
     window.showMaximized()  # as the window manager would, behind the button's back
     ui.bn_max.click()
     QApplication.processEvents()
@@ -146,7 +155,7 @@ def check_window_state(window):
         QTest.mouseRelease(grip, Qt.MouseButton.LeftButton, pos=QPoint(5, 45))
         expect(window.size() != size, "dragging the resize grip did not resize")
 
-    second = type(window)()
+    second = main.MainWindow()
     expect(
         second.ui.lab_tab.text() == "Home" and HIGHLIGHT in second.ui.frame_home.styleSheet(),
         "a second main window did not start on the Home page",
@@ -230,10 +239,7 @@ def check_dialog_result(window):
     expect(ui.line_android_name.text() == "", "Yes did not delete the contact")
 
 
-def drive(*_):
-    (window,) = [
-        w for w in QApplication.topLevelWidgets() if type(w).__name__ == "MainWindow"
-    ]
+def drive(window):
     ui = window.ui
 
     check_icons()
@@ -283,5 +289,8 @@ def fake_exec(dialog):
 answers = []
 real_exec = QDialog.exec
 QDialog.exec = fake_exec
-QApplication.exec = drive
-runpy.run_path("main.py", run_name="__main__")
+
+app = QApplication(sys.argv)
+window = main.MainWindow()
+window.show()
+sys.exit(drive(window))

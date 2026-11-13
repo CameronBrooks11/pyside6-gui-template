@@ -31,9 +31,11 @@
 ########################################################################################### 
 
 
-from main import * #IMPORTING THE MAIN.PY FILE
+from PySide6 import QtCore, QtGui
+from PySide6.QtCore import QPropertyAnimation
+from PySide6.QtWidgets import QFrame, QSizeGrip
 
-from about import *
+from about import aboutHome
 
 
 # THE MENU: FOR EACH MENU BUTTON, THE FRAME AROUND IT, ITS PAGE, ITS ABOUT PAGE AND THE NAME SHOWN IN THE BOTTOM LABEL.
@@ -49,7 +51,8 @@ MENU_WIDTH = 80 #WIDTH OF THE MENU BAR
 MENU_WIDTH_ABOUT = 160 #ITS WIDTH WHILE THE ABOUT PAGES ARE SHOWN
 
 # THIS CLASS HOUSES ALL FUNCTION NECESSERY FOR OUR PROGRAMME TO RUN.
-class UIFunction(MainWindow):
+# IT IS NOT INSTANTIATED: EACH FUNCTION IS CALLED AS UIFunction.name(window), WITH THE MainWindow AS self.
+class UIFunction:
 
     #----> INITIAL FUNCTION TO LOAD THE FRONT STACK WIDGET AND TAB BUTTON I.E. HOME PAGE 
     #INITIALISING THE WELCOME PAGE TO: HOME PAGE IN THE STACKEDWIDGET, SETTING THE BOTTOM LABEL AS THE PAGE NAME, SETTING THE BUTTON STYLE.
@@ -124,15 +127,9 @@ class UIFunction(MainWindow):
                 QtCore.QTimer.singleShot(250, lambda: UIFunction.maximize_restore(self))
 
         #----> REMOVE NORMAL TITLE BAR 
-        if True:
-            self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-            self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
-            self.ui.frame_appname.mouseDoubleClickEvent = maxDoubleClick
-        else:
-            self.ui.frame_close.hide()
-            self.ui.frame_max.hide()
-            self.ui.frame_min.hide()
-            self.ui.frame_drag.hide()
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.ui.frame_appname.mouseDoubleClickEvent = maxDoubleClick
 
         #-----> RESIZE USING DRAG: A FRAMELESS WINDOW HAS NO BORDER TO RESIZE BY, SO THE BOTTOM RIGHT CORNER GETS A GRIP.
         self.sizegrip = QSizeGrip(self.ui.frame_drag)

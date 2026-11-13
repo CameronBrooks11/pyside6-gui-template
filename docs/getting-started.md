@@ -58,17 +58,15 @@ window behaviour (menu toggle, page switching, maximise and restore) and
 `APFunction` holds the example application logic behind the buttons on each
 page. Put the code for your own application there.
 
-`main.py` and `ui_function.py` import each other. That resolves only when
-`main.py` is the entry script, so run it rather than importing it.
-
 ## The edit loop
 
 1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer ui_main.ui`) and
    change the layout. Sizes, icons, labels, stylesheets and object names are
    all set there, so the Python side only has to say what a widget does.
 2. Run `just uic` to regenerate the matching `ui_*.py`.
-3. Wire the widgets up in `main.py` and `ui_function.py`. `main.py` carries
-   commented examples for each page.
+3. Wire the widgets up in `main.py` and `ui_function.py`.
+   `UIFunction.stackPage` in `ui_function.py` has a working example for each
+   page.
 4. Set the application name in `MainWindow.__init__` in `main.py`.
 
 [Customising](customising.md) walks through the common changes, and
