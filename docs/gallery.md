@@ -12,8 +12,9 @@ A profile panel and a stats panel.
 
 ## Bug
 
-A push button, a progress bar and a combo box. Start runs a counting loop up
-to the number chosen in the combo box and drives the progress bar with it.
+A push button, a progress bar and a combo box. Start fills the progress bar
+from a timer, more slowly the larger the number chosen in the combo box, and
+the window stays responsive while it runs.
 
 ![Bug page](images/bug.png)
 
@@ -34,7 +35,7 @@ Clean and World.
 ### Contact
 
 Line edits that Edit enables and Save disables again. Delete raises the dialog
-box.
+box and empties the fields if the answer is Yes.
 
 ![Android page, Contact](images/android-contact.png)
 

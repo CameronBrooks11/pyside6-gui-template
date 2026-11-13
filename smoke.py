@@ -14,7 +14,15 @@ import runpy
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import QEvent, QPoint, QPointF, Qt, QtMsgType, qInstallMessageHandler
+from PySide6.QtCore import (
+    QEvent,
+    QPoint,
+    QPointF,
+    Qt,
+    QTimer,
+    QtMsgType,
+    qInstallMessageHandler,
+)
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip
@@ -154,16 +162,24 @@ def check_page_widgets(ui):
             key=lambda i: int(ui.comboBox_bug.itemText(i)),
         )
     )
-    ui.progressBar_bug.setValue(0)
     ui.bn_bug_start.click()
+    expect(
+        ui.progressBar_bug.value() < 100,
+        "Start ran to 100% inside the click, blocking the GUI while it did",
+    )
+    for _ in range(200):  # up to 2 s
+        if ui.progressBar_bug.value() == 100:
+            break
+        QTest.qWait(10)
     expect(ui.progressBar_bug.value() == 100, "Start did not fill the progress bar")
+    expect(ui.bn_bug_start.isEnabled(), "Start stayed disabled after the run")
 
-    ui.line_cloud_id.setText("x")
-    ui.bn_cloud_clear.click()
-    expect(ui.line_cloud_id.text() == "", "Clear did not empty the client id")
     shown = len(dialogs_shown)
     ui.bn_cloud_connect.click()
     expect(len(dialogs_shown) == shown + 1, "Connect did not raise the error box")
+    ui.line_cloud_id.setText("x")
+    ui.bn_cloud_clear.click()
+    expect(ui.line_cloud_id.text() == "", "Clear did nothing after a failed Connect")
 
     ui.bn_android.click()
     for button, page in (
@@ -190,6 +206,28 @@ def check_page_widgets(ui):
     shown = len(dialogs_shown)
     ui.checkBox.setChecked(True)
     expect(len(dialogs_shown) == shown + 1, "the check box did not raise the error box")
+    ui.checkBox.setChecked(False)
+    expect(len(dialogs_shown) == shown + 1, "unchecking the box raised the error box again")
+
+
+def check_dialog_result(window):
+    for button, expected in (("bn_east", True), ("bn_west", False), ("bn_close", False)):
+        QTimer.singleShot(0, getattr(window.diag.d, button).click)
+        QDialog.exec = real_exec
+        try:
+            result = window.dialogexec("Heading", "Message", "", "No", "Yes")
+        finally:
+            QDialog.exec = fake_exec
+        expect(result is expected, f"dialogexec returned {result!r} after {button}")
+
+    ui = window.ui
+    ui.line_android_name.setText("someone")
+    answers.append(False)
+    ui.bn_android_contact_delete.click()
+    expect(ui.line_android_name.text() == "someone", "Cancel deleted the contact anyway")
+    answers.append(True)
+    ui.bn_android_contact_delete.click()
+    expect(ui.line_android_name.text() == "", "Yes did not delete the contact")
 
 
 def drive(*_):
@@ -219,6 +257,7 @@ def drive(*_):
 
     check_highlight(ui)
     check_page_widgets(ui)
+    check_dialog_result(window)
     check_window_state(window)
 
     check_drag("main window", window, ui.frame_appname)
@@ -235,6 +274,14 @@ def drive(*_):
 
 qInstallMessageHandler(on_qt_message)
 sys.excepthook = on_exception
-QDialog.exec = lambda self: dialogs_shown.append(self)
+def fake_exec(dialog):
+    dialogs_shown.append(dialog)
+    accepted = answers.pop() if answers else False
+    return QDialog.DialogCode.Accepted if accepted else QDialog.DialogCode.Rejected
+
+
+answers = []
+real_exec = QDialog.exec
+QDialog.exec = fake_exec
 QApplication.exec = drive
 runpy.run_path("main.py", run_name="__main__")

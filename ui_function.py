@@ -187,10 +187,10 @@ class UIFunction(MainWindow):
         self.ui.lab_home_stat_hed.setText("Stat")
 
         ######### PAGE_BUG ############## BELOW DISPLAYS THE FUNCTION OF WIDGET, LABEL, PROGRESS BAR, E.T.C IN STACKEDWIDGET page_bug
-        self.ui.bn_bug_start.clicked.connect(lambda: APFunction.addNumbers(self, self.ui.comboBox_bug.currentText(), True))  
+        self.ui.bn_bug_start.clicked.connect(lambda: APFunction.addNumbers(self, self.ui.comboBox_bug.currentText()))
 
-        # THIS CALLS A SIMPLE FUNCTION LOOPS THROW THE NUMBER FORWARDED BY THE COMBOBOX 'comboBox_bug' AND DISPLAY IN PROGRESS BAR
-        #ALONGWITH MOVING THE PROGRESS CHUNK FROM 0 TO 100%
+        # THIS CALLS A SIMPLE FUNCTION THAT MOVES THE PROGRESS CHUNK FROM 0 TO 100%, TAKING LONGER THE BIGGER THE NUMBER
+        # FORWARDED BY THE COMBOBOX 'comboBox_bug'
 
         #########PAGE CLOUD #############
         self.ui.bn_cloud_connect.clicked.connect(lambda: APFunction.cloudConnect(self))
@@ -204,7 +204,7 @@ class UIFunction(MainWindow):
         self.ui.bn_android_world.clicked.connect(lambda: UIFunction.androidStackPages(self, "page_world"))
         
         ######ANDROID > PAGE CONTACT >>>>>>>>>>>>>>>>>>>>
-        self.ui.bn_android_contact_delete.clicked.connect(lambda: self.dialogexec("Warning", "The Contact Infromtion will be Deleted, Do you want to continue.", "icons/1x/errorAsset 55.png", "Cancel", "Yes"))
+        self.ui.bn_android_contact_delete.clicked.connect(lambda: APFunction.deleteContact(self))
 
         self.ui.bn_android_contact_edit.clicked.connect(lambda: APFunction.editable(self))
 
@@ -217,8 +217,8 @@ class UIFunction(MainWindow):
         ######ANDROID > PAGE CLEAN >>>>>>>>>>>>>>>>>>>>>>
         #NOTHING HERE
         self.ui.horizontalSlider_2.valueChanged.connect(lambda: print("Slider: Horizondal: ", self.ui.horizontalSlider_2.value())) #CHECK WEATHER THE SLIDER IS MOVED OR NOT
-        self.ui.checkBox.stateChanged.connect(lambda: self.errorexec("Happy to Know you liked the UI", "icons/1x/smile2Asset 1.png", "Ok")) #WHEN THE CHECK BOX IS CHECKED IT ECECUTES THE ERROR BOX WITH MESSAGE.
-        self.ui.checkBox_2.stateChanged.connect(lambda: self.errorexec("Even More Happy to hear this", "icons/1x/smileAsset 1.png", "Ok"))
+        self.ui.checkBox.toggled.connect(lambda checked: checked and self.errorexec("Happy to Know you liked the UI", "icons/1x/smile2Asset 1.png", "Ok")) #WHEN THE CHECK BOX IS CHECKED IT ECECUTES THE ERROR BOX WITH MESSAGE.
+        self.ui.checkBox_2.toggled.connect(lambda checked: checked and self.errorexec("Even More Happy to hear this", "icons/1x/smileAsset 1.png", "Ok"))
 
         ##########PAGE: ABOUT HOME #############
         self.ui.text_about_home.setVerticalScrollBar(self.ui.vsb_about_home)
@@ -263,21 +263,27 @@ class UIFunction(MainWindow):
 # REDIRECTED TO THIS AREA FOR THE PROCESSING AND THEN THE RESULT ARE EXPOTED.
 #REMEMBER THE SOFTWARE UI HAS A FUNCTION WHOSE CODE SHOULD BE HERE    
 class APFunction():
-    #-----> ADDING NUMBER TO ILLUSTRATE THE CAPABILITY OF THE PROGRESS BAR WHEN THE 'START' BUTTON IS PRESSED
-    def addNumbers(self, number, enable):
-        if enable:
-            lastProgress = 0
-            for x in range(0, int(number), 1):
-                progress = int((x/int(number))*100)
-                if progress!=lastProgress:
-                    self.ui.progressBar_bug.setValue(progress)
-                    lastProgress = progress
-            self.ui.progressBar_bug.setValue(100)
+    #-----> ILLUSTRATES THE PROGRESS BAR WHEN THE 'START' BUTTON IS PRESSED
+    # A TIMER MOVES THE BAR ONE PERCENT AT A TIME, SO THE WINDOW STAYS RESPONSIVE WHILE IT RUNS. A LOOP HERE WOULD
+    # BLOCK THE WINDOW UNTIL IT FINISHED. THE BIGGER THE NUMBER THE SLOWER THE BAR: 1 MS PER PERCENT FOR EACH MILLION.
+    def addNumbers(self, number):
+        self.ui.bn_bug_start.setEnabled(False)
+        self.ui.progressBar_bug.setValue(0)
+        self.bugTimer = QtCore.QTimer(self)
+        self.bugTimer.timeout.connect(lambda: APFunction.addNumbersStep(self))
+        self.bugTimer.start(max(1, int(number)//1000000))
+
+    def addNumbersStep(self):
+        progress = self.ui.progressBar_bug.value() + 1
+        self.ui.progressBar_bug.setValue(progress)
+        if progress >= 100:
+            self.bugTimer.stop()
+            self.bugTimer.deleteLater()
+            self.ui.bn_bug_start.setEnabled(True)
     ###########################
 
     #---> FUNCTION TO CONNECT THE CLOUD USING ADRESS AND RETURN A ERROR STATEMENT
     def cloudConnect(self):
-        self.ui.bn_cloud_clear.setEnabled(False)
         textID = self.ui.line_cloud_id.text()
         textADRESS = self.ui.line_cloud_adress.text()
         if textID=='asd' and textADRESS=='1234':
@@ -293,6 +299,15 @@ class APFunction():
         self.ui.line_cloud_id.setText("")
 
     #-----> FUNCTION IN ACCOUNT OF CONTACT PAGE IN ANDROID MENU
+    # dialogexec() RETURNS True WHEN THE RIGHT HAND BUTTON OF THE DIALOG BOX, HERE 'Yes', WAS PRESSED.
+    def deleteContact(self):
+        if self.dialogexec("Warning", "The Contact Infromtion will be Deleted, Do you want to continue.", "icons/1x/errorAsset 55.png", "Cancel", "Yes"):
+            self.ui.line_android_name.setText("")
+            self.ui.line_android_adress.setText("")
+            self.ui.line_android_org.setText("")
+            self.ui.line_android_email.setText("")
+            self.ui.line_android_ph.setText("")
+
     def editable(self):
         self.ui.line_android_name.setEnabled(True)
         self.ui.line_android_adress.setEnabled(True)

@@ -75,26 +75,33 @@ self.ui.bn_cloud_clear.clicked.connect(lambda: APFunction.cloudClear(self))
 `APFunction` in the same file holds what the example buttons do. Replace its
 methods with your own application's.
 
+A slot runs on the GUI thread, and the window does not repaint or respond
+until it returns. For work that takes time, do it in steps from a `QTimer`, as
+`APFunction.addNumbers` does for the progress bar, or move it to a worker
+thread.
+
 [Widgets and stylesheets](widgets.md) lists the calls and the stylesheet for
 each widget type.
 
 ## Call the dialog box
 
 `MainWindow.dialogexec` sets the heading, the message, the icon and the text
-of the two buttons, then shows the box and blocks until it is closed:
+of the two buttons, then shows the box and blocks until it is closed. It
+returns `True` when the second, right-hand button was pressed, and `False` for
+the first button or the close button:
 
 ```python
-self.dialogexec(
+if self.dialogexec(
     "Warning",
     "The contact information will be deleted. Do you want to continue?",
     "icons/1x/errorAsset 55.png",
     "Cancel",
     "Yes",
-)
+):
+    ...  # the user chose Yes
 ```
 
-Both buttons close the box. To act on the choice, connect `bn_west` and
-`bn_east` in `dialogUi.__init__` in `main.py`.
+`APFunction.deleteContact` in `ui_function.py` is the working example.
 
 ## Call the error box
 
