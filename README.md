@@ -59,16 +59,14 @@ it. It does not show what the GUI looks like.
 | `docs/`, `mkdocs.yml`                            | The documentation site: layout, widget names, stylesheets          |
 | `smoke.py`                                       | The check behind `just check`                                      |
 
-`main.py` and `ui_function.py` import each other. That resolves only when
-`main.py` is the entry script, so run it rather than importing it.
-
 ## Making it yours
 
 1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer`) and change the
    layout.
 2. Run `just uic` to regenerate the matching `ui_*.py`.
-3. Wire the widgets up in `main.py` and `ui_function.py`. `main.py` carries
-   commented examples for each page.
+3. Wire the widgets up in `main.py` and `ui_function.py`.
+   `UIFunction.stackPage` in `ui_function.py` has a working example for each
+   page.
 4. Set the application name in `MainWindow.__init__` in `main.py`.
 
 The documentation covers each of these steps:
