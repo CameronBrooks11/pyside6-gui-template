@@ -36,12 +36,17 @@ from main import * #IMPORTING THE MAIN.PY FILE
 from about import *
 
 
-GLOBAL_STATE = 0 #NECESSERY FOR CHECKING WEATHER THE WINDWO IS FULL SCREEN OR NOT
-GLOBAL_TITLE_BAR = True #NECESSERY FOR CHECKING WEATHER THE WINDWO IS FULL SCREEN OR NOT
-init = False # NECRESSERY FOR INITITTION OF THE WINDOW.
+# THE MENU: FOR EACH MENU BUTTON, THE FRAME AROUND IT, ITS PAGE, ITS ABOUT PAGE AND THE NAME SHOWN IN THE BOTTOM LABEL.
+# ADD A LINE HERE FOR A NEW MENU BUTTON.
+MENU = {
+    'bn_home': ('frame_home', 'page_home', 'page_about_home', 'Home'),
+    'bn_bug': ('frame_bug', 'page_bug', 'page_about_bug', 'Bug'),
+    'bn_android': ('frame_android', 'page_android', 'page_about_android', 'Android'),
+    'bn_cloud': ('frame_cloud', 'page_cloud', 'page_about_cloud', 'Cloud'),
+}
 
-# tab_Buttons = ['bn_home', 'bn_bug', 'bn_android', 'bn_cloud'] #BUTTONS IN MAIN TAB  
-# android_buttons = ['bn_android_contact', 'bn_android_game', 'bn_android_clean', 'bn_android_world'] #BUTTONS IN ANDROID STACKPAGE
+MENU_WIDTH = 80 #WIDTH OF THE MENU BAR
+MENU_WIDTH_ABOUT = 160 #ITS WIDTH WHILE THE ABOUT PAGES ARE SHOWN
 
 # THIS CLASS HOUSES ALL FUNCTION NECESSERY FOR OUR PROGRAMME TO RUN.
 class UIFunction(MainWindow):
@@ -49,12 +54,9 @@ class UIFunction(MainWindow):
     #----> INITIAL FUNCTION TO LOAD THE FRONT STACK WIDGET AND TAB BUTTON I.E. HOME PAGE 
     #INITIALISING THE WELCOME PAGE TO: HOME PAGE IN THE STACKEDWIDGET, SETTING THE BOTTOM LABEL AS THE PAGE NAME, SETTING THE BUTTON STYLE.
     def initStackTab(self):
-        global init
-        if init==False:
-            self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
-            self.ui.lab_tab.setText("Home")
-            self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)")
-            init = True
+        self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
+        self.ui.lab_tab.setText("Home")
+        self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)")
     ################################################################################################
 
 
@@ -68,33 +70,17 @@ class UIFunction(MainWindow):
     #THIS FUNCTION MAXIMISES OUR MAINWINDOW WHEN THE MAXIMISE BUTTON IS PRESSED OR IF DOUBLE MOUSE LEFT PRESS IS DOEN OVER THE TOPFRMAE.
     #THIS MAKE THE APPLICATION TO OCCUPY THE WHOLE MONITOR.
     def maximize_restore(self):
-        global GLOBAL_STATE
-        status = GLOBAL_STATE
-        if status == 0:
+        if not self.isMaximized():
             self.showMaximized()
-            GLOBAL_STATE = 1
-            self.ui.bn_max.setToolTip("Restore") 
+            self.ui.bn_max.setToolTip("Restore")
             self.ui.bn_max.setIcon(QtGui.QIcon("icons/1x/restore.png")) #CHANGE THE MAXIMISE ICON TO RESTOR ICON
             self.ui.frame_drag.hide() #HIDE DRAG AS NOT NECESSERY
         else:
-            GLOBAL_STATE = 0
             self.showNormal()
-            self.resize(self.width()+1, self.height()+1)
             self.ui.bn_max.setToolTip("Maximize")
             self.ui.bn_max.setIcon(QtGui.QIcon("icons/1x/max.png")) #CHANGE BACK TO MAXIMISE ICON
             self.ui.frame_drag.show()
     ################################################################################################
-
-
-    #----> RETURN STATUS MAX OR RESTROE
-    #NECESSERY OFR THE MAXIMISE FUNCTION TRO WORK.
-    def returStatus():
-        return GLOBAL_STATE
-
-
-    def setStatus(status):
-        global GLOBAL_STATE
-        GLOBAL_STATE = status
 
 
     #------> TOODLE MENU FUNCTION
@@ -102,34 +88,31 @@ class UIFunction(MainWindow):
     #ASLO IT SETS THE ABOUT>HOME AS THE FIRST PAGE.
     #IF THE PAGE IS IN THE ABOUT PAGE THEN PRESSING AGAIN WILL RESULT IN UNDOING THE PROCESS AND COMMING BACK TO THE 
     #HOME PAGE.
-    def toodleMenu(self, maxWidth, clicked):
+    def toodleMenu(self):
 
         #------> THIS LINE CLEARS THE BG OF PREVIOUS TABS : I.E. MAKING THEN NORMAL COLOR THAN LIGHTER COLOR.
         for each in self.ui.frame_bottom_west.findChildren(QFrame): 
             each.setStyleSheet("background:rgb(51,51,51)")
 
-        if clicked:
-            currentWidth = self.ui.frame_bottom_west.width() #Reads the current width of the frame
-            minWidth = 80 #MINIMUN WITDTH OF THE BOTTOM_WEST FRAME
-            if currentWidth==80:
-                extend = maxWidth
-                #----> MAKE THE STACKED WIDGET PAGE TO ABOUT HOME PAGE
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_about_home)
-                self.ui.lab_tab.setText("About > Home")
-                self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)")
-            else:
-                extend = minWidth
-                #-----> REVERT THE ABOUT HOME PAGE TO NORMAL HOME PAGE
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
-                self.ui.lab_tab.setText("Home")
-                self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)")
-            #THIS ANIMATION IS RESPONSIBLE FOR THE TOODLE TO MOVE IN A SOME FIXED STATE.
-            self.animation = QPropertyAnimation(self.ui.frame_bottom_west, b"minimumWidth")
-            self.animation.setDuration(300)
-            self.animation.setStartValue(minWidth)
-            self.animation.setEndValue(extend)
-            self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
-            self.animation.start()
+        if not UIFunction.aboutShown(self):
+            extend = MENU_WIDTH_ABOUT
+            #----> MAKE THE STACKED WIDGET PAGE TO ABOUT HOME PAGE
+            self.ui.stackedWidget.setCurrentWidget(self.ui.page_about_home)
+            self.ui.lab_tab.setText("About > Home")
+        else:
+            extend = MENU_WIDTH
+            #-----> REVERT THE ABOUT HOME PAGE TO NORMAL HOME PAGE
+            self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
+            self.ui.lab_tab.setText("Home")
+        self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)")
+
+        #THIS ANIMATION IS RESPONSIBLE FOR THE TOODLE TO MOVE IN A SOME FIXED STATE.
+        self.animation = QPropertyAnimation(self.ui.frame_bottom_west, b"minimumWidth")
+        self.animation.setDuration(300)
+        self.animation.setStartValue(self.ui.frame_bottom_west.width())
+        self.animation.setEndValue(extend)
+        self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
+        self.animation.start()
     ################################################################################################
 
 
@@ -151,9 +134,9 @@ class UIFunction(MainWindow):
             self.ui.frame_min.hide()
             self.ui.frame_drag.hide()
 
-        #-----> RESIZE USING DRAG                                       THIS CODE TO DRAG AND RESIZE IS IN PROTOPYPE.
-        #self.sizegrip = QSizeGrip(self.ui.frame_drag)
-        #self.sizegrip.setStyleSheet("width: 20px; height: 20px; margin 0px; padding: 0px;")
+        #-----> RESIZE USING DRAG: A FRAMELESS WINDOW HAS NO BORDER TO RESIZE BY, SO THE BOTTOM RIGHT CORNER GETS A GRIP.
+        self.sizegrip = QSizeGrip(self.ui.frame_drag)
+        self.ui.frame_drag.layout().addWidget(self.sizegrip)
 
         #SINCE THERE IS NO WINDOWS TOPBAR, THE CLOSE MIN, MAX BUTTON ARE ABSENT AND SO THERE IS A NEED FOR THE ALTERNATIVE BUTTONS IN OUR
         #DIALOG BOX, WHICH IS CARRIED OUT BY THE BELOW CODE
@@ -169,60 +152,28 @@ class UIFunction(MainWindow):
 
 
     #----> BUTTON IN TAB PRESSED EXECUTES THE CORRESPONDING PAGE IN STACKEDWIDGET PAGES
+    #SHOWS THE PAGE OF THE BUTTON, OR ITS ABOUT PAGE WHILE THE MENU IS WIDENED, AND HIGHLIGHTS THE BUTTON.
     def buttonPressed(self, buttonName):
-
-        index = self.ui.stackedWidget.currentIndex()
+        frame, page, aboutPage, title = MENU[buttonName]
+        about = UIFunction.aboutShown(self)
 
         #------> THIS LINE CLEARS THE BG OF PREVIOUS TABS I.E. FROM THE LITER COLOR TO THE SAME BG COLOR I.E. TO CHANGE THE HIGHLIGHT.
         for each in self.ui.frame_bottom_west.findChildren(QFrame):
             each.setStyleSheet("background:rgb(51,51,51)")
 
-        if buttonName=='bn_home':
-            if self.ui.frame_bottom_west.width()==80  and index!=0:
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
-                self.ui.lab_tab.setText("Home")
-                self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST 
+        self.ui.stackedWidget.setCurrentWidget(getattr(self.ui, aboutPage if about else page))
+        self.ui.lab_tab.setText("About > " + title if about else title)
+        getattr(self.ui, frame).setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
 
-            elif self.ui.frame_bottom_west.width()==160  and index!=1:  # ABOUT PAGE STACKED WIDGET
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_about_home)
-                self.ui.lab_tab.setText("About > Home")
-                self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
+        if buttonName=='bn_android' and not about:
+            UIFunction.androidStackPages(self, "page_contact")
+    ########################################################################################################################
 
-        elif buttonName=='bn_bug':
-            if self.ui.frame_bottom_west.width()==80 and index!=5:
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_bug)
-                self.ui.lab_tab.setText("Bug")
-                self.ui.frame_bug.setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
 
-            elif self.ui.frame_bottom_west.width()==160 and index!=4:   # ABOUT PAGE STACKED WIDGET
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_about_bug)
-                self.ui.lab_tab.setText("About > Bug")
-                self.ui.frame_bug.setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
-
-        elif buttonName=='bn_android':
-            if self.ui.frame_bottom_west.width()==80  and index!=7:
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_android)
-                self.ui.lab_tab.setText("Android")
-                self.ui.frame_android.setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
-                UIFunction.androidStackPages(self, "page_contact")
-
-            elif self.ui.frame_bottom_west.width()==160  and index!=3:   # ABOUT PAGE STACKED WIDGET
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_about_android)
-                self.ui.lab_tab.setText("About > Android")
-                self.ui.frame_android.setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
-
-        elif buttonName=='bn_cloud':
-            if self.ui.frame_bottom_west.width()==80 and index!=6:
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_cloud)
-                self.ui.lab_tab.setText("Cloud")
-                self.ui.frame_cloud.setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
-
-            elif self.ui.frame_bottom_west.width()==160 and index!=2:   # ABOUT PAGE STACKED WIDGET
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_about_cloud)
-                self.ui.lab_tab.setText("About > Cloud")
-                self.ui.frame_cloud.setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
-
-        #ADD ANOTHER ELIF STATEMENT HERE FOR EXECTUITING A NEW MENU BUTTON STACK PAGE.
+    #----> TRUE WHILE THE MENU IS WIDENED, I.E. WHILE ONE OF THE ABOUT PAGES IS THE CURRENT PAGE
+    def aboutShown(self):
+        current = self.ui.stackedWidget.currentWidget()
+        return any(current is getattr(self.ui, aboutPage) for _, _, aboutPage, _ in MENU.values())
     ########################################################################################################################
 
 

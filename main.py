@@ -233,7 +233,7 @@ class MainWindow(QMainWindow):
         # FILE, WHICH EXPANDS THE MENU BAR TO DOUBLE ITS WIDTH MAKING ROOM FOR THE ABOUT PAGES.
         # THIS EFFECT CALLED AS TOODLE, CAN BE MADE USE IN MANY WAYS. CHECK THE FUNCTION: toodleMenu: IN THE ui_function.py
         # FILE FOR THE CLEAR WORKING
-        self.ui.toodle.clicked.connect(lambda: UIFunction.toodleMenu(self, 160, True))
+        self.ui.toodle.clicked.connect(lambda: UIFunction.toodleMenu(self))
         #############################################################
 
         # ----> MENU BUTTON PRESSED EVENTS
@@ -359,7 +359,7 @@ class MainWindow(QMainWindow):
 
         def moveWindow(event):
             # IF MAXIMIZED CHANGE TO NORMAL
-            if UIFunction.returStatus() == 1:
+            if self.isMaximized():
                 UIFunction.maximize_restore(self)
 
             # MOVE WINDOW
