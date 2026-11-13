@@ -20,7 +20,7 @@ just setup   # install PySide6 into .venv
 just run     # launch the GUI
 ```
 
-Without them, install `pyside6` 6.7 or newer and run `python main.py` from the
+Without just, run `uv sync` and then `uv run python -m app` from the
 repository root. The icons load by relative path, so the working directory has
 to be the root.
 
@@ -40,13 +40,17 @@ When you add a page or a button, add it to `smoke.py` so the check covers it.
 
 ## The files
 
+The application is the `app` package in `src/app/`. Rename it to your own.
+The other pages name its files without the directory.
+
 | File                                        | Purpose                                                           |
 | ------------------------------------------- | ----------------------------------------------------------------- |
-| `main.py`                                   | Entry point: the main window, the dialog box and the error box    |
-| `ui_function.py`                            | Behaviour: menu, page switching, window controls, widget handlers |
-| `about.py`                                  | Text shown in the About panel of each page                        |
-| `ui_main.ui`, `ui_dialog.ui`, `ui_error.ui` | Qt Designer sources                                               |
-| `ui_main.py`, `ui_dialog.py`, `ui_error.py` | Generated from the `.ui` files; do not edit by hand               |
+| `src/app/__main__.py`                       | Entry point for `python -m app`                                   |
+| `src/app/main.py`                           | The main window, the dialog box, the error box, and `main()`      |
+| `src/app/ui_function.py`                    | Behaviour: menu, page switching, window controls, widget handlers |
+| `src/app/about.py`                          | Text shown in the About panel of each page                        |
+| `src/app/ui/*.ui`                           | Qt Designer sources                                               |
+| `src/app/ui/ui_*.py`                        | Generated from the `.ui` files; do not edit by hand               |
 | `icons/`                                    | Icons the application loads at run time                           |
 | `css.txt`                                   | Reference copy of the stylesheets set in the `.ui` files; not loaded |
 | `smoke.py`                                  | The check behind `just check`                                     |
@@ -60,7 +64,7 @@ page. Put the code for your own application there.
 
 ## The edit loop
 
-1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer ui_main.ui`) and
+1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer src/app/ui/ui_main.ui`) and
    change the layout. Sizes, icons, labels, stylesheets and object names are
    all set there, so the Python side only has to say what a widget does.
 2. Run `just uic` to regenerate the matching `ui_*.py`.

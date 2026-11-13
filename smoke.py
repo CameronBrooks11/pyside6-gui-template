@@ -1,7 +1,6 @@
-"""Run main.py as a script, without a display, and drive what needs no user.
+"""Run the app as `python -m app` does, without a display, and drive what needs no user.
 
-main.py runs as the entry script, as `just run` runs it, and this takes over at
-app.exec().
+This takes over at app.exec().
 
 Run through `just check`, which sets QT_QPA_PLATFORM=offscreen and turns Python
 warnings into errors so a deprecated Qt call fails here. Qt's own warnings, an
@@ -27,19 +26,19 @@ from PySide6.QtGui import QFontDatabase, QFontInfo, QIcon, QMouseEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip, QWidget
 
-import ui_function
+from app import ui_function
 
 # Every file that can name an image: the Designer sources, what is generated
 # from them, and the Python that sets one at run time.
 ICON_SOURCES = (
-    "main.py",
-    "ui_main.ui",
-    "ui_dialog.ui",
-    "ui_error.ui",
-    "ui_main.py",
-    "ui_dialog.py",
-    "ui_error.py",
-    "ui_function.py",
+    "src/app/main.py",
+    "src/app/ui_function.py",
+    "src/app/ui/ui_main.ui",
+    "src/app/ui/ui_dialog.ui",
+    "src/app/ui/ui_error.ui",
+    "src/app/ui/ui_main.py",
+    "src/app/ui/ui_dialog.py",
+    "src/app/ui/ui_error.py",
 )
 
 # An image path as the sources write one: a quoted string, a stylesheet url()
@@ -54,8 +53,8 @@ dialogs_shown = []
 
 # ui_function has to import without main: when it needed main, the two modules
 # imported each other and only one import order worked.
-if "main" in sys.modules:
-    problems.append("importing ui_function imported main")
+if "app.main" in sys.modules:
+    problems.append("importing app.ui_function imported app.main")
 drove = []
 
 
@@ -481,7 +480,7 @@ def drive(*_):
         w for w in QApplication.topLevelWidgets() if type(w).__name__ == "MainWindow"
     ]
     ui = window.ui
-    expect(window.isVisible(), "main.py did not show the main window")
+    expect(window.isVisible(), "the app did not show the main window")
     expect(
         ui.lab_appname.text() == window.windowTitle() != "",
         "the title bar does not show the application name",
@@ -546,10 +545,10 @@ qInstallMessageHandler(on_qt_message)
 sys.excepthook = on_exception
 QApplication.exec = drive
 
-# The verdict is given here, not through main.py's exit status: main.py may
+# The verdict is given here, not through the app's exit status: the app may
 # not pass it on, and may not reach app.exec() at all.
 try:
-    runpy.run_path("main.py", run_name="__main__")
+    runpy.run_module("app", run_name="__main__", alter_sys=True)
 except SystemExit:
     pass
 except Exception:
