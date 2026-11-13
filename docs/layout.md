@@ -33,7 +33,14 @@ button.
 ![Font samples](images/fonts.png)
 
 The `.ui` files ask for Segoe UI, Segoe UI Light and Segoe UI Semilight. Segoe
-UI ships with Windows; where it is not installed Qt substitutes another font.
+UI ships with Windows. Where it is not installed, `FONT_FALLBACKS` in `main.py`
+names the fonts to use instead, in order of preference, with the system's own
+font as the last resort, and all three families fall back to the same one. A
+name in the list has to be an installed family; a generic name such as
+`Sans Serif` is ignored. The light weights are not carried over.
+
+A family set on a widget in the `.ui` file wins over `QApplication.setFont`,
+so to change the typeface, change it in Qt Designer.
 
 ## Main window
 

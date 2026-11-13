@@ -308,7 +308,7 @@ Vertical:
 
 ```css
 QSlider::groove:vertical {
-    background: red;
+    background: rgb(51,51,51);
     width: 5px
 }
 QSlider::handle:vertical {
@@ -336,10 +336,10 @@ QSlider::handle:horizontal {
     width: 10px;
     margin: -8px 0
 }
-QSlider::add-page:horizondal {
+QSlider::add-page:horizontal {
     background: rgb(51,51,51);
 }
-QSlider::sub-page:horizondal {
+QSlider::sub-page:horizontal {
     background: rgb(51,51,51);
 }
 ```

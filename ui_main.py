@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_main.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.2
+## Created by: Qt User Interface Compiler version 6.12.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -1920,11 +1920,11 @@ class Ui_MainWindow(object):
 "margin:-8px 0\n"
 "}\n"
 "\n"
-"QSlider::add-page:horizondal {\n"
+"QSlider::add-page:horizontal {\n"
 "    background:rgb(51,51,51);\n"
 "}\n"
 "\n"
-"QSlider::sub-page:horizondal {\n"
+"QSlider::sub-page:horizontal {\n"
 "    background:rgb(51,51,51);\n"
 "}")
         self.horizontalSlider_2.setOrientation(Qt.Horizontal)
@@ -1934,7 +1934,7 @@ class Ui_MainWindow(object):
         self.verticalSlider = QSlider(self.groupBox)
         self.verticalSlider.setObjectName(u"verticalSlider")
         self.verticalSlider.setStyleSheet(u"QSlider::groove:vertical {\n"
-"    background: red;\n"
+"    background: rgb(51,51,51);\n"
 "    width:5px\n"
 "}\n"
 "\n"
