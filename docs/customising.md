@@ -51,13 +51,12 @@ form that does not compile.
    order of the lines is the order of the sidebar:
 
     ```python
-    self._add_page("Reports", icon.SP_FileDialogContentsView, ReportsPage())
+    self._add_page("Reports", "reports.svg", ReportsPage())
     ```
 
-The icon is one of
-[Qt's standard icons](https://doc.qt.io/qt-6/qstyle.html#StandardPixmap-enum).
-To use an image of your own, pass a `QIcon` made from a file to
-`QListWidgetItem` in `_add_page` instead.
+The icon is a file in `src/app/icons/`. The five there are 24 by 24 SVGs drawn
+with a mid-grey stroke, which reads on both themes; draw yours the same way,
+or copy one and change its paths.
 
 To remove a page, delete its line there, its module, its form and the
 generated module, and the tests that use it.
@@ -65,9 +64,15 @@ generated module, and the tests that use it.
 ## Change the colours
 
 The application uses Qt's Fusion style, which draws every widget from the
-palette, so there is no stylesheet. `light_palette()` and `dark_palette()` in
-`theme.py` each give the window, field, button and text colours, and `_ACCENT`
-is the colour of selections and links in both.
+palette. `light_palette()` and `dark_palette()` in `theme.py` each give the
+window, field, button and text colours, and `_ACCENT` is the colour of
+selections, links and the main button of a page in both. To paint a button of
+your own that way, call `make_primary(button)`.
+
+The one stylesheet is `NAVIGATION_STYLE` in `main_window.py`, which is set on
+the sidebar alone and takes its colours from the palette. Keep stylesheets
+scoped to a widget like that: one set on the whole application also restyles
+Qt's own dialogs.
 
 To add a theme, write a function that returns its palette, add its name to
 `THEMES`, and handle the name in `apply_theme`. The Settings page lists

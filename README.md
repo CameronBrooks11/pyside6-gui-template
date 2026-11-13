@@ -55,6 +55,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 | `src/app/contacts.py`    | The example data and its table model                           |
 | `src/app/worker.py`      | The example long task, which runs on a second thread           |
 | `src/app/theme.py`       | The light and dark palettes, and the saved choice              |
+| `src/app/icons/`         | The sidebar icons, as SVG files                                |
 | `src/app/ui/*.ui`        | Qt Designer forms, one per window or page                      |
 | `src/app/ui/ui_*.py`     | Generated from the `.ui` files; do not edit by hand            |
 | `tests/`                 | The tests behind `just test`                                   |
@@ -73,8 +74,9 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 3. To add a page, make a form and a module for it the same way and give it a
    line in `MainWindow.__init__`, which lists the pages in sidebar order.
 4. Change the colours in `src/app/theme.py`. The application uses Qt's Fusion
-   style, which draws every widget from the palette, so there is no
-   stylesheet.
+   style, which draws every widget from the palette; the only stylesheet is a
+   short one on the sidebar, in `main_window.py`, and it takes its colours
+   from the palette too.
 5. Set `name`, `description` and `version` in `pyproject.toml`, then run
    `uv lock`: the lock file records the project's name and version, and CI
    installs with `uv sync --locked`, which refuses a lock that is out of date.
