@@ -5,7 +5,7 @@
 The design, the layouts, the diagrams and the guide these pages are converted
 from are by Anjal.P, published as
 [Minimalistic-Flat-Modern-GUI-Template](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template)
-for PySide2. This repository ports the code to PySide6.
+for PySide2.
 
 In their words, abridged where marked and lightly edited for grammar:
 
@@ -28,6 +28,12 @@ In their words, abridged where marked and lightly edited for grammar:
 
 To support the original work, star or share
 [the upstream repository](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template).
+
+## This port
+
+The port to PySide6, this documentation site and the template tooling (the
+project file, the task runner recipes and the offscreen check) are by
+[Cameron Brooks](https://github.com/CameronBrooks11).
 
 ## License
 
