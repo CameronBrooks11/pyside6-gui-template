@@ -1,6 +1,6 @@
 # pyside6-gui-template
 
-A flat, frameless desktop GUI to start a Python application from: PySide6
+A flat, dark desktop GUI to start a Python application from: PySide6
 (Qt 6), laid out in Qt Designer, for Windows, Linux and macOS.
 
 <p align="center">
@@ -19,8 +19,9 @@ from [`docs/`](docs/index.md).
 
 ## What is in it
 
-- Frameless window with its own title bar: drag, minimise, maximise, restore
-  and close.
+- An ordinary window with the system's title bar and border, so moving,
+  resizing and snapping behave as in any other application, and a header of
+  its own inside it for the menu toggle, the application name and the user.
 - Side menu with four example pages (Home, Bug, Android, Cloud) on a stacked
   widget, and a toggle that widens the menu and swaps each page for its About
   page.
@@ -59,10 +60,9 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 | File                                             | Purpose                                                            |
 | ------------------------------------------------ | ------------------------------------------------------------------ |
 | `src/app/__main__.py`                            | Entry point for `python -m app` and the `app` command              |
-| `src/app/main_window.py`                         | The main window: title bar, menu, switching pages                  |
+| `src/app/main_window.py`                         | The main window: header, menu, switching pages                     |
 | `src/app/pages.py`                               | What the widgets on the example pages do; replace with your own    |
 | `src/app/dialogs.py`                             | The dialog box and the error box                                   |
-| `src/app/frameless.py`                           | Dragging and the frameless window flags the three windows share    |
 | `src/app/theme.py`                               | Loading `style.qss`, and the font fallbacks                        |
 | `src/app/about.py`                               | Text shown in the About panel of each page                         |
 | `src/app/ui/*.ui`                                | Qt Designer sources                                                |

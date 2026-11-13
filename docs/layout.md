@@ -16,7 +16,7 @@ These are the main values `style.qss` uses:
 
 | Colour                  | Hex       | Used for                                                    |
 | ----------------------- | --------- | ----------------------------------------------------------- |
-| `rgb(51,51,51)`         | `#333333` | Title bar, menu, buttons and input fields at rest           |
+| `rgb(51,51,51)`         | `#333333` | Header, menu, buttons and input fields at rest              |
 | `rgb(91,90,90)`         | `#5B5A5A` | Page background, hovered and selected menu buttons          |
 | `rgb(0,143,150)`        | `#008F96` | Accent: toggle button, hovered window and push buttons      |
 | `rgb(0,143,170)`        | `#008FAA` | Accent on progress chunks, slider and scroll handles, combo box hover, checked indicators |
@@ -43,6 +43,13 @@ A family set on a widget in the `.ui` file wins over `QApplication.setFont`,
 so to change the typeface, change it in Qt Designer.
 
 ## Main window
+
+!!! note
+
+    The screenshots and diagrams are of the original design, which drew its
+    own title bar with minimise, maximise and close buttons and a resize grip
+    (`bn_min`, `bn_max`, `bn_close`, `frame_drag`). The template now uses the
+    system's window frame, so those are gone; everything else is as pictured.
 
 ![Object tree of the main window](images/layout/main-window.png)
 
@@ -116,7 +123,7 @@ each of these widget types.
 
 | Window              | Class in `dialogs.py` | Widgets                                                                    |
 | ------------------- | --------------------- | -------------------------------------------------------------------------- |
-| `ui_dialog.ui`      | `DialogBox`           | `lab_heading`, `lab_message`, `lab_icon`, `bn_west`, `bn_east`, `bn_min`, `bn_close` |
+| `ui_dialog.ui`      | `DialogBox`           | `lab_heading`, `lab_message`, `lab_icon`, `bn_west`, `bn_east` |
 | `ui_error.ui`       | `ErrorBox`            | `lab_heading`, `lab_icon`, `bn_ok`                                         |
 
-Both have a `frame_top` that drags the box and a `frame_bottom` under it.
+Both have a `frame_top` with the heading and a `frame_bottom` under it.

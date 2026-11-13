@@ -1,13 +1,12 @@
 """The dialog box and the error box.
 
-Both are frameless like the main window, built from their own .ui files, and
-filled in per call: the main window keeps one of each and reuses it.
+Both are built from their own .ui files and filled in per call: the main
+window keeps one of each and reuses it.
 """
 
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QDialog
 
-from .frameless import drag_by, make_frameless
 from .theme import load_style, set_font_fallbacks
 from .ui.ui_dialog import Ui_Dialog
 from .ui.ui_error import Ui_Error
@@ -22,17 +21,13 @@ class DialogBox(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.ui.frame_2.setStyleSheet(load_style())
-        make_frameless(self)
 
-        # With no system title bar, the box has its own minimise and close
-        # buttons. Closing counts as the left-hand answer.
-        self.ui.bn_min.clicked.connect(self.showMinimized)
-        self.ui.bn_close.clicked.connect(self.close)
+        # Closing the box counts as the left-hand answer.
         self.ui.bn_east.clicked.connect(self.accept)
         self.ui.bn_west.clicked.connect(self.reject)
-        drag_by(self, self.ui.frame_top)
 
     def set_content(self, heading, message, icon, no_text, yes_text):
+        self.setWindowTitle(heading)
         self.ui.lab_heading.setText(heading)
         self.ui.lab_message.setText(message)
         self.ui.bn_west.setText(no_text)
@@ -55,12 +50,11 @@ class ErrorBox(QDialog):
         self.ui = Ui_Error()
         self.ui.setupUi(self)
         self.ui.frame.setStyleSheet(load_style())
-        make_frameless(self)
 
         self.ui.bn_ok.clicked.connect(self.close)
-        drag_by(self, self.ui.frame_top)
 
     def set_content(self, heading, icon, button_text):
+        self.setWindowTitle(heading)
         self.ui.lab_heading.setText(heading)
         self.ui.bn_ok.setText(button_text)
         self.ui.lab_icon.setPixmap(QPixmap(icon))

@@ -1,22 +1,20 @@
-"""The main window: its title bar, its menu and the pages behind it.
+"""The main window: its header, its menu and the pages behind it.
 
 The layout comes from ui/ui_main.ui, edited in Qt Designer, and the look from
 resources/style.qss. This module says what the window does. What the widgets
 on the example pages do is in pages.py.
 """
 
-from PySide6.QtCore import QEasingCurve, QEvent, QPropertyAnimation, QTimer
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QFrame, QMainWindow, QSizeGrip
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation
+from PySide6.QtWidgets import QFrame, QMainWindow
 
 from .dialogs import DialogBox, ErrorBox
-from .frameless import drag_by, make_frameless
 from .pages import ExamplePages
 from .theme import load_style, set_font_fallbacks
 from .ui.ui_main import Ui_MainWindow
 
-# Shown in the window's own title bar and given to the operating system as
-# the window title.
+# Shown in the header of the window and given to the operating system as the
+# window title.
 APP_NAME = "App Name"
 
 # The menu: for each menu button, the frame around it, its page, its About
@@ -57,8 +55,6 @@ class MainWindow(QMainWindow):
         self.ui.lab_tab.setText("Home")
         self.select(self.ui.frame_bottom_west, self.ui.frame_home)
 
-        self._set_up_title_bar()
-
         self.ui.toodle.clicked.connect(self.toggle_menu)
         for button in MENU:
             getattr(self.ui, button).clicked.connect(
@@ -74,56 +70,6 @@ class MainWindow(QMainWindow):
         self.error_box = ErrorBox()
 
         self.pages = ExamplePages(self)
-
-    # ---- The title bar ----
-
-    def _set_up_title_bar(self):
-        """Stand in for the system title bar the window gives up: buttons to
-        minimise, maximise and close, a frame to drag by, a double click to
-        maximise, and a grip to resize by."""
-        make_frameless(self)
-
-        self.ui.bn_min.clicked.connect(self.showMinimized)
-        self.ui.bn_max.clicked.connect(self.toggle_maximized)
-        self.ui.bn_close.clicked.connect(self.close)
-
-        # Dragging a maximised window restores it first.
-        drag_by(
-            self,
-            self.ui.frame_appname,
-            before_move=lambda: self.isMaximized() and self.toggle_maximized(),
-        )
-        self.ui.frame_appname.mouseDoubleClickEvent = lambda _event: QTimer.singleShot(
-            250, self.toggle_maximized
-        )
-
-        # A frameless window has no border to resize by, so the bottom right
-        # corner gets a grip. Its picture is set in style.qss, under QSizeGrip.
-        self.size_grip = QSizeGrip(self.ui.frame_drag)
-        self.size_grip.setToolTip("Resize")
-        layout = self.ui.frame_drag.layout()
-        assert layout is not None, "frame_drag has no layout; ui_main.ui gives it one"
-        layout.addWidget(self.size_grip)
-
-    def toggle_maximized(self):
-        if self.isMaximized():
-            self.showNormal()
-        else:
-            self.showMaximized()
-
-    def changeEvent(self, event):
-        """Keep the maximise button and the resize grip in step with the
-        window, whether the button or the window manager changed its state."""
-        if event.type() == QEvent.Type.WindowStateChange:
-            if self.isMaximized():
-                self.ui.bn_max.setToolTip("Restore")
-                self.ui.bn_max.setIcon(QIcon(":/icons/restore.png"))
-                self.ui.frame_drag.hide()
-            else:
-                self.ui.bn_max.setToolTip("Maximize")
-                self.ui.bn_max.setIcon(QIcon(":/icons/maximize.png"))
-                self.ui.frame_drag.show()
-        super().changeEvent(event)
 
     # ---- The menu and the pages ----
 

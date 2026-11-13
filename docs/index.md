@@ -1,6 +1,6 @@
 # pyside6-gui-template
 
-A flat, frameless desktop GUI to start a Python application from: PySide6
+A flat, dark desktop GUI to start a Python application from: PySide6
 (Qt 6), laid out in Qt Designer, for Windows, Linux and macOS.
 
 ![Home page of the template](images/home.png)
@@ -16,8 +16,9 @@ See [Credits](credits.md).
 ## What is in it
 
 - Flat, two-tone design with one accent colour.
-- Frameless window with its own title bar: drag, minimise, maximise, restore
-  and close.
+- An ordinary window with the system's title bar and border, so moving,
+  resizing and snapping behave as in any other application, and a header of
+  its own inside it for the menu toggle, the application name and the user.
 - Side menu with four example pages (Home, Bug, Android, Cloud) on a stacked
   widget, and a toggle that widens the menu and swaps each page for its About
   page.
@@ -41,6 +42,13 @@ See [Credits](credits.md).
 
 ## Tour
 
+!!! note
+
+    The screenshots and diagrams are of the original design, which drew its
+    own title bar with minimise, maximise and close buttons and a resize grip
+    (`bn_min`, `bn_max`, `bn_close`, `frame_drag`). The template now uses the
+    system's window frame, so those are gone; everything else is as pictured.
+
 The home page, with the parts of the window named:
 
 ![Home page, annotated](images/home-annotated.png)
@@ -63,7 +71,7 @@ The dialog box and the error box:
 
 The styled widgets:
 
-![Toggle, window and push buttons](images/widgets-buttons.png)
+![Toggle, window and push buttons of the original design](images/widgets-buttons.png)
 
 ![Menu buttons, slider, progress bar, scroll bar and text field](images/widgets-controls.png)
 

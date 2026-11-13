@@ -36,9 +36,8 @@ The states the stylesheet produces:
 
 ## Push button
 
-Push buttons are used in three places: the close, minimise and maximise
-buttons; the menu buttons; and ordinary action buttons such as Save, Delete
-and Connect.
+Push buttons are used in two places: the menu buttons, and ordinary action
+buttons such as Save, Delete and Connect.
 
 ```python
 button = QPushButton(self.ui.frame_bug_main)  # create inside a frame
@@ -67,7 +66,6 @@ The other kinds are told apart by a `variant` property set in Qt Designer:
 | `variant` | Buttons                                | Rules                              |
 | --------- | -------------------------------------- | ---------------------------------- |
 | `menu`    | The side menu and the Android sub-menu | `QPushButton[variant="menu"]`      |
-| `window`  | Minimise, maximise and close           | `QPushButton[variant="window"]`    |
 | `danger`  | Delete, which turns red on hover       | `QPushButton[variant="danger"]`    |
 
 The menu toggle is styled by its object name, `#toodle`. To set a variant
