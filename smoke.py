@@ -238,6 +238,11 @@ def check_generated():
     for ui in UI_FILES:
         text = Path(ui).read_text(encoding="utf-8")
         named = set(re.findall(r'(?:<include location|\bresource)="([^"]+)"', text))
+        if ":/" in text:
+            expect(
+                "<include location=" in text,
+                f"{ui} names a resource path but does not include a resource file",
+            )
         for location in named:
             expect(
                 (Path(ui).parent / location).resolve() == Path(RESOURCES).resolve(),
@@ -254,7 +259,7 @@ STYLE = f"{SRC}/resources/style.qss"
 
 
 def qss_colour(selector, prop="background"):
-    """The rgb() that style.qss gives `prop` in the rule listing `selector`.
+    """The colour style.qss gives `prop` in the last rule listing `selector`.
 
     The check reads its expected colours from the stylesheet, so recolouring
     the template does not fail it; what it tests is that the rule reaches
@@ -265,19 +270,22 @@ def qss_colour(selector, prop="background"):
     for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", text):
         if selector not in [s.strip() for s in selectors.split(",")]:
             continue
-        found = re.search(rf"(?:^|;)\s*{prop}(?:-color)?\s*:\s*([^;]+)", body)
-        if not found:
+        values = re.findall(rf"(?:^|;)\s*{prop}(?:-color)?\s*:\s*([^;]+)", body)
+        if not values:
             continue
-        value = found.group(1).strip()
-        numbers = re.fullmatch(r"rgba?\(([^)]*)\)", value)
+        # The last declaration of the last rule wins, as in Qt.
+        value = values[-1].strip()
+        numbers = re.fullmatch(r"rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)", value)
         if numbers:
-            parsed = QColor(*(int(n) for n in re.findall(r"\d+", numbers.group(1))[:3]))
+            parsed = QColor(*(int(n) for n in numbers.groups()))
         else:
-            parsed = QColor(value)  # a name or #rrggbb
-        if parsed.isValid():
-            colour = parsed.getRgb()[:3]  # a later rule for the selector wins, as in Qt
+            parsed = QColor(value)  # a name or a hex value; invalid for anything else
+        colour = parsed.getRgb()[:3] if parsed.isValid() else None
     if colour is None:
-        fail(f"{STYLE} has no rule that gives {selector} a {prop} this check can read")
+        fail(
+            f"{STYLE}: the check cannot read the {prop} of {selector}; "
+            "write it as rgb(r,g,b), a hex value or a colour name"
+        )
     return colour
 
 

@@ -120,7 +120,10 @@ Qt Designer and takes its look when the application runs.
 Run `just uic` after editing the file: the stylesheet is compiled into the
 resources, and `just check` fails if the compiled copy is out of date. The
 check reads the colours it expects from `style.qss`, so recolouring does not
-fail it.
+fail it as long as the few colours it samples (the surfaces, the toggle, the
+selected frames and the label text) are written as `rgb(r,g,b)`, a hex value
+or a colour name. It also fails if a stylesheet is set on the `QApplication`,
+because that restyles every dialog of Qt's.
 
 ## Add an icon
 
