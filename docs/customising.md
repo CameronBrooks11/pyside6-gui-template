@@ -149,12 +149,16 @@ def test_clear_asks_first_and_keeps_the_text_on_no(page, answer):
 Replace the README and `docs/` with your own, and set `site_name`,
 `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
 `just docs` serves the site locally, and `just screenshots` regenerates the
-images from the application by running `docs/screenshots.py`.
+images from the application by running `docs/screenshots.py`. Run it after
+changing how a page looks. CI runs the script to show that it still works,
+but cannot tell that the committed images are out of date: what it draws
+depends on the fonts of the machine, so the images are not compared.
 
 If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
 `.github/workflows/docs.yml`, the `docs`, `docs-build` and `screenshots`
-recipes in the justfile, the Docs step in `.github/workflows/check.yml` and
-the `docs` group in `pyproject.toml`, then run `uv lock`.
+recipes in the justfile, the Docs and Screenshots steps in
+`.github/workflows/check.yml` and the `docs` group in `pyproject.toml`, then
+run `uv lock`.
 
 Both workflows ask for Python 3.10, the oldest version `requires-python`
 allows: change both if you raise that floor.

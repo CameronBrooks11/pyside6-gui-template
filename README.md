@@ -91,12 +91,14 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
    If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
    `.github/workflows/docs.yml`, the `docs`, `docs-build` and `screenshots`
-   recipes in the justfile, the Docs step in `.github/workflows/check.yml` and
-   the `docs` group in `pyproject.toml`, then run `uv lock`.
-9. `.github/workflows/check.yml` runs `just check`, `just test` and
-   `just docs-build` on every pull request into `main`. It and `docs.yml` ask
-   for Python 3.10, the oldest version `requires-python` allows: change both
-   if you raise that floor.
+   recipes in the justfile, the Docs and Screenshots steps in
+   `.github/workflows/check.yml` and the `docs` group in `pyproject.toml`,
+   then run `uv lock`.
+9. `.github/workflows/check.yml` runs `just check`, `just test`,
+   `just docs-build` and `just screenshots` on every pull request into `main`,
+   and the tests again on Windows and macOS. It and `docs.yml` ask for Python
+   3.10, the oldest version `requires-python` allows: change both if you raise
+   that floor.
 
 ## License
 

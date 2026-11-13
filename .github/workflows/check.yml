@@ -48,6 +48,12 @@ jobs:
       - name: Docs
         run: just docs-build
 
+      # Shows that the script still runs against the application as it is
+      # now. The images it writes here are thrown away: they depend on the
+      # machine's fonts, so they cannot be compared with the committed ones.
+      - name: Screenshots
+        run: just screenshots
+
   # The same tests on the other desktop platforms, on Qt's offscreen platform
   # as above: they show that the code runs there, not how it looks. Not a
   # required check, so a platform quirk does not block a merge unseen.
