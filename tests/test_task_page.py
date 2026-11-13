@@ -59,6 +59,7 @@ def test_a_stopped_task_does_not_end_the_next_one(page, qtbot):
     time.sleep(0.1)  # the first task makes progress that is not yet delivered
     page.stop()
     page.step_seconds = 0.5
+    page.ui.steps_spin.setValue(2)  # short, so a failure here does not hang
     page.start()
     qtbot.wait(100)  # long enough for the first task's reports to arrive
     assert page.is_running()
