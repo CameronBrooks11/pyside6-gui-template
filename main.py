@@ -103,9 +103,10 @@ class dialogUi(QDialog):
         # -----> CLOSE APPLICATION FUNCTION BUTTON
         self.d.bn_close.clicked.connect(lambda: self.close())
 
-        # -----> THIS FUNCTION WILL CHECKT WEATHER THE BUTRTON ON THE DIALOGBOX IS CLICKED, AND IF SO DIRECTS TO THE FUNCTINON : diag_return()
-        self.d.bn_east.clicked.connect(lambda: self.close())
-        self.d.bn_west.clicked.connect(lambda: self.close())
+        # -----> THE RIGHT HAND BUTTON ACCEPTS THE DIALOGBOX AND THE LEFT HAND ONE REJECTS IT, AS CLOSING IT DOES.
+        # dialogexec() IN MainWindow RETURNS True WHEN IT WAS ACCEPTED.
+        self.d.bn_east.clicked.connect(self.accept)
+        self.d.bn_west.clicked.connect(self.reject)
         ##############################################################################################
 
         ##################################################################################################                        ------(C2)
@@ -382,10 +383,10 @@ class MainWindow(QMainWindow):
     # IT TAKES DIALOG OBJECT(INITIALISED EARLIER), HEADER NAME OF DIALOG BOX, MESSAGE TO BE DISPLAYED, ICON, BUTTON NAMES.
     # THIS CODE EXECUTES THE DIALOGBOX AND SO WE CAN SEE THE DIALOG BOX IN THE SCREEN.
     # DURING THE APPEARENCE OF THIS WINDOW, YOU CANNOT USE THE MAINWINDOW, YOU SHPULD EITHER PRESS ANY ONE OFT HE PROVIDED BUTTONS
-    # OR JUST CLODE THE DIALOG BOX.
+    # OR JUST CLODE THE DIALOG BOX. IT RETURNS True WHEN THE SECOND BUTTON (btn2, ON THE RIGHT) WAS PRESSED, ELSE False.
     def dialogexec(self, heading, message, icon, btn1, btn2):
         dialogUi.dialogConstrict(self.diag, heading, message, icon, btn1, btn2)
-        self.diag.exec()
+        return self.diag.exec() == QDialog.DialogCode.Accepted
 
     #############################################################
 
