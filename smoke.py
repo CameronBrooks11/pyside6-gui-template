@@ -27,9 +27,17 @@ from PySide6.QtCore import (
     QtMsgType,
     qInstallMessageHandler,
 )
-from PySide6.QtGui import QFontDatabase, QFontInfo, QIcon, QMouseEvent
+from PySide6.QtGui import QColor, QFontDatabase, QFontInfo, QIcon, QMouseEvent
 from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip, QWidget
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QFrame,
+    QMessageBox,
+    QPushButton,
+    QSizeGrip,
+    QWidget,
+)
 
 # The name of the application package under src/. Change it here when you
 # rename the package.
@@ -49,6 +57,7 @@ ICON_SOURCES = (
     f"{SRC}/ui/ui_main.py",
     f"{SRC}/ui/ui_dialog.py",
     f"{SRC}/ui/ui_error.py",
+    f"{SRC}/resources/style.qss",
 )
 
 RESOURCES = f"{SRC}/resources/resources.qrc"
@@ -192,6 +201,11 @@ GENERATED = (
     *(("pyside6-uic", ["--from-imports"], ui, ui[:-3] + ".py") for ui in UI_FILES),
 )
 
+# What Qt's tools print about the host under a non-UTF-8 locale such as C.
+LOCALE_NOTE = re.compile(
+    r"Detected locale|Qt depends on a UTF-8 locale|If this causes problems|for more information|\s*$"
+)
+
 # The header line of a generated module that names the Qt version.
 VERSION_LINE = re.compile(r"^#+ Created by: .*version")
 
@@ -211,8 +225,11 @@ def check_generated():
             [program, *options, source], capture_output=True, text=True, encoding="utf-8"
         )
         print(fresh.stderr, end="", file=sys.stderr)
+        said = [line for line in fresh.stderr.splitlines() if not LOCALE_NOTE.match(line)]
         if fresh.returncode != 0:
             fail(f"{tool} failed on {source} with status {fresh.returncode}")
+        elif said:
+            fail(f"{tool} on {source}: {said[0]}")
         elif body(fresh.stdout) != body(Path(generated).read_text(encoding="utf-8")):
             fail(f"{generated} is out of date with {source}: run `just uic`")
 
@@ -221,12 +238,136 @@ def check_generated():
     for ui in UI_FILES:
         text = Path(ui).read_text(encoding="utf-8")
         named = set(re.findall(r'(?:<include location|\bresource)="([^"]+)"', text))
-        expect(named, f"{ui} does not include a resource file")
+        if ":/" in text:
+            expect(
+                "<include location=" in text,
+                f"{ui} names a resource path but does not include a resource file",
+            )
         for location in named:
             expect(
                 (Path(ui).parent / location).resolve() == Path(RESOURCES).resolve(),
                 f"{ui} names the resource file {location}, which is not {RESOURCES}",
             )
+
+
+def colour_at(widget, x=2, y=2):
+    """The colour a widget paints at a point, as (r, g, b)."""
+    return widget.grab().toImage().pixelColor(x, y).getRgb()[:3]
+
+
+STYLE = f"{SRC}/resources/style.qss"
+
+
+def qss_colour(selector, prop="background"):
+    """The colour style.qss gives `prop` in the last rule listing `selector`.
+
+    The check reads its expected colours from the stylesheet, so recolouring
+    the template does not fail it; what it tests is that the rule reaches
+    the widget.
+    """
+    text = re.sub(r"/\*.*?\*/", "", Path(STYLE).read_text(encoding="utf-8"), flags=re.S)
+    colour = None
+    for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", text):
+        if selector not in [s.strip() for s in selectors.split(",")]:
+            continue
+        values = re.findall(rf"(?:^|;)\s*{prop}(?:-color)?\s*:\s*([^;]+)", body)
+        if not values:
+            continue
+        # The last declaration of the last rule wins, as in Qt.
+        value = values[-1].strip()
+        numbers = re.fullmatch(r"rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)", value)
+        if numbers:
+            parsed = QColor(*(int(n) for n in numbers.groups()))
+        else:
+            parsed = QColor(value)  # a name or a hex value; invalid for anything else
+        colour = parsed.getRgb()[:3] if parsed.isValid() else None
+    if colour is None:
+        fail(
+            f"{STYLE}: the check cannot read the {prop} of {selector}; "
+            "write it as rgb(r,g,b), a hex value or a colour name"
+        )
+    return colour
+
+
+def check_style(window):
+    """style.qss has to reach the windows, and `selected` has to show."""
+    ui = window.ui
+    ui.bn_home.click()
+    on, off = qss_colour('QFrame[selected="true"]'), qss_colour('QFrame[selected="false"]')
+    for widget, selector, what in (
+        (ui.frame_top_east, "#frame_top_east", "the title bar"),
+        (ui.page_home, "QStackedWidget > QWidget", "the page"),
+        (ui.frame_toodle, "#frame_toodle", "the toggle"),
+        (ui.frame_home, 'QFrame[selected="true"]', "the frame of the selected menu button"),
+        (ui.frame_bug, 'QFrame[selected="false"]', "the frame of an unselected menu button"),
+        (window.diag.d.frame_top, "QDialog #frame_top", "the bar of the dialog box"),
+        (window.error.e.frame_top, "QDialog #frame_top", "the bar of the error box"),
+    ):
+        got, colour = colour_at(widget), qss_colour(selector)
+        if colour is not None:
+            expect(got == colour, f"{what} is painted {got}, not the {colour} of {selector}")
+    expect(on != off, "selected and unselected menu frames have the same colour")
+
+    text = qss_colour("QLabel", "color")
+    image = ui.lab_appname.grab().toImage()
+    if text is not None:
+        expect(
+            any(
+                image.pixelColor(x, y).getRgb()[:3] == text
+                for x in range(image.width())
+                for y in range(image.height())
+            ),
+            f"no pixel of the application name has the QLabel colour {text}",
+        )
+
+    # The selection has to move, on screen as well as in the property.
+    ui.bn_bug.click()
+    expect(
+        (colour_at(ui.frame_bug), colour_at(ui.frame_home)) == (on, off),
+        "selecting another menu button did not repaint the two frames",
+    )
+    ui.toodle.click()
+    expect(
+        selected(ui.frame_home) and not selected(ui.frame_bug),
+        "the toggle did not move the selection to Home",
+    )
+    wait_until(lambda: ui.frame_bottom_west.width() == 160)
+    ui.toodle.click()
+    wait_until(lambda: ui.frame_bottom_west.width() == 80)
+
+    # Each kind of button is told apart by its `variant`. A button you add to
+    # one of these four frames has to carry the variant of the frame.
+    expect(
+        ui.bn_android_contact_delete.property("variant") == "danger",
+        "the Delete button does not have the danger variant",
+    )
+    for container, variant in (
+        (ui.frame_bottom_west, "menu"),
+        (ui.frame_android_menu, "menu"),
+        (ui.frame_top_east, "window"),
+        (window.diag.d.frame_top, "window"),
+    ):
+        for button in container.findChildren(QPushButton):
+            expect(
+                button.property("variant") == variant,
+                f"{button.objectName()} has variant {button.property('variant')!r}, not {variant!r}",
+            )
+
+    # The stylesheet stops at the content of the app's own windows. A dialog
+    # of Qt's opened from any of the three is drawn by the plain style, as
+    # one with no parent is, and no sheet sits on the application.
+    expect(QApplication.instance().styleSheet() == "", "a stylesheet is set on the QApplication")
+    plain = QMessageBox().style().metaObject().className()
+    for parent in (window, window.diag, window.error):
+        box = QMessageBox(QMessageBox.Icon.NoIcon, "Title", "Some text", parent=parent)
+        box.ensurePolished()
+        drawn_by = box.style().metaObject().className()
+        expect(
+            drawn_by == plain,
+            f"a QMessageBox opened from {type(parent).__name__} is drawn by {drawn_by}: "
+            "style.qss reaches it",
+        )
+        box.deleteLater()
 
 
 def check_icons():
@@ -251,7 +392,9 @@ def check_icons():
         )
 
 
-HIGHLIGHT = "rgb(91,90,90)"
+def selected(frame):
+    """Whether a menu frame is marked as the one whose page is showing."""
+    return frame.property("selected") is True
 
 
 def check_menu(ui, pages, tab_prefix):
@@ -266,17 +409,15 @@ def check_menu(ui, pages, tab_prefix):
             f"{button} left the tab label at {ui.lab_tab.text()!r}",
         )
         frame = button.replace("bn_", "frame_")
-        expect(
-            HIGHLIGHT in getattr(ui, frame).styleSheet(),
-            f"{button} did not highlight {frame}",
-        )
+        marked = [f.objectName() for f in ui.frame_bottom_west.findChildren(QFrame) if selected(f)]
+        expect(marked == [frame], f"{button} left {marked} selected, not only {frame}")
 
 
 def check_highlight(ui):
     ui.bn_home.click()
     ui.bn_home.click()
     expect(
-        HIGHLIGHT in ui.frame_home.styleSheet(),
+        selected(ui.frame_home),
         "clicking the current menu button removed its highlight",
     )
 
@@ -285,7 +426,7 @@ def check_highlight(ui):
 
     window = ui.toodle.window()
     ui.toodle.click()
-    expect(HIGHLIGHT in ui.frame_home.styleSheet(), "the toggle did not highlight Home")
+    expect(selected(ui.frame_home), "the toggle did not highlight Home")
     expect(
         (window.animation.startValue(), window.animation.endValue()) == (80, 160),
         "the menu does not animate open from its narrow width to its wide one",
@@ -297,7 +438,7 @@ def check_highlight(ui):
         "a menu button clicked part-way through the animation did not show its About page",
     )
     expect(
-        HIGHLIGHT in ui.frame_bug.styleSheet(),
+        selected(ui.frame_bug),
         "a menu button clicked part-way through the animation lost its highlight",
     )
     wait_until(lambda: ui.frame_bottom_west.width() == 160)
@@ -315,7 +456,7 @@ def check_highlight(ui):
     expect(
         ui.stackedWidget_android.currentWidget() is ui.page_android_game
         and ui.lab_tab.text() == "Android > GamePad"
-        and HIGHLIGHT in ui.frame_android.styleSheet(),
+        and selected(ui.frame_android),
         "clicking Android again lost the sub-page that was showing",
     )
     ui.bn_home.click()
@@ -398,7 +539,7 @@ def check_window_state(window):
 
     second = type(window)()
     expect(
-        second.ui.lab_tab.text() == "Home" and HIGHLIGHT in second.ui.frame_home.styleSheet(),
+        second.ui.lab_tab.text() == "Home" and selected(second.ui.frame_home),
         "a second main window did not start on the Home page",
     )
     second.deleteLater()
@@ -474,10 +615,8 @@ def check_page_widgets(ui):
             f"{button} did not show {page}",
         )
         frame = button.replace("bn_", "frame_")
-        expect(
-            HIGHLIGHT in getattr(ui, frame).styleSheet(),
-            f"{button} did not highlight {frame}",
-        )
+        marked = [f.objectName() for f in ui.frame_android_menu.findChildren(QFrame) if selected(f)]
+        expect(marked == [frame], f"{button} left {marked} selected, not only {frame}")
 
     contact_fields = (
         ui.line_android_name,
@@ -571,6 +710,7 @@ def drive(*_):
 
     check_generated()
     check_icons()
+    check_style(window)
     check_fonts(window)
 
     pages = (

@@ -22,5 +22,6 @@
   <file>icons/user.png</file>
   <file>icons/warning.png</file>
   <file>icons/world.png</file>
+  <file>style.qss</file>
  </qresource>
 </RCC>

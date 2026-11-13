@@ -1,13 +1,14 @@
 # Widgets and stylesheets
 
-Every widget in the template is created, sized, given its icon and text, and
-styled in Qt Designer. None of that appears in `main.py`. The Python side only
-says what happens when the widget is used.
+Every widget in the template is created, sized and given its icon and text in
+Qt Designer. None of that appears in `main.py`. The Python side only says what
+happens when the widget is used, and the look of every widget comes from one
+stylesheet, `src/app/resources/style.qss`.
 
-For each widget type this page gives the calls you are likely to need and the
-stylesheet the template uses. The stylesheets are set on each widget in the
-`.ui` files; `css.txt` is a reference copy that the application does not load.
-In the snippets, `self.ui` is the `Ui_MainWindow` instance held by
+For each widget type this page gives the calls you are likely to need and
+says which rules in `style.qss` style it.
+[Change the look](customising.md#change-the-look) explains how the stylesheet
+is organised. In the snippets, `self.ui` is the `Ui_MainWindow` instance held by
 `MainWindow`, and the names come from:
 
 ```python
@@ -19,7 +20,7 @@ from PySide6.QtWidgets import (
 )
 ```
 
-The states each stylesheet produces:
+The states the stylesheet produces:
 
 ![Toggle, window and push buttons](images/widgets-buttons.png)
 
@@ -40,7 +41,6 @@ button.setMinimumSize(QSize(20, 20))
 button.setMaximumSize(QSize(55, 55))
 button.setEnabled(False)  # True to enable
 button.setText("Start")
-button.setStyleSheet("QPushButton { border: none; }")
 button.setIcon(QIcon(":/icons/home.png"))
 button.setIconSize(QSize(22, 22))
 button.setFlat(True)
@@ -54,82 +54,23 @@ button.setFont(font)
 button.clicked.connect(lambda: print("clicked"))
 ```
 
-Close, minimise and maximise:
+In `style.qss` the `QPushButton` rules style an action button (Start, Clear,
+Connect, Edit, Share, Save), with `:hover`, `:pressed` and `:disabled` states.
+The other kinds are told apart by a `variant` property set in Qt Designer:
 
-```css
-QPushButton {
-    border: none;
-    background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-    background-color: rgb(0,143,150);
-}
-QPushButton:pressed {
-    background-color: rgba(0,0,0,0);
-}
-```
+| `variant` | Buttons                                | Rules                              |
+| --------- | -------------------------------------- | ---------------------------------- |
+| `menu`    | The side menu and the Android sub-menu | `QPushButton[variant="menu"]`      |
+| `window`  | Minimise, maximise and close           | `QPushButton[variant="window"]`    |
+| `danger`  | Delete, which turns red on hover       | `QPushButton[variant="danger"]`    |
 
-Menu buttons:
+The menu toggle is styled by its object name, `#toodle`. To set a variant
+from Python:
 
-```css
-QPushButton {
-    border: none;
-    background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-    background-color: rgb(91,90,90);
-}
-QPushButton:pressed {
-    background-color: rgba(0,0,0,0);
-}
-```
-
-Action buttons (Start, Clear, Connect, Edit, Share, Save):
-
-```css
-QPushButton {
-    border: 2px solid rgb(51,51,51);
-    border-radius: 5px;
-    color: rgb(255,255,255);
-    background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-    border: 2px solid rgb(0,143,150);
-    background-color: rgb(0,143,150);
-}
-QPushButton:pressed {
-    border: 2px solid rgb(0,143,150);
-    background-color: rgb(51,51,51);
-}
-QPushButton:disabled {
-    border-radius: 5px;
-    border: 2px solid rgb(112,112,112);
-    background-color: rgb(112,112,112);
-}
-```
-
-The Delete button, which turns red on hover:
-
-```css
-QPushButton {
-    border: 2px solid rgb(51,51,51);
-    border-radius: 5px;
-    color: rgb(255,255,255);
-    background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-    border: 2px solid rgb(112,0,0);
-    background-color: rgb(112,0,0);
-}
-QPushButton:pressed {
-    border: 2px solid rgb(112,0,0);
-    background-color: rgb(51,51,51);
-}
-QPushButton:disabled {
-    border-radius: 5px;
-    border: 2px solid rgb(112,112,112);
-    background-color: rgb(112,112,112);
-}
+```python
+button.setProperty("variant", "danger")
+button.style().unpolish(button)  # a widget already shown keeps its old look
+button.style().polish(button)    # until it is polished again
 ```
 
 Reference: [QPushButton](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QPushButton.html).
@@ -146,19 +87,7 @@ bar.setOrientation(Qt.Orientation.Horizontal)
 bar.setInvertedAppearance(False)
 ```
 
-```css
-QProgressBar {
-    color: rgb(255,255,255);
-    background-color: rgb(51,51,51);
-    border: 2px;
-    border-radius: 4px;
-}
-QProgressBar::chunk {
-    border: 2px;
-    border-radius: 4px;
-    background-color: rgb(0,143,170);
-}
-```
+Styled by the `QProgressBar` and `QProgressBar::chunk` rules in `style.qss`.
 
 Reference: [QProgressBar](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QProgressBar.html).
 
@@ -173,53 +102,11 @@ combo.currentText()  # its text
 combo.setMaximumSize(QSize(16777215, 25))  # 16777215 is Qt's "no limit"
 ```
 
-```css
-QComboBox {
-    border: 2px solid rgb(51,51,51);
-    border-radius: 5px;
-    color: rgb(255,255,255);
-    background-color: rgb(51,51,51);
-}
-QComboBox:hover {
-    border: 2px solid rgb(0,143,170);
-    border-radius: 5px;
-    color: rgb(255,255,255);
-    background-color: rgb(0,143,170);
-}
-QComboBox:!editable, QComboBox::drop-down:editable {
-    background: rgb(51,51,51);
-}
-QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-    background: rgb(51,51,51);
-}
-QComboBox:on { /* shift the text when the popup opens */
-    padding-top: 3px;
-    padding-left: 4px;
-}
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 15px;
-    border-left-width: 1px;
-    border-left-color: darkgray;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 5px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 5px;
-}
-QComboBox::down-arrow {
-    image: url(:/icons/dropdown.png);
-}
-QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-    top: 1px;
-    left: 1px;
-}
-QComboBox::drop-down {
-    background: rgb(51,51,51);
-}
-```
+Styled by the `QComboBox` rules in `style.qss`, with
+`QComboBox QAbstractItemView` for the list it drops down. The arrow is the
+resource `:/icons/dropdown.png`.
 
-The arrow image is a Qt resource, like the icons; see
-[Add an icon](customising.md#add-an-icon).
+See [Add an icon](customising.md#add-an-icon) for how resources work.
 
 Reference: [QComboBox](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QComboBox.html).
 
@@ -232,25 +119,8 @@ radio.isChecked()
 radio.toggled.connect(lambda checked: print(checked))
 ```
 
-```css
-QRadioButton {
-    background: rgb(91,90,90);
-    color: white;
-}
-QRadioButton::indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 7px;
-}
-QRadioButton::indicator:checked {
-    background-color: rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-QRadioButton::indicator:unchecked {
-    background-color: rgb(91,90,90);
-    border: 2px solid rgb(51,51,51);
-}
-```
+Styled by the `QRadioButton` and `QRadioButton::indicator` rules in
+`style.qss`.
 
 Reference: [QRadioButton](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QRadioButton.html).
 
@@ -263,31 +133,7 @@ box.isChecked()
 box.toggled.connect(lambda checked: print(checked))  # True when it becomes checked
 ```
 
-```css
-QCheckBox {
-    color: rgb(255,255,255);
-}
-QCheckBox::indicator {
-    width: 10px;
-    height: 10px;
-}
-QCheckBox::indicator:unchecked {
-    border: 2px solid rgb(51,51,51);
-    background: rgb(91,90,90);
-}
-QCheckBox::indicator:unchecked:pressed {
-    border: 2px solid rgb(51,51,51);
-    background: rgb(0,143,170);
-}
-QCheckBox::indicator:checked {
-    background-color: rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-QCheckBox::indicator:checked:pressed {
-    border: 2px solid rgb(51,51,51);
-    background: rgb(91,90,90);
-}
-```
+Styled by the `QCheckBox` and `QCheckBox::indicator` rules in `style.qss`.
 
 Reference: [QCheckBox](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QCheckBox.html).
 
@@ -304,45 +150,8 @@ slider.value()  # the value at the moment of the call
 slider.valueChanged.connect(lambda value: print(value))
 ```
 
-Vertical:
-
-```css
-QSlider::groove:vertical {
-    background: rgb(51,51,51);
-    width: 5px
-}
-QSlider::handle:vertical {
-    height: 10px;
-    background: rgb(0,143,170);
-    margin: 0 -8px
-}
-QSlider::add-page:vertical {
-    background: rgb(51,51,51);
-}
-QSlider::sub-page:vertical {
-    background: rgb(51,51,51);
-}
-```
-
-Horizontal:
-
-```css
-QSlider::groove:horizontal {
-    height: 5px;
-    background: rgb(51,51,51);
-}
-QSlider::handle:horizontal {
-    background: rgb(0,143,170);
-    width: 10px;
-    margin: -8px 0
-}
-QSlider::add-page:horizontal {
-    background: rgb(51,51,51);
-}
-QSlider::sub-page:horizontal {
-    background: rgb(51,51,51);
-}
-```
+Styled by the `QSlider::groove`, `::handle`, `::add-page` and `::sub-page`
+rules in `style.qss`, one set for each orientation.
 
 Reference: [QSlider](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QSlider.html).
 
@@ -360,22 +169,7 @@ self.ui.textEdit_gamepad.setVerticalScrollBar(self.ui.vsb_gamepad)
 of the bar and deletes the one it had before, so handing it the same bar a
 second time crashes.
 
-```css
-QScrollBar:vertical {
-    background: rgb(51,51,51);
-    width: 20px;
-    margin: 0px 0px 0px 0px;
-}
-QScrollBar::handle:vertical {
-    background: rgb(0,143,170);
-}
-QScrollBar::add-page:vertical {
-    background: rgb(51,51,51);
-}
-QScrollBar::sub-page:vertical {
-    background: rgb(51,51,51);
-}
-```
+Styled by the `QScrollBar:vertical` rules in `style.qss`.
 
 Reference: [QScrollBar](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QScrollBar.html).
 
@@ -391,33 +185,11 @@ line.setMinimumSize(QSize(400, 25))
 line.setMaximumSize(QSize(500, 25))
 ```
 
-```css
-QLineEdit {
-    color: rgb(255,255,255);
-    border: 2px solid rgb(51,51,51);
-    border-radius: 4px;
-    background: rgb(51,51,51);
-}
-QLineEdit:disabled {
-    color: rgb(255,255,255);
-    border: 2px solid rgb(112,112,112);
-    border-radius: 4px;
-    background: rgb(112,112,112);
-}
-```
+Styled by the `QLineEdit` and `QLineEdit:disabled` rules in `style.qss`.
 
 Reference: [QLineEdit](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QLineEdit.html).
 
 ## Label and group box
 
-```css
-QLabel {
-    color: rgb(255,255,255);
-}
-QGroupBox {
-    border: 1px solid rgb(51,51,51);
-    border-radius: 4px;
-    color: white;
-    background: rgb(91,90,90);
-}
-```
+`QLabel` and `QGroupBox` have one rule each in `style.qss`; `QTextEdit` has
+one for its text and background colours.

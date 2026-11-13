@@ -33,7 +33,6 @@ class Ui_Error(object):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.frame = QFrame(Error)
         self.frame.setObjectName(u"frame")
-        self.frame.setStyleSheet(u"background:rgb(51,51,51);")
         self.frame.setFrameShape(QFrame.NoFrame)
         self.frame.setFrameShadow(QFrame.Plain)
         self.verticalLayout = QVBoxLayout(self.frame)
@@ -44,7 +43,6 @@ class Ui_Error(object):
         self.frame_top.setObjectName(u"frame_top")
         self.frame_top.setMinimumSize(QSize(0, 55))
         self.frame_top.setMaximumSize(QSize(16777215, 55))
-        self.frame_top.setStyleSheet(u"background:rgb(91,90,90);")
         self.frame_top.setFrameShape(QFrame.NoFrame)
         self.frame_top.setFrameShadow(QFrame.Plain)
         self.horizontalLayout_2 = QHBoxLayout(self.frame_top)
@@ -64,7 +62,6 @@ class Ui_Error(object):
         font.setFamilies([u"Segoe UI"])
         font.setPointSize(12)
         self.lab_heading.setFont(font)
-        self.lab_heading.setStyleSheet(u"color:rgb(255,255,255);")
         self.lab_heading.setWordWrap(True)
 
         self.horizontalLayout_2.addWidget(self.lab_heading)
@@ -74,7 +71,6 @@ class Ui_Error(object):
 
         self.frame_bottom = QFrame(self.frame)
         self.frame_bottom.setObjectName(u"frame_bottom")
-        self.frame_bottom.setStyleSheet(u"background:rgb(91,90,90);")
         self.frame_bottom.setFrameShape(QFrame.NoFrame)
         self.frame_bottom.setFrameShadow(QFrame.Plain)
         self.gridLayout = QGridLayout(self.frame_bottom)
@@ -84,21 +80,6 @@ class Ui_Error(object):
         self.bn_ok.setObjectName(u"bn_ok")
         self.bn_ok.setMinimumSize(QSize(69, 25))
         self.bn_ok.setMaximumSize(QSize(69, 25))
-        self.bn_ok.setStyleSheet(u"QPushButton {\n"
-"	border: 2px solid rgb(51,51,51);\n"
-"	border-radius: 5px;	\n"
-"	color:rgb(255,255,255);\n"
-"	background-color: rgb(51,51,51);\n"
-"}\n"
-"QPushButton:hover {\n"
-"	border: 2px solid rgb(0,143,150);\n"
-"	background-color: rgb(0,143,150);\n"
-"}\n"
-"QPushButton:pressed {	\n"
-"	border: 2px solid rgb(0,143,150);\n"
-"	background-color: rgb(51,51,51);\n"
-"}\n"
-"")
 
         self.gridLayout.addWidget(self.bn_ok, 0, 0, 1, 1)
 

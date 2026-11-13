@@ -53,9 +53,9 @@ The other pages name its files without the directory.
 | `src/app/about.py`                          | Text shown in the About panel of each page                        |
 | `src/app/ui/*.ui`                           | Qt Designer sources                                               |
 | `src/app/ui/ui_*.py`                        | Generated from the `.ui` files; do not edit by hand               |
+| `src/app/resources/style.qss`               | The one stylesheet: every colour and widget style                   |
 | `src/app/resources/`                        | The icons and `resources.qrc`, the Qt resource file that lists them |
-| `src/app/ui/resources_rc.py`                | The icons compiled from `resources.qrc`; do not edit by hand        |
-| `css.txt`                                   | Reference copy of the stylesheets set in the `.ui` files; not loaded |
+| `src/app/ui/resources_rc.py`                | The resources compiled from `resources.qrc`; do not edit by hand    |
 | `smoke.py`                                  | The check behind `just check`                                     |
 
 `main.py` holds the three window classes: `MainWindow`, `dialogUi` and
@@ -68,13 +68,17 @@ page. Put the code for your own application there.
 ## The edit loop
 
 1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer src/app/ui/ui_main.ui`) and
-   change the layout. Sizes, icons, labels, stylesheets and object names are
-   all set there, so the Python side only has to say what a widget does.
-2. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
-3. Wire the widgets up in `main.py` and `ui_function.py`.
+   change the layout. Sizes, icons, labels and object names are set there, so
+   the Python side only has to say what a widget does. The forms look plain
+   in Designer: the colours and widget styles come from
+   `src/app/resources/style.qss` when the application runs.
+2. Change colours and widget styles in `style.qss`; see
+   [Change the look](customising.md#change-the-look).
+3. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
+4. Wire the widgets up in `main.py` and `ui_function.py`.
    `UIFunction.stackPage` in `ui_function.py` wires up the example pages and
    is the place to copy from.
-4. Set the application name in `MainWindow.__init__` in `main.py`.
+5. Set the application name in `MainWindow.__init__` in `main.py`.
 
 [Customising](customising.md) walks through the common changes, and
 [Layout](layout.md) gives the object name of every widget you will need to

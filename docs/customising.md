@@ -25,6 +25,8 @@ About page, which is shown instead while the menu is widened.
    layout, and name it, for example `frame_settings`.
 2. Copy one of the existing menu buttons into the new frame. Change its icon
    and its object name, for example `bn_settings`, in the Property Editor.
+   The copy keeps the dynamic property `variant` = `menu`, which is what
+   gives it the menu button style.
 3. Right-click `stackedWidget`, choose Insert Page, and add two pages. Name
    them, for example `page_settings` and `page_about_settings`, and put your
    widgets on the first.
@@ -67,7 +69,7 @@ way, connect the button in `UIFunction.stackPage`, and add a branch to
 ## Add a widget
 
 Copy the widget you want in Qt Designer, paste it where it should go, and set
-its size, alignment, stylesheet and object name in the Property Editor. Run
+its size, alignment and object name in the Property Editor. Run
 `just uic`, then connect it. `UIFunction.stackPage` in `ui_function.py` is
 where the existing page widgets are connected:
 
@@ -85,6 +87,43 @@ thread.
 
 [Widgets and stylesheets](widgets.md) lists the calls and the stylesheet for
 each widget type.
+
+## Change the look
+
+Every colour and widget style is in `src/app/resources/style.qss`, a Qt
+stylesheet that `main.py` sets on the frame holding the content of each of
+the three windows (`loadStyle`). It is not set on the windows themselves or
+on the application, so a `QMessageBox` or `QFileDialog` keeps Qt's normal
+look when you give it one of the three windows as its parent, as in
+`QMessageBox.warning(self, ...)` from `MainWindow`. Give it a widget inside a
+window as its parent and it takes the stylesheet, with white text on Qt's
+light background. The `.ui` files carry no styles, so a form looks plain in
+Qt Designer and takes its look when the application runs.
+
+- To recolour, change the colour values; the comment at the top of the file
+  says what each one is used for.
+- A plain `QPushButton` is an action button. A button that is something else
+  says so with a dynamic property named `variant`, which you add in Qt
+  Designer with the plus sign in the Property Editor (a String property):
+  `menu` for the side and sub-menu buttons, `window` for minimise, maximise
+  and close, `danger` for a button that turns red on hover. `just check`
+  expects every button in the two menu frames to be `menu` and every button
+  in the title bar frames to be `window`.
+- The frame around a menu button is marked with a `selected` property by
+  `UIFunction.select` in `ui_function.py`; the two `QFrame[selected=...]`
+  rules give the selected and unselected colours.
+- A widget inside a page that needs a colour of its own gets a rule by its
+  object name, for example `#frame_chart { background: ... }`. Do not give
+  one to the frame around a menu button: a rule by name outranks the
+  `selected` rules and the highlight would stop showing.
+
+Run `just uic` after editing the file: the stylesheet is compiled into the
+resources, and `just check` fails if the compiled copy is out of date. The
+check reads the colours it expects from `style.qss`, so recolouring does not
+fail it as long as the few colours it samples (the surfaces, the toggle, the
+selected frames and the label text) are written as `rgb(r,g,b)`, a hex value
+or a colour name. It also fails if a stylesheet is set on the `QApplication`,
+because that restyles every dialog of Qt's.
 
 ## Add an icon
 

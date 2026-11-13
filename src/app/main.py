@@ -15,13 +15,13 @@
 #  Each line of the code described below is commented well, such as: the purpose of the   #
 #  code, its function, returns e.t.c as in certain case: the alternatives to that solul-  #
 #  ution, other sources like the guide in docs/ has also the working of the code.         #
-#  CSS stylesheet of the buttons are given seperatly in the css.txt in the parent folder  #
+#  The stylesheet of every widget is in resources/style.qss.                              #
 ###########################################################################################
 
 ###########################################################################################
 #                                       CAUTION                                           #
-#  SINCE MOST OF THE WORK IS DONE IN THE QT DESIGNER, YOU MAY NOT SEE THE STYLESHEET HERE #
-#  FOR THAT PLEASE REFER docs/widgets.md                                                  #
+#  SINCE THE LAYOUT IS DONE IN THE QT DESIGNER, YOU WILL NOT SEE THE STYLESHEET HERE.     #
+#  FOR THAT PLEASE REFER resources/style.qss AND docs/widgets.md                          #
 #  ALSO MANY OF THE SETTINGS IS PREDEFINED IN THE QT DESIGNER ITSELF, SO HERE IN THIS FUN-#
 #  CTION WHAT HAPPENS AFTER THIS I.E. WHEN THE USER CHANGES THE INPUT STATE, ONLY IS DONE #
 #  HERE, SO IF YOU WANT TO MODIFY THE FILE, PLEASE OPEN THE CORRESPONDING .ui FILE IN QT  #
@@ -81,6 +81,17 @@ def setFontFallbacks():
         QtGui.QFont.insertSubstitutions(family, FONT_FALLBACKS + [systemFamily])
 
 
+# ----> THE LOOK OF EVERY WIDGET IS IN ONE STYLESHEET, resources/style.qss, COMPILED INTO THE RESOURCES BY `just uic`.
+# EACH OF THE THREE WINDOWS SETS IT ON THE FRAME THAT HOLDS ITS CONTENT, NOT ON ITSELF AND NOT ON THE APPLICATION, SO
+# THAT IT DOES NOT REACH QT'S OWN DIALOGS: A QMessageBox OR A QFileDialog GIVEN ONE OF THE THREE WINDOWS AS ITS PARENT
+# KEEPS ITS NORMAL LOOK. GIVEN A WIDGET INSIDE A WINDOW AS ITS PARENT, IT WOULD TAKE THE SHEET.
+def loadStyle():
+    sheet = QtCore.QFile(":/style.qss")
+    if not sheet.open(QtCore.QIODevice.OpenModeFlag.ReadOnly | QtCore.QIODevice.OpenModeFlag.Text):
+        raise RuntimeError("style.qss is not in the compiled resources: run `just uic`")
+    return bytes(sheet.readAll()).decode("utf-8")
+
+
 # DIALOGBOX CLASS WHICH MAKE THE DIALOGBOX WHEN CALLED.
 # ------> DIALOG BOX CLASS : DIALOGBOX CONTAINING TWO BUTTONS, ONE MAEEAGE BAR, ONE ICON HOLDER, ONE HEADING DEFINING
 class dialogUi(QDialog):
@@ -90,6 +101,7 @@ class dialogUi(QDialog):
         setFontFallbacks()
         self.d = Ui_Dialog()
         self.d.setupUi(self)
+        self.d.frame_2.setStyleSheet(loadStyle())
         self.setWindowFlags(
             QtCore.Qt.FramelessWindowHint
         )  # REMOVING WINDOWS TOP BAR AND MAKING IT FRAMELESS (AS WE HAVE AMDE A CUSTOME FRAME IN THE WINDOW ITSELF)
@@ -147,6 +159,7 @@ class errorUi(QDialog):
         setFontFallbacks()
         self.e = Ui_Error()
         self.e.setupUi(self)
+        self.e.frame.setStyleSheet(loadStyle())
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
@@ -181,6 +194,7 @@ class MainWindow(QMainWindow):
         setFontFallbacks()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.centralwidget.setStyleSheet(loadStyle())
 
         # ----> SET WINDOW TITLE AND ICON
         applicationName = "App Name"

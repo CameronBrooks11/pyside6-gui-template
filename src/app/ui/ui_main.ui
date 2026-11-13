@@ -20,9 +20,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <property name="styleSheet">
-    <string notr="true">background:rgb(91,90,90);</string>
-   </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
      <number>0</number>
@@ -83,9 +80,6 @@
            <height>55</height>
           </size>
          </property>
-         <property name="styleSheet">
-          <string notr="true">background:rgb(0,143,150);</string>
-         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -122,18 +116,6 @@
               <height>55</height>
              </size>
             </property>
-            <property name="styleSheet">
-             <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(0,178,178);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
-            </property>
             <property name="text">
              <string/>
             </property>
@@ -162,9 +144,6 @@ QPushButton:pressed {
            <width>16777215</width>
            <height>55</height>
           </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background:rgb(51,51,51);</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -220,9 +199,6 @@ QPushButton:pressed {
                  <pointsize>24</pointsize>
                 </font>
                </property>
-               <property name="styleSheet">
-                <string notr="true">color:rgb(255,255,255);</string>
-               </property>
                <property name="text">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
@@ -262,9 +238,6 @@ QPushButton:pressed {
                  <family>Segoe UI Light</family>
                  <pointsize>24</pointsize>
                 </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color:rgb(255,255,255);</string>
                </property>
                <property name="text">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;User8455&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -376,6 +349,9 @@ QPushButton:pressed {
              </property>
              <item>
               <widget class="QPushButton" name="bn_min">
+               <property name="variant" stdset="0">
+                <string notr="true">window</string>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>55</width>
@@ -384,18 +360,6 @@ QPushButton:pressed {
                </property>
                <property name="toolTip">
                 <string>Minimize</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                </property>
                <property name="text">
                 <string/>
@@ -456,6 +420,9 @@ QPushButton:pressed {
              </property>
              <item>
               <widget class="QPushButton" name="bn_max">
+               <property name="variant" stdset="0">
+                <string notr="true">window</string>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>55</width>
@@ -464,18 +431,6 @@ QPushButton:pressed {
                </property>
                <property name="toolTip">
                 <string>Maximize</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                </property>
                <property name="text">
                 <string/>
@@ -536,6 +491,9 @@ QPushButton:pressed {
              </property>
              <item>
               <widget class="QPushButton" name="bn_close">
+               <property name="variant" stdset="0">
+                <string notr="true">window</string>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>55</width>
@@ -544,18 +502,6 @@ QPushButton:pressed {
                </property>
                <property name="toolTip">
                 <string>Close</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                </property>
                <property name="text">
                 <string/>
@@ -622,9 +568,6 @@ QPushButton:pressed {
            <height>16777215</height>
           </size>
          </property>
-         <property name="styleSheet">
-          <string notr="true">background:rgb(51,51,51);</string>
-         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -685,6 +628,9 @@ QPushButton:pressed {
              </property>
              <item>
               <widget class="QPushButton" name="bn_home">
+               <property name="variant" stdset="0">
+                <string notr="true">menu</string>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>80</width>
@@ -699,18 +645,6 @@ QPushButton:pressed {
                </property>
                <property name="toolTip">
                 <string>Home</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(91,90,90);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                </property>
                <property name="text">
                 <string/>
@@ -771,6 +705,9 @@ QPushButton:pressed {
              </property>
              <item>
               <widget class="QPushButton" name="bn_bug">
+               <property name="variant" stdset="0">
+                <string notr="true">menu</string>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>80</width>
@@ -785,18 +722,6 @@ QPushButton:pressed {
                </property>
                <property name="toolTip">
                 <string>Bug</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(91,90,90);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                </property>
                <property name="text">
                 <string/>
@@ -857,6 +782,9 @@ QPushButton:pressed {
              </property>
              <item>
               <widget class="QPushButton" name="bn_cloud">
+               <property name="variant" stdset="0">
+                <string notr="true">menu</string>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>80</width>
@@ -871,18 +799,6 @@ QPushButton:pressed {
                </property>
                <property name="toolTip">
                 <string>Cloud</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(91,90,90);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                </property>
                <property name="text">
                 <string/>
@@ -943,6 +859,9 @@ QPushButton:pressed {
              </property>
              <item>
               <widget class="QPushButton" name="bn_android">
+               <property name="variant" stdset="0">
+                <string notr="true">menu</string>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>80</width>
@@ -957,18 +876,6 @@ QPushButton:pressed {
                </property>
                <property name="toolTip">
                 <string>Android</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(91,90,90);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                </property>
                <property name="text">
                 <string/>
@@ -1077,16 +984,10 @@ QPushButton:pressed {
                  <height>55</height>
                 </size>
                </property>
-               <property name="styleSheet">
-                <string notr="true"/>
-               </property>
                <property name="currentIndex">
                 <number>7</number>
                </property>
                <widget class="QWidget" name="page_home">
-                <property name="styleSheet">
-                 <string notr="true">background:rgb(91,90,90);</string>
-                </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_19">
                  <property name="spacing">
                   <number>0</number>
@@ -1147,11 +1048,6 @@ QPushButton:pressed {
                         <pointsize>24</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">QLabel {
-	color:rgb(255,255,255);
-}</string>
-                      </property>
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Profile&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -1167,9 +1063,6 @@ QPushButton:pressed {
                         <family>Segoe UI</family>
                         <pointsize>10</pointsize>
                        </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color:rgb(255,255,255);</string>
                       </property>
                       <property name="text">
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -1263,11 +1156,6 @@ p, li { white-space: pre-wrap; }
                         <pointsize>24</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">QLabel {
-	color:rgb(255,255,255);
-}</string>
-                      </property>
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Stat &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -1298,9 +1186,6 @@ p, li { white-space: pre-wrap; }
                 </layout>
                </widget>
                <widget class="QWidget" name="page_about_home">
-                <property name="styleSheet">
-                 <string notr="true">background:rgb(91,90,90);</string>
-                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_13">
                  <property name="spacing">
                   <number>5</number>
@@ -1336,9 +1221,6 @@ p, li { white-space: pre-wrap; }
                      <family>Segoe UI</family>
                      <pointsize>24</pointsize>
                     </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">color:rgb(255,255,255);</string>
                    </property>
                    <property name="text">
                     <string>About: Home</string>
@@ -1380,9 +1262,6 @@ p, li { white-space: pre-wrap; }
                         <pointsize>10</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">color:rgb(255,255,255);</string>
-                      </property>
                       <property name="frameShape">
                        <enum>QFrame::NoFrame</enum>
                       </property>
@@ -1399,22 +1278,6 @@ p, li { white-space: pre-wrap; }
                     </item>
                     <item>
                      <widget class="QScrollBar" name="vsb_about_home">
-                      <property name="styleSheet">
-                       <string notr="true">QScrollBar:vertical {
-	background:rgb(51,51,51);
-    width:20px;
-    margin: 0px 0px 0px 0px;
-}
-QScrollBar::handle:vertical {
-    background:rgb(0,143,170);
-}
-QScrollBar::add-page:vertical {
- 	background:rgb(51,51,51);
-}
-QScrollBar::sub-page:vertical {
- 	background:rgb(51,51,51);
-}</string>
-                      </property>
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
                       </property>
@@ -1426,9 +1289,6 @@ QScrollBar::sub-page:vertical {
                 </layout>
                </widget>
                <widget class="QWidget" name="page_about_cloud">
-                <property name="styleSheet">
-                 <string notr="true">background:rgb(91,90,90);</string>
-                </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_29">
                  <item>
                   <widget class="QLabel" name="label_10">
@@ -1437,9 +1297,6 @@ QScrollBar::sub-page:vertical {
                      <family>Segoe UI</family>
                      <pointsize>30</pointsize>
                     </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">color:rgb(255,255,255);</string>
                    </property>
                    <property name="text">
                     <string>Empty</string>
@@ -1452,19 +1309,10 @@ QScrollBar::sub-page:vertical {
                 </layout>
                </widget>
                <widget class="QWidget" name="page_about_android">
-                <property name="styleSheet">
-                 <string notr="true">background:rgb(91,90,90);</string>
-                </property>
                </widget>
                <widget class="QWidget" name="page_about_bug">
-                <property name="styleSheet">
-                 <string notr="true">background:rgb(91,90,90);</string>
-                </property>
                </widget>
                <widget class="QWidget" name="page_bug">
-                <property name="styleSheet">
-                 <string notr="true">background:rgb(91,90,90);</string>
-                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_7">
                  <property name="spacing">
                   <number>5</number>
@@ -1500,9 +1348,6 @@ QScrollBar::sub-page:vertical {
                      <family>Segoe UI Semilight</family>
                      <pointsize>24</pointsize>
                     </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">color:rgb(255,255,255);</string>
                    </property>
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Bugs Found&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1586,9 +1431,6 @@ QScrollBar::sub-page:vertical {
                         <pointsize>14</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">color:rgb(255,255,255);</string>
-                      </property>
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Simple TO&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -1620,61 +1462,6 @@ QScrollBar::sub-page:vertical {
                         <family>Segoe UI</family>
                         <pointsize>10</pointsize>
                        </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">QComboBox {
-	border: 2px solid rgb(51,51,51);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(51,51,51);
-}
-
-QComboBox:hover {
-	border: 2px solid rgb(0,143,170);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(0,143,170);
-}
-
-QComboBox:!editable, QComboBox::drop-down:editable {
-	background: rgb(51,51,51);
-}
-
-QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-    background:rgb(51,51,51);
-}
-
-QComboBox:on { /* shift the text when the popup opens */
-    padding-top: 3px;
-    padding-left: 4px;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 15px;
-
-    border-left-width: 1px;
-    border-left-color: darkgray;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 5px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 5px;
-}
-
-QComboBox::down-arrow {
-    image: url(:/icons/dropdown.png);
-}
-
-QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-    top: 1px;
-    left: 1px;
-}
-
-QComboBox::drop-down {
-    background:rgb(51,51,51);
-}
-
-</string>
                       </property>
                       <property name="sizeAdjustPolicy">
                        <enum>QComboBox::AdjustToContents</enum>
@@ -1727,9 +1514,6 @@ QComboBox::drop-down {
                         <pointsize>14</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">color:rgb(255,255,255);</string>
-                      </property>
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Vore/Lore&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -1774,28 +1558,6 @@ QComboBox::drop-down {
                         <pointsize>12</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">QPushButton {
-	border: 2px solid rgb(51,51,51);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(51,51,51);
-}
-
-QPushButton:disabled {	
-	border-radius: 5px;	
-	border: 2px solid rgb(112,112,112);
-	background-color: rgb(112,112,112);
-}</string>
-                      </property>
                       <property name="text">
                        <string>Start</string>
                       </property>
@@ -1811,21 +1573,6 @@ QPushButton:disabled {
                      <widget class="QProgressBar" name="progressBar_bug">
                       <property name="enabled">
                        <bool>true</bool>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">QProgressBar
-{
-	color:rgb(255,255,255);
-	background-color :rgb(51,51,51);
-	border : 2px;
-	border-radius:4px;
-}
-
-QProgressBar::chunk{
-	border : 2px;
-	border-radius:4px;
-	background-color:rgb(0,143,170);
-}</string>
                       </property>
                       <property name="value">
                        <number>0</number>
@@ -1867,9 +1614,6 @@ QProgressBar::chunk{
                         <pointsize>16</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">color:rgb(255,255,255);</string>
-                      </property>
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;Action: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -1897,9 +1641,6 @@ QProgressBar::chunk{
                 </layout>
                </widget>
                <widget class="QWidget" name="page_cloud">
-                <property name="styleSheet">
-                 <string notr="true">background:rgb(91,90,90);</string>
-                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_8">
                  <property name="spacing">
                   <number>5</number>
@@ -1935,11 +1676,6 @@ QProgressBar::chunk{
                      <family>Segoe UI</family>
                      <pointsize>24</pointsize>
                     </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QLabel {
-	color:rgb(255,255,255);
-}</string>
                    </property>
                    <property name="text">
                     <string>Cloud Connect</string>
@@ -2008,9 +1744,6 @@ QProgressBar::chunk{
                         <pointsize>14</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">color:rgb(255,255,255);</string>
-                      </property>
                       <property name="text">
                        <string>Client ID :</string>
                       </property>
@@ -2030,9 +1763,6 @@ QProgressBar::chunk{
                         <pointsize>14</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">color:rgb(255,255,255);</string>
-                      </property>
                       <property name="text">
                        <string>Server Adress :</string>
                       </property>
@@ -2051,9 +1781,6 @@ QProgressBar::chunk{
                         <family>Segoe UI</family>
                         <pointsize>14</pointsize>
                        </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color:rgb(255,255,255);</string>
                       </property>
                       <property name="text">
                        <string>Proxy :</string>
@@ -2080,21 +1807,6 @@ QProgressBar::chunk{
                         <pointsize>12</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">QLineEdit {
-	color:rgb(255,255,255);
-	border:2px solid rgb(51,51,51);
-	border-radius:4px;
-	background:rgb(51,51,51);
-}
-
-QLineEdit:disabled {
-	color:rgb(255,255,255);
-	border:2px solid rgb(112,112,112);
-	border-radius:4px;
-	background:rgb(112,112,112);
-}</string>
-                      </property>
                      </widget>
                     </item>
                     <item row="0" column="1" colspan="3">
@@ -2120,21 +1832,6 @@ QLineEdit:disabled {
                         <pointsize>12</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">QLineEdit {
-	color:rgb(255,255,255);
-	border:2px solid rgb(51,51,51);
-	border-radius:4px;
-	background:rgb(51,51,51);
-}
-
-QLineEdit:disabled {
-	color:rgb(255,255,255);
-	border:2px solid rgb(112,112,112);
-	border-radius:4px;
-	background:rgb(112,112,112);
-}</string>
-                      </property>
                      </widget>
                     </item>
                     <item row="1" column="1" colspan="3">
@@ -2156,21 +1853,6 @@ QLineEdit:disabled {
                         <family>Segoe UI</family>
                         <pointsize>12</pointsize>
                        </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">QLineEdit {
-	color:rgb(255,255,255);
-	border:2px solid rgb(51,51,51);
-	border-radius:4px;
-	background:rgb(51,51,51);
-}
-
-QLineEdit:disabled {
-	color:rgb(255,255,255);
-	border:2px solid rgb(112,112,112);
-	border-radius:4px;
-	background:rgb(112,112,112);
-}</string>
                       </property>
                      </widget>
                     </item>
@@ -2223,28 +1905,6 @@ QLineEdit:disabled {
                         <pointsize>12</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">QPushButton {
-	border: 2px solid rgb(51,51,51);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(51,51,51);
-}
-
-QPushButton:disabled {	
-	border-radius: 5px;	
-	border: 2px solid rgb(112,112,112);
-	background-color: rgb(112,112,112);
-}</string>
-                      </property>
                       <property name="text">
                        <string>Clear</string>
                       </property>
@@ -2270,28 +1930,6 @@ QPushButton:disabled {
                         <pointsize>12</pointsize>
                        </font>
                       </property>
-                      <property name="styleSheet">
-                       <string notr="true">QPushButton {
-	border: 2px solid rgb(51,51,51);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(51,51,51);
-}
-
-QPushButton:disabled {	
-	border-radius: 5px;	
-	border: 2px solid rgb(112,112,112);
-	background-color: rgb(112,112,112);
-}</string>
-                      </property>
                       <property name="text">
                        <string>Connect</string>
                       </property>
@@ -2316,9 +1954,6 @@ QPushButton:disabled {
                 </layout>
                </widget>
                <widget class="QWidget" name="page_android">
-                <property name="styleSheet">
-                 <string notr="true">background:rgb(91,90,90);</string>
-                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_9">
                  <property name="spacing">
                   <number>0</number>
@@ -2348,9 +1983,6 @@ QPushButton:disabled {
                      <width>16777215</width>
                      <height>30</height>
                     </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background:rgb(51,51,51);</string>
                    </property>
                    <property name="frameShape">
                     <enum>QFrame::NoFrame</enum>
@@ -2412,6 +2044,9 @@ QPushButton:disabled {
                        </property>
                        <item>
                         <widget class="QPushButton" name="bn_android_contact">
+                         <property name="variant" stdset="0">
+                          <string notr="true">menu</string>
+                         </property>
                          <property name="minimumSize">
                           <size>
                            <width>80</width>
@@ -2426,18 +2061,6 @@ QPushButton:disabled {
                          </property>
                          <property name="toolTip">
                           <string>Contact</string>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(91,90,90);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                          </property>
                          <property name="text">
                           <string/>
@@ -2498,6 +2121,9 @@ QPushButton:pressed {
                        </property>
                        <item>
                         <widget class="QPushButton" name="bn_android_game">
+                         <property name="variant" stdset="0">
+                          <string notr="true">menu</string>
+                         </property>
                          <property name="minimumSize">
                           <size>
                            <width>80</width>
@@ -2512,18 +2138,6 @@ QPushButton:pressed {
                          </property>
                          <property name="toolTip">
                           <string>GamePad</string>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(91,90,90);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                          </property>
                          <property name="text">
                           <string/>
@@ -2584,6 +2198,9 @@ QPushButton:pressed {
                        </property>
                        <item>
                         <widget class="QPushButton" name="bn_android_clean">
+                         <property name="variant" stdset="0">
+                          <string notr="true">menu</string>
+                         </property>
                          <property name="minimumSize">
                           <size>
                            <width>80</width>
@@ -2598,18 +2215,6 @@ QPushButton:pressed {
                          </property>
                          <property name="toolTip">
                           <string>Clean</string>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(91,90,90);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                          </property>
                          <property name="text">
                           <string/>
@@ -2664,6 +2269,9 @@ QPushButton:pressed {
                        </property>
                        <item>
                         <widget class="QPushButton" name="bn_android_world">
+                         <property name="variant" stdset="0">
+                          <string notr="true">menu</string>
+                         </property>
                          <property name="minimumSize">
                           <size>
                            <width>80</width>
@@ -2678,18 +2286,6 @@ QPushButton:pressed {
                          </property>
                          <property name="toolTip">
                           <string>World</string>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true">QPushButton {
-	border: none;
-	background-color: rgba(0,0,0,0);
-}
-QPushButton:hover {
-	background-color: rgb(91,90,90);
-}
-QPushButton:pressed {	
-	background-color: rgba(0,0,0,0);
-}</string>
                          </property>
                          <property name="text">
                           <string/>
@@ -2724,16 +2320,10 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="QStackedWidget" name="stackedWidget_android">
-                   <property name="styleSheet">
-                    <string notr="true">background:rgb(91,90,90);</string>
-                   </property>
                    <property name="currentIndex">
                     <number>2</number>
                    </property>
                    <widget class="QWidget" name="page_android_contact">
-                    <property name="styleSheet">
-                     <string notr="true">background:rgb(91,90,90);</string>
-                    </property>
                     <layout class="QVBoxLayout" name="verticalLayout_10">
                      <property name="spacing">
                       <number>0</number>
@@ -2769,9 +2359,6 @@ QPushButton:pressed {
                          <family>Segoe UI</family>
                          <pointsize>24</pointsize>
                         </font>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">color:rgb(255,255,255);</string>
                        </property>
                        <property name="text">
                         <string>Contact</string>
@@ -2869,9 +2456,6 @@ QPushButton:pressed {
                                <pointsize>14</pointsize>
                               </font>
                              </property>
-                             <property name="styleSheet">
-                              <string notr="true">color:rgb(255,255,255);</string>
-                             </property>
                              <property name="text">
                               <string>Ph:</string>
                              </property>
@@ -2884,9 +2468,6 @@ QPushButton:pressed {
                                <family>Segoe UI</family>
                                <pointsize>14</pointsize>
                               </font>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">color:rgb(255,255,255);</string>
                              </property>
                              <property name="text">
                               <string>Organisation:</string>
@@ -2901,9 +2482,6 @@ QPushButton:pressed {
                                <pointsize>14</pointsize>
                               </font>
                              </property>
-                             <property name="styleSheet">
-                              <string notr="true">color:rgb(255,255,255);</string>
-                             </property>
                              <property name="text">
                               <string>Email:</string>
                              </property>
@@ -2916,9 +2494,6 @@ QPushButton:pressed {
                                <family>Segoe UI</family>
                                <pointsize>14</pointsize>
                               </font>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">color:rgb(255,255,255);</string>
                              </property>
                              <property name="text">
                               <string>Name: </string>
@@ -2948,21 +2523,6 @@ QPushButton:pressed {
                                <pointsize>12</pointsize>
                               </font>
                              </property>
-                             <property name="styleSheet">
-                              <string notr="true">QLineEdit {
-	color:rgb(255,255,255);
-	border:2px solid rgb(51,51,51);
-	border-radius:4px;
-	background:rgb(51,51,51);
-}
-
-QLineEdit:disabled {
-	color:rgb(255,255,255);
-	border:2px solid rgb(112,112,112);
-	border-radius:4px;
-	background:rgb(112,112,112);
-}</string>
-                             </property>
                              <property name="text">
                               <string>ALBERT EINSTEIN</string>
                              </property>
@@ -2975,9 +2535,6 @@ QLineEdit:disabled {
                                <family>Segoe UI</family>
                                <pointsize>14</pointsize>
                               </font>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">color:rgb(255,255,255);</string>
                              </property>
                              <property name="text">
                               <string>Adress: </string>
@@ -3007,21 +2564,6 @@ QLineEdit:disabled {
                                <pointsize>12</pointsize>
                               </font>
                              </property>
-                             <property name="styleSheet">
-                              <string notr="true">QLineEdit {
-	color:rgb(255,255,255);
-	border:2px solid rgb(51,51,51);
-	border-radius:4px;
-	background:rgb(51,51,51);
-}
-
-QLineEdit:disabled {
-	color:rgb(255,255,255);
-	border:2px solid rgb(112,112,112);
-	border-radius:4px;
-	background:rgb(112,112,112);
-}</string>
-                             </property>
                              <property name="text">
                               <string>Physist</string>
                              </property>
@@ -3049,21 +2591,6 @@ QLineEdit:disabled {
                                <family>Segoe UI</family>
                                <pointsize>12</pointsize>
                               </font>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">QLineEdit {
-	color:rgb(255,255,255);
-	border:2px solid rgb(51,51,51);
-	border-radius:4px;
-	background:rgb(51,51,51);
-}
-
-QLineEdit:disabled {
-	color:rgb(255,255,255);
-	border:2px solid rgb(112,112,112);
-	border-radius:4px;
-	background:rgb(112,112,112);
-}</string>
                              </property>
                              <property name="text">
                               <string>112 Mercer Street</string>
@@ -3093,21 +2620,6 @@ QLineEdit:disabled {
                                <pointsize>12</pointsize>
                               </font>
                              </property>
-                             <property name="styleSheet">
-                              <string notr="true">QLineEdit {
-	color:rgb(255,255,255);
-	border:2px solid rgb(51,51,51);
-	border-radius:4px;
-	background:rgb(51,51,51);
-}
-
-QLineEdit:disabled {
-	color:rgb(255,255,255);
-	border:2px solid rgb(112,112,112);
-	border-radius:4px;
-	background:rgb(112,112,112);
-}</string>
-                             </property>
                             </widget>
                            </item>
                            <item row="5" column="3">
@@ -3132,21 +2644,6 @@ QLineEdit:disabled {
                                <family>Segoe UI</family>
                                <pointsize>12</pointsize>
                               </font>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">QLineEdit {
-	color:rgb(255,255,255);
-	border:2px solid rgb(51,51,51);
-	border-radius:4px;
-	background:rgb(51,51,51);
-}
-
-QLineEdit:disabled {
-	color:rgb(255,255,255);
-	border:2px solid rgb(112,112,112);
-	border-radius:4px;
-	background:rgb(112,112,112);
-}</string>
                              </property>
                              <property name="text">
                               <string>einstein@gmail.com</string>
@@ -3236,28 +2733,6 @@ QLineEdit:disabled {
                                   <pointsize>12</pointsize>
                                  </font>
                                 </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QPushButton {
-	border: 2px solid rgb(51,51,51);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(51,51,51);
-}
-
-QPushButton:disabled {	
-	border-radius: 5px;	
-	border: 2px solid rgb(112,112,112);
-	background-color: rgb(112,112,112);
-}</string>
-                                </property>
                                 <property name="text">
                                  <string>Edit</string>
                                 </property>
@@ -3283,28 +2758,6 @@ QPushButton:disabled {
                                   <pointsize>12</pointsize>
                                  </font>
                                 </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QPushButton {
-	border: 2px solid rgb(51,51,51);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(51,51,51);
-}
-
-QPushButton:disabled {	
-	border-radius: 5px;	
-	border: 2px solid rgb(112,112,112);
-	background-color: rgb(112,112,112);
-}</string>
-                                </property>
                                 <property name="text">
                                  <string>Share</string>
                                 </property>
@@ -3312,6 +2765,9 @@ QPushButton:disabled {
                               </item>
                               <item>
                                <widget class="QPushButton" name="bn_android_contact_delete">
+                                <property name="variant" stdset="0">
+                                 <string notr="true">danger</string>
+                                </property>
                                 <property name="minimumSize">
                                  <size>
                                   <width>69</width>
@@ -3329,28 +2785,6 @@ QPushButton:disabled {
                                   <family>Segoe UI</family>
                                   <pointsize>12</pointsize>
                                  </font>
-                                </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QPushButton {
-	border: 2px solid rgb(51,51,51);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-	border: 2px solid rgb(112,0,0);
-	background-color: rgb(112,0,0);
-}
-QPushButton:pressed {	
-	border: 2px solid rgb(112,0,0);
-	background-color: rgb(51,51,51);
-}
-
-QPushButton:disabled {	
-	border-radius: 5px;	
-	border: 2px solid rgb(112,112,112);
-	background-color: rgb(112,112,112);
-}</string>
                                 </property>
                                 <property name="text">
                                  <string>Delete</string>
@@ -3380,28 +2814,6 @@ QPushButton:disabled {
                                   <pointsize>12</pointsize>
                                  </font>
                                 </property>
-                                <property name="styleSheet">
-                                 <string notr="true">QPushButton {
-	border: 2px solid rgb(51,51,51);
-	border-radius: 5px;	
-	color:rgb(255,255,255);
-	background-color: rgb(51,51,51);
-}
-QPushButton:hover {
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(0,143,150);
-}
-QPushButton:pressed {	
-	border: 2px solid rgb(0,143,150);
-	background-color: rgb(51,51,51);
-}
-
-QPushButton:disabled {	
-	border-radius: 5px;	
-	border: 2px solid rgb(112,112,112);
-	background-color: rgb(112,112,112);
-}</string>
-                                </property>
                                 <property name="text">
                                  <string>Save</string>
                                 </property>
@@ -3419,9 +2831,6 @@ QPushButton:disabled {
                     </layout>
                    </widget>
                    <widget class="QWidget" name="page_android_game">
-                    <property name="styleSheet">
-                     <string notr="true">background:rgb(91,90,90);</string>
-                    </property>
                     <layout class="QVBoxLayout" name="verticalLayout_11">
                      <property name="spacing">
                       <number>5</number>
@@ -3458,9 +2867,6 @@ QPushButton:disabled {
                          <pointsize>24</pointsize>
                         </font>
                        </property>
-                       <property name="styleSheet">
-                        <string notr="true">color:rgb(255,255,255);</string>
-                       </property>
                        <property name="text">
                         <string>GamePad</string>
                        </property>
@@ -3468,9 +2874,6 @@ QPushButton:disabled {
                      </item>
                      <item>
                       <widget class="QFrame" name="frame_textbar">
-                       <property name="styleSheet">
-                        <string notr="true">background:rgb(91,90,90);</string>
-                       </property>
                        <property name="frameShape">
                         <enum>QFrame::StyledPanel</enum>
                        </property>
@@ -3501,9 +2904,6 @@ QPushButton:disabled {
                             <pointsize>12</pointsize>
                            </font>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">color:rgb(255,255,255);</string>
-                          </property>
                           <property name="frameShape">
                            <enum>QFrame::NoFrame</enum>
                           </property>
@@ -3520,22 +2920,6 @@ QPushButton:disabled {
                         </item>
                         <item>
                          <widget class="QScrollBar" name="vsb_gamepad">
-                          <property name="styleSheet">
-                           <string notr="true">QScrollBar:vertical {
-	background:rgb(51,51,51);
-    width:20px;
-    margin: 0px 0px 0px 0px;
-}
-QScrollBar::handle:vertical {
-    background:rgb(0,143,170);
-}
-QScrollBar::add-page:vertical {
- 	background:rgb(51,51,51);
-}
-QScrollBar::sub-page:vertical {
- 	background:rgb(51,51,51);
-}</string>
-                          </property>
                           <property name="orientation">
                            <enum>Qt::Vertical</enum>
                           </property>
@@ -3550,9 +2934,6 @@ QScrollBar::sub-page:vertical {
                     </layout>
                    </widget>
                    <widget class="QWidget" name="page_android_clean">
-                    <property name="styleSheet">
-                     <string notr="true">background:rgb(91,90,90);</string>
-                    </property>
                     <layout class="QGridLayout" name="gridLayout_5">
                      <property name="leftMargin">
                       <number>5</number>
@@ -3608,15 +2989,6 @@ QScrollBar::sub-page:vertical {
                          <pointsize>10</pointsize>
                         </font>
                        </property>
-                       <property name="styleSheet">
-                        <string notr="true">QGroupBox{
-	border:1px solid rgb(51,51,51);	
-	border-radius:4px;
-	color:white;
-	background:rgb(91,90,90);
-}
-</string>
-                       </property>
                        <property name="title">
                         <string>Review</string>
                        </property>
@@ -3638,26 +3010,6 @@ QScrollBar::sub-page:vertical {
                             <pointsize>9</pointsize>
                            </font>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">QRadioButton {
-	background:rgb(91,90,90);
-    color:white;
-}
-QRadioButton::indicator {
-    width:10px;
-    height:10px;
-    border-radius: 7px;
-}
-QRadioButton::indicator:checked {
-    background-color:rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-
-QRadioButton::indicator:unchecked {
-    background-color:rgb(91,90,90);
-    border:2px solid rgb(51,51,51);
-}</string>
-                          </property>
                           <property name="text">
                            <string>Clean History</string>
                           </property>
@@ -3677,26 +3029,6 @@ QRadioButton::indicator:unchecked {
                             <pointsize>9</pointsize>
                            </font>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">QRadioButton {
-	background:rgb(91,90,90);
-    color:white;
-}
-QRadioButton::indicator {
-    width:10px;
-    height:10px;
-    border-radius: 7px;
-}
-QRadioButton::indicator:checked {
-    background-color:rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-
-QRadioButton::indicator:unchecked {
-    background-color:rgb(91,90,90);
-    border:2px solid rgb(51,51,51);
-}</string>
-                          </property>
                           <property name="text">
                            <string>Clean Password</string>
                           </property>
@@ -3712,26 +3044,6 @@ QRadioButton::indicator:unchecked {
                             <family>Segoe UI</family>
                             <pointsize>9</pointsize>
                            </font>
-                          </property>
-                          <property name="styleSheet">
-                           <string notr="true">QRadioButton {
-	background:rgb(91,90,90);
-    color:white;
-}
-QRadioButton::indicator {
-    width:10px;
-    height:10px;
-    border-radius: 7px;
-}
-QRadioButton::indicator:checked {
-    background-color:rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-
-QRadioButton::indicator:unchecked {
-    background-color:rgb(91,90,90);
-    border:2px solid rgb(51,51,51);
-}</string>
                           </property>
                           <property name="text">
                            <string>Clean Chache</string>
@@ -3749,26 +3061,6 @@ QRadioButton::indicator:unchecked {
                             <pointsize>9</pointsize>
                            </font>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">QRadioButton {
-	background:rgb(91,90,90);
-    color:white;
-}
-QRadioButton::indicator {
-    width:10px;
-    height:10px;
-    border-radius: 7px;
-}
-QRadioButton::indicator:checked {
-    background-color:rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-
-QRadioButton::indicator:unchecked {
-    background-color:rgb(91,90,90);
-    border:2px solid rgb(51,51,51);
-}</string>
-                          </property>
                           <property name="text">
                            <string>Clean Bookmarks</string>
                           </property>
@@ -3784,38 +3076,6 @@ QRadioButton::indicator:unchecked {
                             <family>Segoe UI</family>
                             <pointsize>9</pointsize>
                            </font>
-                          </property>
-                          <property name="styleSheet">
-                           <string notr="true">QCheckBox {
-    color:rgb(255,255,255);
-}
-
-QCheckBox::indicator {
-    width: 10px;
-    height: 10px;
-}
-
-QCheckBox::indicator:unchecked {
-    border:2px solid rgb(51,51,51);
-	background:rgb(91,90,90);
-}
-
-QCheckBox::indicator:unchecked:pressed {
-	border:2px solid rgb(51,51,51);
-   	background:rgb(0,143,170);
-}
-
-QCheckBox::indicator:checked {
-	background-color:rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-
-QCheckBox::indicator:checked:pressed {
-    border:2px solid rgb(51,51,51);
-	background:rgb(91,90,90);
-}
-
-</string>
                           </property>
                           <property name="text">
                            <string>Did you liked the UI</string>
@@ -3833,38 +3093,6 @@ QCheckBox::indicator:checked:pressed {
                             <pointsize>9</pointsize>
                            </font>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">QCheckBox {
-    color:rgb(255,255,255);
-}
-
-QCheckBox::indicator {
-    width: 10px;
-    height: 10px;
-}
-
-QCheckBox::indicator:unchecked {
-    border:2px solid rgb(51,51,51);
-	background:rgb(91,90,90);
-}
-
-QCheckBox::indicator:unchecked:pressed {
-	border:2px solid rgb(51,51,51);
-   	background:rgb(0,143,170);
-}
-
-QCheckBox::indicator:checked {
-	background-color:rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-
-QCheckBox::indicator:checked:pressed {
-    border:2px solid rgb(51,51,51);
-	background:rgb(91,90,90);
-}
-
-</string>
-                          </property>
                           <property name="text">
                            <string>Did you like the Color Scheme</string>
                           </property>
@@ -3881,38 +3109,6 @@ QCheckBox::indicator:checked:pressed {
                             <pointsize>9</pointsize>
                            </font>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">QCheckBox {
-    color:rgb(255,255,255);
-}
-
-QCheckBox::indicator {
-    width: 10px;
-    height: 10px;
-}
-
-QCheckBox::indicator:unchecked {
-    border:2px solid rgb(51,51,51);
-	background:rgb(91,90,90);
-}
-
-QCheckBox::indicator:unchecked:pressed {
-	border:2px solid rgb(51,51,51);
-   	background:rgb(0,143,170);
-}
-
-QCheckBox::indicator:checked {
-	background-color:rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-
-QCheckBox::indicator:checked:pressed {
-    border:2px solid rgb(51,51,51);
-	background:rgb(91,90,90);
-}
-
-</string>
-                          </property>
                           <property name="text">
                            <string>Did you like Custome Buttons</string>
                           </property>
@@ -3926,38 +3122,6 @@ QCheckBox::indicator:checked:pressed {
                             <pointsize>9</pointsize>
                            </font>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true">QCheckBox {
-    color:rgb(255,255,255);
-}
-
-QCheckBox::indicator {
-    width: 10px;
-    height: 10px;
-}
-
-QCheckBox::indicator:unchecked {
-    border:2px solid rgb(51,51,51);
-	background:rgb(91,90,90);
-}
-
-QCheckBox::indicator:unchecked:pressed {
-	border:2px solid rgb(51,51,51);
-   	background:rgb(0,143,170);
-}
-
-QCheckBox::indicator:checked {
-	background-color:rgb(0,143,170);
-    border: 2px solid rgb(51,51,51);
-}
-
-QCheckBox::indicator:checked:pressed {
-    border:2px solid rgb(51,51,51);
-	background:rgb(91,90,90);
-}
-
-</string>
-                          </property>
                           <property name="text">
                            <string>Did you like the Stacked Window</string>
                           </property>
@@ -3968,9 +3132,6 @@ QCheckBox::indicator:checked:pressed {
                      </item>
                      <item row="0" column="1" rowspan="2" colspan="2">
                       <widget class="QLabel" name="lab_clean">
-                       <property name="styleSheet">
-                        <string notr="true"/>
-                       </property>
                        <property name="text">
                         <string/>
                        </property>
@@ -4009,41 +3170,12 @@ QCheckBox::indicator:checked:pressed {
                          <pointsize>9</pointsize>
                         </font>
                        </property>
-                       <property name="styleSheet">
-                        <string notr="true">QGroupBox{
-	border:1px solid rgb(51,51,51);	
-	border-radius:4px;
-	color:white;
-	background:rgb(91,90,90);
-}
-</string>
-                       </property>
                        <property name="title">
                         <string>Sliders</string>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_6">
                         <item row="0" column="0">
                          <widget class="QSlider" name="horizontalSlider_2">
-                          <property name="styleSheet">
-                           <string notr="true">QSlider::groove:horizontal {
-    height:5px;
-    background: rgb(51,51,51);
-}
-
-QSlider::handle:horizontal {
-    background:rgb(0,143,170);
-    width: 10px;
-margin:-8px 0
-}
-
-QSlider::add-page:horizontal {
-    background:rgb(51,51,51);
-}
-
-QSlider::sub-page:horizontal {
-    background:rgb(51,51,51);
-}</string>
-                          </property>
                           <property name="orientation">
                            <enum>Qt::Horizontal</enum>
                           </property>
@@ -4051,26 +3183,6 @@ QSlider::sub-page:horizontal {
                         </item>
                         <item row="0" column="2">
                          <widget class="QSlider" name="verticalSlider">
-                          <property name="styleSheet">
-                           <string notr="true">QSlider::groove:vertical {
-    background: rgb(51,51,51);
-    width:5px
-}
-
-QSlider::handle:vertical {
-    height: 10px;
-    background:rgb(0,143,170);
-	margin:0 -8px
-}
-
-QSlider::add-page:vertical {
-    background:rgb(51,51,51);
-}
-
-QSlider::sub-page:vertical {
-    background:rgb(51,51,51);
-}</string>
-                          </property>
                           <property name="tracking">
                            <bool>true</bool>
                           </property>
@@ -4094,9 +3206,6 @@ QSlider::sub-page:vertical {
                     </layout>
                    </widget>
                    <widget class="QWidget" name="page_android_world">
-                    <property name="styleSheet">
-                     <string notr="true">background:rgb(91,90,90);</string>
-                    </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_27">
                      <item>
                       <widget class="QLabel" name="label_9">
@@ -4105,9 +3214,6 @@ QSlider::sub-page:vertical {
                          <family>Segoe UI Light</family>
                          <pointsize>30</pointsize>
                         </font>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">color:rgb(255,255,255);</string>
                        </property>
                        <property name="text">
                         <string>VACANT? TRY YOUR IMAGINATION</string>
@@ -4145,9 +3251,6 @@ QSlider::sub-page:vertical {
               <height>20</height>
              </size>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -4176,9 +3279,6 @@ QSlider::sub-page:vertical {
                 <font>
                  <family>Segoe UI</family>
                 </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background:rgb(51,51,51);</string>
                </property>
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
@@ -4210,9 +3310,6 @@ QSlider::sub-page:vertical {
                     <pointsize>10</pointsize>
                    </font>
                   </property>
-                  <property name="styleSheet">
-                   <string notr="true">color:rgb(255,255,255);</string>
-                  </property>
                   <property name="text">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
@@ -4237,9 +3334,6 @@ QSlider::sub-page:vertical {
                </property>
                <property name="toolTip">
                 <string>Drag</string>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background:rgb(51,51,51);</string>
                </property>
                <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
