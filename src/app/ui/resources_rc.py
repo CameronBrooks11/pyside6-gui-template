@@ -6,7 +6,7 @@
 from PySide6 import QtCore
 
 qt_resource_data = b"\
-\x00\x00\x1bP\
+\x00\x00\x1bM\
 /\
 * The one styles\
 heet of the appl\
@@ -31,420 +31,420 @@ ng it, run `just\
 resources.\x0a\x0a   T\
 he colours:\x0a    \
  rgb(51,51,51)  \
-  title bar, men\
-u, buttons and f\
-ields at rest\x0a  \
-   rgb(91,90,90)\
-    page backgro\
-und, hovered and\
- selected menu b\
-uttons\x0a     rgb(\
-0,143,150)   acc\
-ent: the toggle \
-and hovered acti\
-on buttons\x0a     \
-rgb(0,143,170)  \
- accent: progres\
-s, slider and sc\
-roll handles, ch\
-ecked marks\x0a    \
- rgb(112,112,112\
-) disabled\x0a     \
-rgb(112,0,0)    \
- hovered delete \
-button\x0a     rgb(\
-0,178,178)   hov\
-ered toggle\x0a    \
- rgb(255,255,255\
-) text\x0a     dark\
-gray         the\
- line beside the\
- combo box arrow\
-\x0a*/\x0a\x0a/* ---- Sur\
-faces ---- */\x0a\x0a#\
-centralwidget,\x0aQ\
-StackedWidget > \
-QWidget,\x0a#stacke\
-dWidget_android,\
-\x0a#frame_textbar,\
-\x0aQDialog #frame_\
-top,\x0aQDialog #fr\
-ame_bottom {\x0a   \
- background: rgb\
-(91,90,90);\x0a}\x0a\x0a#\
-frame_top_east,\x0a\
-#frame_bottom_we\
-st,\x0a#frame_andro\
-id_menu,\x0a#frame_\
-tab,\x0a#Dialog #fr\
-ame_2,\x0a#Error #f\
-rame {\x0a    backg\
-round: rgb(51,51\
-,51);\x0a}\x0a\x0a#frame_\
-toodle {\x0a    bac\
-kground: rgb(0,1\
-43,150);\x0a}\x0a\x0a/* F\
-rames and lines \
-on a page take t\
-he page colour, \
-so that the outl\
-ine Qt\x0a   draws \
-for a boxed fram\
-e or a separator\
- line is shaded \
-from it. The dot\
-\x0a   means QFrame\
- itself, not the\
- labels and othe\
-r classes built \
-on it. */\x0aQStack\
-edWidget .QFrame\
- {\x0a    backgroun\
-d: rgb(91,90,90)\
-;\x0a}\x0a\x0a/* The fram\
-es around the me\
-nu buttons. main\
-_window.py sets \
-`selected` to tr\
-ue\x0a   on the one\
- whose page is s\
-howing and to fa\
-lse on the rest.\
- These rules\x0a   \
-come after the o\
-ne above so that\
- they win inside\
- a page as well.\
- */\x0aQFrame[selec\
-ted=\x22false\x22] {\x0a \
-   background: r\
-gb(51,51,51);\x0a}\x0a\
-QFrame[selected=\
-\x22true\x22] {\x0a    ba\
+  header, menu, \
+buttons and fiel\
+ds at rest\x0a     \
+rgb(91,90,90)   \
+ page background\
+, hovered and se\
+lected menu butt\
+ons\x0a     rgb(0,1\
+43,150)   accent\
+: the toggle and\
+ hovered action \
+buttons\x0a     rgb\
+(0,143,170)   ac\
+cent: progress, \
+slider and scrol\
+l handles, check\
+ed marks\x0a     rg\
+b(112,112,112) d\
+isabled\x0a     rgb\
+(112,0,0)     ho\
+vered delete but\
+ton\x0a     rgb(0,1\
+78,178)   hovere\
+d toggle\x0a     rg\
+b(255,255,255) t\
+ext\x0a     darkgra\
+y         the li\
+ne beside the co\
+mbo box arrow\x0a*/\
+\x0a\x0a/* ---- Surfac\
+es ---- */\x0a\x0a#cen\
+tralwidget,\x0aQSta\
+ckedWidget > QWi\
+dget,\x0a#stackedWi\
+dget_android,\x0a#f\
+rame_textbar,\x0aQD\
+ialog #frame_top\
+,\x0aQDialog #frame\
+_bottom {\x0a    ba\
 ckground: rgb(91\
-,90,90);\x0a}\x0a\x0a/* -\
---- Text ---- */\
-\x0a\x0aQLabel {\x0a    c\
-olor: rgb(255,25\
-5,255);\x0a}\x0a\x0aQText\
-Edit {\x0a    color\
-: rgb(255,255,25\
-5);\x0a    backgrou\
-nd: rgb(91,90,90\
-);\x0a}\x0a\x0a/* ---- Pu\
-sh buttons ----\x0a\
-   A plain QPush\
-Button is an act\
-ion button (Star\
-t, Save, Connect\
-, ...).\x0a   The o\
-thers say what t\
-hey are with a `\
-variant` propert\
-y, set in Qt\x0a   \
-Designer as a dy\
-namic property: \
-menu or danger. \
-*/\x0a\x0aQPushButton \
-{\x0a    border: 2p\
-x solid rgb(51,5\
-1,51);\x0a    borde\
-r-radius: 5px;\x0a \
-   color: rgb(25\
-5,255,255);\x0a    \
-background-color\
-: rgb(51,51,51);\
-\x0a}\x0aQPushButton:h\
-over {\x0a    borde\
-r: 2px solid rgb\
-(0,143,150);\x0a   \
- background-colo\
-r: rgb(0,143,150\
-);\x0a}\x0aQPushButton\
-:pressed {\x0a    b\
-order: 2px solid\
- rgb(0,143,150);\
-\x0a    background-\
-color: rgb(51,51\
-,51);\x0a}\x0aQPushBut\
-ton:disabled {\x0a \
+,90,90);\x0a}\x0a\x0a#fra\
+me_top_east,\x0a#fr\
+ame_bottom_west,\
+\x0a#frame_android_\
+menu,\x0a#frame_tab\
+,\x0a#Dialog #frame\
+_2,\x0a#Error #fram\
+e {\x0a    backgrou\
+nd: rgb(51,51,51\
+);\x0a}\x0a\x0a#frame_too\
+dle {\x0a    backgr\
+ound: rgb(0,143,\
+150);\x0a}\x0a\x0a/* Fram\
+es and lines on \
+a page take the \
+page colour, so \
+that the outline\
+ Qt\x0a   draws for\
+ a boxed frame o\
+r a separator li\
+ne is shaded fro\
+m it. The dot\x0a  \
+ means QFrame it\
+self, not the la\
+bels and other c\
+lasses built on \
+it. */\x0aQStackedW\
+idget .QFrame {\x0a\
+    background: \
+rgb(91,90,90);\x0a}\
+\x0a\x0a/* The frames \
+around the menu \
+buttons. main_wi\
+ndow.py sets `se\
+lected` to true\x0a\
+   on the one wh\
+ose page is show\
+ing and to false\
+ on the rest. Th\
+ese rules\x0a   com\
+e after the one \
+above so that th\
+ey win inside a \
+page as well. */\
+\x0aQFrame[selected\
+=\x22false\x22] {\x0a    \
+background: rgb(\
+51,51,51);\x0a}\x0aQFr\
+ame[selected=\x22tr\
+ue\x22] {\x0a    backg\
+round: rgb(91,90\
+,90);\x0a}\x0a\x0a/* ----\
+ Text ---- */\x0a\x0aQ\
+Label {\x0a    colo\
+r: rgb(255,255,2\
+55);\x0a}\x0a\x0aQTextEdi\
+t {\x0a    color: r\
+gb(255,255,255);\
+\x0a    background:\
+ rgb(91,90,90);\x0a\
+}\x0a\x0a/* ---- Push \
+buttons ----\x0a   \
+A plain QPushBut\
+ton is an action\
+ button (Start, \
+Save, Connect, .\
+..).\x0a   The othe\
+rs say what they\
+ are with a `var\
+iant` property, \
+set in Qt\x0a   Des\
+igner as a dynam\
+ic property: men\
+u or danger. */\x0a\
+\x0aQPushButton {\x0a \
    border: 2px s\
-olid rgb(112,112\
-,112);\x0a    backg\
-round-color: rgb\
-(112,112,112);\x0a}\
-\x0a\x0aQPushButton[va\
-riant=\x22danger\x22]:\
-hover {\x0a    bord\
+olid rgb(51,51,5\
+1);\x0a    border-r\
+adius: 5px;\x0a    \
+color: rgb(255,2\
+55,255);\x0a    bac\
+kground-color: r\
+gb(51,51,51);\x0a}\x0a\
+QPushButton:hove\
+r {\x0a    border: \
+2px solid rgb(0,\
+143,150);\x0a    ba\
+ckground-color: \
+rgb(0,143,150);\x0a\
+}\x0aQPushButton:pr\
+essed {\x0a    bord\
 er: 2px solid rg\
-b(112,0,0);\x0a    \
-background-color\
-: rgb(112,0,0);\x0a\
-}\x0aQPushButton[va\
-riant=\x22danger\x22]:\
-pressed {\x0a    bo\
-rder: 2px solid \
-rgb(112,0,0);\x0a  \
+b(0,143,150);\x0a  \
   background-col\
 or: rgb(51,51,51\
-);\x0a}\x0a\x0aQPushButto\
-n[variant=\x22menu\x22\
-],\x0a#toodle {\x0a   \
- border: none;\x0a \
-   border-radius\
-: 0;\x0a    backgro\
-und-color: rgba(\
-0,0,0,0);\x0a}\x0aQPus\
-hButton[variant=\
-\x22menu\x22]:hover {\x0a\
-    border: none\
-;\x0a    background\
--color: rgb(91,9\
-0,90);\x0a}\x0a#toodle\
-:hover {\x0a    bor\
-der: none;\x0a    b\
+);\x0a}\x0aQPushButton\
+:disabled {\x0a    \
+border: 2px soli\
+d rgb(112,112,11\
+2);\x0a    backgrou\
+nd-color: rgb(11\
+2,112,112);\x0a}\x0a\x0aQ\
+PushButton[varia\
+nt=\x22danger\x22]:hov\
+er {\x0a    border:\
+ 2px solid rgb(1\
+12,0,0);\x0a    bac\
+kground-color: r\
+gb(112,0,0);\x0a}\x0aQ\
+PushButton[varia\
+nt=\x22danger\x22]:pre\
+ssed {\x0a    borde\
+r: 2px solid rgb\
+(112,0,0);\x0a    b\
 ackground-color:\
- rgb(0,178,178);\
-\x0a}\x0a/* Pressed co\
-mes after hover:\
- a pressed butto\
-n is hovered too\
-, and the later\x0a\
-   rule wins. */\
-\x0aQPushButton[var\
-iant=\x22menu\x22]:pre\
-ssed,\x0a#toodle:pr\
-essed {\x0a    bord\
-er: none;\x0a    ba\
-ckground-color: \
-rgba(0,0,0,0);\x0a}\
-\x0a\x0a/* ---- Inputs\
- and indicators \
----- */\x0a\x0a/* The \
-list a combo box\
- drops down. */\x0a\
-QComboBox QAbstr\
-actItemView {\x0a  \
+ rgb(51,51,51);\x0a\
+}\x0a\x0aQPushButton[v\
+ariant=\x22menu\x22],\x0a\
+#toodle {\x0a    bo\
+rder: none;\x0a    \
+border-radius: 0\
+;\x0a    background\
+-color: rgba(0,0\
+,0,0);\x0a}\x0aQPushBu\
+tton[variant=\x22me\
+nu\x22]:hover {\x0a   \
+ border: none;\x0a \
+   background-co\
+lor: rgb(91,90,9\
+0);\x0a}\x0a#toodle:ho\
+ver {\x0a    border\
+: none;\x0a    back\
+ground-color: rg\
+b(0,178,178);\x0a}\x0a\
+/* Pressed comes\
+ after hover: a \
+pressed button i\
+s hovered too, a\
+nd the later\x0a   \
+rule wins. */\x0aQP\
+ushButton[varian\
+t=\x22menu\x22]:presse\
+d,\x0a#toodle:press\
+ed {\x0a    border:\
+ none;\x0a    backg\
+round-color: rgb\
+a(0,0,0,0);\x0a}\x0a\x0a/\
+* ---- Inputs an\
+d indicators ---\
+- */\x0a\x0a/* The lis\
+t a combo box dr\
+ops down. */\x0aQCo\
+mboBox QAbstract\
+ItemView {\x0a    c\
+olor: rgb(255,25\
+5,255);\x0a    back\
+ground: rgb(91,9\
+0,90);\x0a}\x0a\x0aQLineE\
+dit {\x0a    color:\
+ rgb(255,255,255\
+);\x0a    border: 2\
+px solid rgb(51,\
+51,51);\x0a    bord\
+er-radius: 4px;\x0a\
+    background: \
+rgb(51,51,51);\x0a}\
+\x0aQLineEdit:disab\
+led {\x0a    color:\
+ rgb(255,255,255\
+);\x0a    border: 2\
+px solid rgb(112\
+,112,112);\x0a    b\
+order-radius: 4p\
+x;\x0a    backgroun\
+d: rgb(112,112,1\
+12);\x0a}\x0a\x0aQComboBo\
+x {\x0a    border: \
+2px solid rgb(51\
+,51,51);\x0a    bor\
+der-radius: 5px;\
+\x0a    color: rgb(\
+255,255,255);\x0a  \
+  background-col\
+or: rgb(51,51,51\
+);\x0a}\x0aQComboBox:h\
+over {\x0a    borde\
+r: 2px solid rgb\
+(0,143,170);\x0a   \
+ border-radius: \
+5px;\x0a    color: \
+rgb(255,255,255)\
+;\x0a    background\
+-color: rgb(0,14\
+3,170);\x0a}\x0aQCombo\
+Box:!editable, Q\
+ComboBox::drop-d\
+own:editable {\x0a \
+   background: r\
+gb(51,51,51);\x0a}\x0a\
+QComboBox:!edita\
+ble:on, QComboBo\
+x::drop-down:edi\
+table:on {\x0a    b\
+ackground: rgb(5\
+1,51,51);\x0a}\x0aQCom\
+boBox:on {\x0a    p\
+adding-top: 3px;\
+\x0a    padding-lef\
+t: 4px;\x0a}\x0aQCombo\
+Box::drop-down {\
+\x0a    subcontrol-\
+origin: padding;\
+\x0a    subcontrol-\
+position: top ri\
+ght;\x0a    width: \
+15px;\x0a    border\
+-left-width: 1px\
+;\x0a    border-lef\
+t-color: darkgra\
+y;\x0a    border-le\
+ft-style: solid;\
+\x0a    border-top-\
+right-radius: 5p\
+x;\x0a    border-bo\
+ttom-right-radiu\
+s: 5px;\x0a}\x0aQCombo\
+Box::down-arrow \
+{\x0a    image: url\
+(:/icons/dropdow\
+n.png);\x0a}\x0aQCombo\
+Box::down-arrow:\
+on {\x0a    top: 1p\
+x;\x0a    left: 1px\
+;\x0a}\x0aQComboBox::d\
+rop-down {\x0a    b\
+ackground: rgb(5\
+1,51,51);\x0a}\x0a\x0aQPr\
+ogressBar {\x0a    \
+color: rgb(255,2\
+55,255);\x0a    bac\
+kground-color: r\
+gb(51,51,51);\x0a  \
+  border: 2px;\x0a \
+   border-radius\
+: 4px;\x0a}\x0aQProgre\
+ssBar::chunk {\x0a \
+   border: 2px;\x0a\
+    border-radiu\
+s: 4px;\x0a    back\
+ground-color: rg\
+b(0,143,170);\x0a}\x0a\
+\x0aQRadioButton {\x0a\
+    background: \
+rgb(91,90,90);\x0a \
+   color: rgb(25\
+5,255,255);\x0a}\x0aQR\
+adioButton::indi\
+cator {\x0a    widt\
+h: 10px;\x0a    hei\
+ght: 10px;\x0a    b\
+order-radius: 7p\
+x;\x0a}\x0aQRadioButto\
+n::indicator:che\
+cked {\x0a    backg\
+round-color: rgb\
+(0,143,170);\x0a   \
+ border: 2px sol\
+id rgb(51,51,51)\
+;\x0a}\x0aQRadioButton\
+::indicator:unch\
+ecked {\x0a    back\
+ground-color: rg\
+b(91,90,90);\x0a   \
+ border: 2px sol\
+id rgb(51,51,51)\
+;\x0a}\x0a\x0aQCheckBox {\
+\x0a    color: rgb(\
+255,255,255);\x0a}\x0a\
+QCheckBox::indic\
+ator {\x0a    width\
+: 10px;\x0a    heig\
+ht: 10px;\x0a}\x0aQChe\
+ckBox::indicator\
+:unchecked {\x0a   \
+ border: 2px sol\
+id rgb(51,51,51)\
+;\x0a    background\
+: rgb(91,90,90);\
+\x0a}\x0aQCheckBox::in\
+dicator:unchecke\
+d:pressed {\x0a    \
+border: 2px soli\
+d rgb(51,51,51);\
+\x0a    background:\
+ rgb(0,143,170);\
+\x0a}\x0aQCheckBox::in\
+dicator:checked \
+{\x0a    background\
+-color: rgb(0,14\
+3,170);\x0a    bord\
+er: 2px solid rg\
+b(51,51,51);\x0a}\x0aQ\
+CheckBox::indica\
+tor:checked:pres\
+sed {\x0a    border\
+: 2px solid rgb(\
+51,51,51);\x0a    b\
+ackground: rgb(9\
+1,90,90);\x0a}\x0a\x0aQSc\
+rollBar:vertical\
+ {\x0a    backgroun\
+d: rgb(51,51,51)\
+;\x0a    width: 20p\
+x;\x0a    margin: 0\
+px 0px 0px 0px;\x0a\
+}\x0aQScrollBar::ha\
+ndle:vertical {\x0a\
+    background: \
+rgb(0,143,170);\x0a\
+}\x0aQScrollBar::ad\
+d-page:vertical \
+{\x0a    background\
+: rgb(51,51,51);\
+\x0a}\x0aQScrollBar::s\
+ub-page:vertical\
+ {\x0a    backgroun\
+d: rgb(51,51,51)\
+;\x0a}\x0a\x0aQGroupBox {\
+\x0a    border: 1px\
+ solid rgb(51,51\
+,51);\x0a    border\
+-radius: 4px;\x0a  \
   color: rgb(255\
 ,255,255);\x0a    b\
 ackground: rgb(9\
-1,90,90);\x0a}\x0a\x0aQLi\
-neEdit {\x0a    col\
-or: rgb(255,255,\
-255);\x0a    border\
-: 2px solid rgb(\
-51,51,51);\x0a    b\
-order-radius: 4p\
-x;\x0a    backgroun\
-d: rgb(51,51,51)\
-;\x0a}\x0aQLineEdit:di\
-sabled {\x0a    col\
-or: rgb(255,255,\
-255);\x0a    border\
-: 2px solid rgb(\
-112,112,112);\x0a  \
-  border-radius:\
- 4px;\x0a    backgr\
-ound: rgb(112,11\
-2,112);\x0a}\x0a\x0aQComb\
-oBox {\x0a    borde\
-r: 2px solid rgb\
-(51,51,51);\x0a    \
-border-radius: 5\
-px;\x0a    color: r\
-gb(255,255,255);\
-\x0a    background-\
-color: rgb(51,51\
-,51);\x0a}\x0aQComboBo\
-x:hover {\x0a    bo\
-rder: 2px solid \
-rgb(0,143,170);\x0a\
-    border-radiu\
-s: 5px;\x0a    colo\
-r: rgb(255,255,2\
-55);\x0a    backgro\
-und-color: rgb(0\
-,143,170);\x0a}\x0aQCo\
-mboBox:!editable\
-, QComboBox::dro\
-p-down:editable \
-{\x0a    background\
-: rgb(51,51,51);\
-\x0a}\x0aQComboBox:!ed\
-itable:on, QComb\
-oBox::drop-down:\
-editable:on {\x0a  \
-  background: rg\
-b(51,51,51);\x0a}\x0aQ\
-ComboBox:on {\x0a  \
-  padding-top: 3\
-px;\x0a    padding-\
-left: 4px;\x0a}\x0aQCo\
-mboBox::drop-dow\
-n {\x0a    subcontr\
-ol-origin: paddi\
-ng;\x0a    subcontr\
-ol-position: top\
- right;\x0a    widt\
-h: 15px;\x0a    bor\
-der-left-width: \
-1px;\x0a    border-\
-left-color: dark\
-gray;\x0a    border\
--left-style: sol\
-id;\x0a    border-t\
-op-right-radius:\
- 5px;\x0a    border\
--bottom-right-ra\
-dius: 5px;\x0a}\x0aQCo\
-mboBox::down-arr\
-ow {\x0a    image: \
-url(:/icons/drop\
-down.png);\x0a}\x0aQCo\
-mboBox::down-arr\
-ow:on {\x0a    top:\
- 1px;\x0a    left: \
-1px;\x0a}\x0aQComboBox\
-::drop-down {\x0a  \
-  background: rg\
-b(51,51,51);\x0a}\x0a\x0a\
-QProgressBar {\x0a \
-   color: rgb(25\
-5,255,255);\x0a    \
-background-color\
-: rgb(51,51,51);\
-\x0a    border: 2px\
-;\x0a    border-rad\
-ius: 4px;\x0a}\x0aQPro\
-gressBar::chunk \
-{\x0a    border: 2p\
-x;\x0a    border-ra\
-dius: 4px;\x0a    b\
-ackground-color:\
- rgb(0,143,170);\
-\x0a}\x0a\x0aQRadioButton\
- {\x0a    backgroun\
-d: rgb(91,90,90)\
-;\x0a    color: rgb\
-(255,255,255);\x0a}\
-\x0aQRadioButton::i\
-ndicator {\x0a    w\
-idth: 10px;\x0a    \
-height: 10px;\x0a  \
-  border-radius:\
- 7px;\x0a}\x0aQRadioBu\
-tton::indicator:\
-checked {\x0a    ba\
-ckground-color: \
-rgb(0,143,170);\x0a\
-    border: 2px \
-solid rgb(51,51,\
-51);\x0a}\x0aQRadioBut\
-ton::indicator:u\
-nchecked {\x0a    b\
-ackground-color:\
- rgb(91,90,90);\x0a\
-    border: 2px \
-solid rgb(51,51,\
-51);\x0a}\x0a\x0aQCheckBo\
-x {\x0a    color: r\
-gb(255,255,255);\
-\x0a}\x0aQCheckBox::in\
-dicator {\x0a    wi\
-dth: 10px;\x0a    h\
-eight: 10px;\x0a}\x0aQ\
-CheckBox::indica\
-tor:unchecked {\x0a\
-    border: 2px \
-solid rgb(51,51,\
-51);\x0a    backgro\
-und: rgb(91,90,9\
-0);\x0a}\x0aQCheckBox:\
-:indicator:unche\
-cked:pressed {\x0a \
-   border: 2px s\
-olid rgb(51,51,5\
-1);\x0a    backgrou\
-nd: rgb(0,143,17\
-0);\x0a}\x0aQCheckBox:\
-:indicator:check\
-ed {\x0a    backgro\
-und-color: rgb(0\
-,143,170);\x0a    b\
-order: 2px solid\
- rgb(51,51,51);\x0a\
-}\x0aQCheckBox::ind\
-icator:checked:p\
-ressed {\x0a    bor\
-der: 2px solid r\
-gb(51,51,51);\x0a  \
-  background: rg\
-b(91,90,90);\x0a}\x0a\x0a\
-QScrollBar:verti\
-cal {\x0a    backgr\
-ound: rgb(51,51,\
-51);\x0a    width: \
-20px;\x0a    margin\
-: 0px 0px 0px 0p\
-x;\x0a}\x0aQScrollBar:\
-:handle:vertical\
- {\x0a    backgroun\
-d: rgb(0,143,170\
-);\x0a}\x0aQScrollBar:\
-:add-page:vertic\
-al {\x0a    backgro\
-und: rgb(51,51,5\
-1);\x0a}\x0aQScrollBar\
-::sub-page:verti\
-cal {\x0a    backgr\
-ound: rgb(51,51,\
-51);\x0a}\x0a\x0aQGroupBo\
-x {\x0a    border: \
-1px solid rgb(51\
-,51,51);\x0a    bor\
-der-radius: 4px;\
-\x0a    color: rgb(\
-255,255,255);\x0a  \
-  background: rg\
-b(91,90,90);\x0a}\x0a\x0a\
-QSlider::groove:\
-horizontal {\x0a   \
- height: 5px;\x0a  \
-  background: rg\
-b(51,51,51);\x0a}\x0aQ\
-Slider::handle:h\
-orizontal {\x0a    \
-background: rgb(\
-0,143,170);\x0a    \
-width: 10px;\x0a   \
- margin: -8px 0;\
-\x0a}\x0aQSlider::add-\
-page:horizontal \
-{\x0a    background\
-: rgb(51,51,51);\
-\x0a}\x0aQSlider::sub-\
-page:horizontal \
-{\x0a    background\
-: rgb(51,51,51);\
-\x0a}\x0a\x0aQSlider::gro\
-ove:vertical {\x0a \
+1,90,90);\x0a}\x0a\x0aQSl\
+ider::groove:hor\
+izontal {\x0a    he\
+ight: 5px;\x0a    b\
+ackground: rgb(5\
+1,51,51);\x0a}\x0aQSli\
+der::handle:hori\
+zontal {\x0a    bac\
+kground: rgb(0,1\
+43,170);\x0a    wid\
+th: 10px;\x0a    ma\
+rgin: -8px 0;\x0a}\x0a\
+QSlider::add-pag\
+e:horizontal {\x0a \
    background: r\
-gb(51,51,51);\x0a  \
-  width: 5px;\x0a}\x0a\
-QSlider::handle:\
-vertical {\x0a    h\
-eight: 10px;\x0a   \
+gb(51,51,51);\x0a}\x0a\
+QSlider::sub-pag\
+e:horizontal {\x0a \
+   background: r\
+gb(51,51,51);\x0a}\x0a\
+\x0aQSlider::groove\
+:vertical {\x0a    \
+background: rgb(\
+51,51,51);\x0a    w\
+idth: 5px;\x0a}\x0aQSl\
+ider::handle:ver\
+tical {\x0a    heig\
+ht: 10px;\x0a    ba\
+ckground: rgb(0,\
+143,170);\x0a    ma\
+rgin: 0 -8px;\x0a}\x0a\
+QSlider::add-pag\
+e:vertical {\x0a   \
  background: rgb\
-(0,143,170);\x0a   \
- margin: 0 -8px;\
-\x0a}\x0aQSlider::add-\
-page:vertical {\x0a\
-    background: \
-rgb(51,51,51);\x0a}\
-\x0aQSlider::sub-pa\
-ge:vertical {\x0a  \
-  background: rg\
-b(51,51,51);\x0a}\x0a\
+(51,51,51);\x0a}\x0aQS\
+lider::sub-page:\
+vertical {\x0a    b\
+ackground: rgb(5\
+1,51,51);\x0a}\x0a\
 \x00\x00\x00\x9d\
 \x89\
 PNG\x0d\x0a\x1a\x0a\x00\x00\x00\x0dIHDR\x00\
@@ -1066,22 +1066,22 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\
 \x00\x00\x00\x10\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x10\x00\x00\x00\x03\
-\x00\x00\x01\x1a\x00\x00\x00\x00\x00\x01\x00\x002\xb1\
-\x00\x00\x01h\x00\x00\x00\x00\x00\x01\x00\x0059\
-\x00\x00\x01N\x00\x00\x00\x00\x00\x01\x00\x004\xb4\
-\x00\x00\x00\xd2\x00\x00\x00\x00\x00\x01\x00\x00.\xf9\
-\x00\x00\x01\x9a\x00\x00\x00\x00\x00\x01\x00\x009e\
-\x00\x00\x00\xa6\x00\x00\x00\x00\x00\x01\x00\x00,3\
-\x00\x00\x00\x8c\x00\x00\x00\x00\x00\x01\x00\x00\x1f\xb1\
-\x00\x00\x012\x00\x00\x00\x00\x00\x01\x00\x003\xd4\
-\x00\x00\x01\x84\x00\x00\x00\x00\x00\x01\x00\x007p\
-\x00\x00\x00F\x00\x00\x00\x00\x00\x01\x00\x00\x1b\xf5\
-\x00\x00\x00\x5c\x00\x00\x00\x00\x00\x01\x00\x00\x1d%\
-\x00\x00\x00\xbe\x00\x00\x00\x00\x00\x01\x00\x00-7\
-\x00\x00\x00\xee\x00\x00\x00\x00\x00\x01\x00\x000E\
-\x00\x00\x00t\x00\x00\x00\x00\x00\x01\x00\x00\x1el\
-\x00\x00\x00(\x00\x00\x00\x00\x00\x01\x00\x00\x1bT\
-\x00\x00\x01\x04\x00\x00\x00\x00\x00\x01\x00\x002+\
+\x00\x00\x01\x1a\x00\x00\x00\x00\x00\x01\x00\x002\xae\
+\x00\x00\x01h\x00\x00\x00\x00\x00\x01\x00\x0056\
+\x00\x00\x01N\x00\x00\x00\x00\x00\x01\x00\x004\xb1\
+\x00\x00\x00\xd2\x00\x00\x00\x00\x00\x01\x00\x00.\xf6\
+\x00\x00\x01\x9a\x00\x00\x00\x00\x00\x01\x00\x009b\
+\x00\x00\x00\xa6\x00\x00\x00\x00\x00\x01\x00\x00,0\
+\x00\x00\x00\x8c\x00\x00\x00\x00\x00\x01\x00\x00\x1f\xae\
+\x00\x00\x012\x00\x00\x00\x00\x00\x01\x00\x003\xd1\
+\x00\x00\x01\x84\x00\x00\x00\x00\x00\x01\x00\x007m\
+\x00\x00\x00F\x00\x00\x00\x00\x00\x01\x00\x00\x1b\xf2\
+\x00\x00\x00\x5c\x00\x00\x00\x00\x00\x01\x00\x00\x1d\x22\
+\x00\x00\x00\xbe\x00\x00\x00\x00\x00\x01\x00\x00-4\
+\x00\x00\x00\xee\x00\x00\x00\x00\x00\x01\x00\x000B\
+\x00\x00\x00t\x00\x00\x00\x00\x00\x01\x00\x00\x1ei\
+\x00\x00\x00(\x00\x00\x00\x00\x00\x01\x00\x00\x1bQ\
+\x00\x00\x01\x04\x00\x00\x00\x00\x00\x01\x00\x002(\
 "
 
 def qInitResources():

@@ -7,6 +7,10 @@ A flat, dark desktop GUI to start a Python application from: PySide6
   <img src="docs/images/home.png" alt="Home page of the template">
 </p>
 
+The screenshots are of the original design, which drew its own title bar with
+minimise, maximise and close buttons. The template now uses the system's
+window frame; the rest is as pictured.
+
 It is a PySide6 port of
 [Minimalistic-Flat-Modern-GUI-Template](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template)
 by Anjal.P, which targets PySide2. The design, the layouts and the guide the
@@ -47,7 +51,7 @@ directory.
 `just check` runs the formatter, the linter and the type checker without
 changing anything; `just fmt` applies the formatting. `just test` builds
 every window on Qt's offscreen platform and clicks through
-the pages, the menu toggle, the window buttons and the example widgets. It
+the pages, the menu toggle and the example widgets. It
 fails on a Python or Qt warning (a deprecated Qt call included), an exception
 in a slot, a page that does not switch, an icon path with no file or resource
 behind it, and a generated module that is out of date with its `.ui` or `.qrc`

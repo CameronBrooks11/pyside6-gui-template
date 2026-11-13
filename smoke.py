@@ -626,6 +626,20 @@ def check_dialog_result(window):
         "DialogBox.ask did not set the heading, the message and the icon",
     )
     expect(box.windowTitle() == "Heading", "DialogBox.ask did not set the window title")
+    # While the box is open, the keyboard is on the left-hand answer.
+    focused = []
+
+    def look_then_close():
+        focused.append(box.focusWidget())
+        box.reject()
+
+    really_exec(
+        box, lambda: box.ask("Heading", "Message", icon, "No", "Yes"), look_then_close, "reject"
+    )
+    expect(
+        focused == [box.ui.bn_west],
+        "the dialog box opens with the keyboard on the right-hand answer",
+    )
 
     really_exec(
         error, lambda: error.show_error("Heading", icon, "Fine"), error.ui.bn_ok.click, "bn_ok"

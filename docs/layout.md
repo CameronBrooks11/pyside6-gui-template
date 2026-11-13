@@ -18,7 +18,7 @@ These are the main values `style.qss` uses:
 | ----------------------- | --------- | ----------------------------------------------------------- |
 | `rgb(51,51,51)`         | `#333333` | Header, menu, buttons and input fields at rest              |
 | `rgb(91,90,90)`         | `#5B5A5A` | Page background, hovered and selected menu buttons          |
-| `rgb(0,143,150)`        | `#008F96` | Accent: toggle button, hovered window and push buttons      |
+| `rgb(0,143,150)`        | `#008F96` | Accent: toggle button, hovered push buttons                 |
 | `rgb(0,143,170)`        | `#008FAA` | Accent on progress chunks, slider and scroll handles, combo box hover, checked indicators |
 | `rgb(0,178,178)`        | `#00B2B2` | Hovered toggle button                                       |
 | `rgb(112,112,112)`      | `#707070` | Disabled buttons and fields                                 |

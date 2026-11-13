@@ -28,7 +28,10 @@ from PySide6.QtWidgets import (
 
 The states the stylesheet produces:
 
-![Toggle, window and push buttons](images/widgets-buttons.png)
+![Toggle, window and push buttons of the original design](images/widgets-buttons.png)
+
+The window buttons in the first picture are no longer part of the template,
+which uses the system's window frame.
 
 ![Menu buttons, slider, progress bar, scroll bar and text field](images/widgets-controls.png)
 

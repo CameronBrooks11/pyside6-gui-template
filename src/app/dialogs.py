@@ -38,6 +38,9 @@ class DialogBox(QDialog):
         """Show the box and block until it is answered. Return True when the
         right-hand button, labelled `yes_text`, was pressed."""
         self.set_content(heading, message, icon, no_text, yes_text)
+        # The keyboard starts on the left-hand answer, so that a stray Space
+        # does not confirm.
+        self.ui.bn_west.setFocus()
         return self.exec() == QDialog.DialogCode.Accepted
 
 
