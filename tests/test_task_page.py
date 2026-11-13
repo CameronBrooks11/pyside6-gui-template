@@ -2,6 +2,7 @@ import re
 import time
 
 import pytest
+from PySide6.QtCore import QTimer
 
 from app.pages.task import TaskPage
 
@@ -75,6 +76,19 @@ def test_a_late_report_does_not_relabel_a_stopped_task(page, qtbot):
     time.sleep(0.2)  # the task ends, and its report waits for the event loop
     page.stop()
     qtbot.wait(50)
+    assert page.ui.status_label.text() == "Cancelled"
+
+
+def test_a_start_queued_behind_a_stop_does_not_run_inside_it(page, qtbot):
+    page.step_seconds = 0.01
+    page.ui.steps_spin.setValue(300)
+    page.start()
+    qtbot.waitUntil(lambda: page.ui.progress_bar.value() > 0)
+    QTimer.singleShot(0, page, page.start)
+    began = time.monotonic()
+    page.stop()
+    assert time.monotonic() - began < 1  # the whole task would take 3 s
+    assert not page.is_running()
     assert page.ui.status_label.text() == "Cancelled"
 
 

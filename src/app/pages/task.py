@@ -1,6 +1,6 @@
 """A long task on a second thread, with a progress bar and a cancel button."""
 
-from PySide6.QtCore import QThread
+from PySide6.QtCore import QCoreApplication, QEvent, QThread
 from PySide6.QtWidgets import QWidget
 
 from app.theme import make_primary
@@ -59,26 +59,27 @@ class TaskPage(QWidget):
             self._worker.cancel()
             self._end("Cancelled")
 
-    def _is_current(self) -> bool:
-        # A report from a task that stop() has already ended is out of date.
-        return self._worker is not None and self.sender() is self._worker
-
     def _on_progress(self, step: int) -> None:
-        if self._is_current():
-            self.ui.progress_bar.setValue(step)
-            self.ui.status_label.setText(f"Running… {step} of {self.ui.progress_bar.maximum()}")
+        self.ui.progress_bar.setValue(step)
+        self.ui.status_label.setText(f"Running… {step} of {self.ui.progress_bar.maximum()}")
 
     def _on_finished(self, completed: bool) -> None:
-        if self._is_current():
-            self._end("Finished" if completed else "Cancelled")
+        self._end("Finished" if completed else "Cancelled")
 
     def _end(self, status: str) -> None:
         thread = self._thread
-        if thread is not None:
-            thread.quit()
-            thread.wait()
-            thread.deleteLater()
+        if thread is None:
+            return
+        thread.quit()
+        thread.wait()
+        # Reports the worker sent before its thread ended may still be queued.
+        # Take them now, so that none is left to arrive during the next task.
+        # The task still counts as running meanwhile, so that nothing else
+        # delivered here can start another; the finished report, if it is
+        # among them, finds the thread already stopped.
+        QCoreApplication.sendPostedEvents(self, QEvent.Type.MetaCall)
         self._thread = self._worker = None
+        thread.deleteLater()
         self._show_running(False, status)
 
     def _show_running(self, running: bool, status: str) -> None:
