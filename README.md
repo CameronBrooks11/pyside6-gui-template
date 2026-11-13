@@ -43,7 +43,9 @@ Without uv, `pip install -e .` in an environment of your own and run
 `python -m app`. The icons are compiled into the package, so it runs from any
 directory.
 
-`just check` builds every window on Qt's offscreen platform and clicks through
+`just check` runs the formatter, the linter and the type checker without
+changing anything; `just fmt` applies the formatting. `just test` builds
+every window on Qt's offscreen platform and clicks through
 the pages, the menu toggle, the window buttons and the example widgets. It
 fails on a Python or Qt warning (a deprecated Qt call included), an exception
 in a slot, a page that does not switch, an icon path with no file or resource
@@ -69,7 +71,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 | `src/app/resources/`                             | The icons and `resources.qrc`, the Qt resource file that lists them |
 | `src/app/ui/resources_rc.py`                     | The resources compiled from `resources.qrc`; do not edit by hand    |
 | `docs/`, `mkdocs.yml`                            | The documentation site: layout, widget names, stylesheets          |
-| `smoke.py`                                       | The check behind `just check`                                      |
+| `smoke.py`                                       | The test behind `just test`                                        |
 
 ## Making it yours
 
@@ -85,7 +87,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 7. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
    line and `module-name` in `pyproject.toml`, the paths in the `run` and
    `uic` recipes of the justfile, and `PACKAGE` at the top of `smoke.py`.
-   `just check` fails if the directory and `PACKAGE` disagree; it does not
+   `just test` fails if the directory and `PACKAGE` disagree; it does not
    read the script line or the justfile, so look those over yourself. The
    docs and a few comments also say `python -m app`.
 8. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of

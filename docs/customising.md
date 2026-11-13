@@ -47,7 +47,7 @@ About page, which is shown instead while the menu is widened.
     label, and marks the button's frame as selected.
 
 6. Add a `(button, page, label)` entry to the `pages` tuple in `smoke.py`, for
-   example `("bn_settings", "page_settings", "Settings")`, so `just check`
+   example `("bn_settings", "page_settings", "Settings")`, so `just test`
    clicks it. The check finds the About page by putting `about_` after `page_`,
    and the frame by swapping `bn_` for `frame_`, so keep to those names.
 
@@ -101,7 +101,7 @@ Qt Designer and takes its look when the application runs.
   says so with a dynamic property named `variant`, which you add in Qt
   Designer with the plus sign in the Property Editor (a String property):
   `menu` for the side and sub-menu buttons, `window` for minimise, maximise
-  and close, `danger` for a button that turns red on hover. `just check`
+  and close, `danger` for a button that turns red on hover. `just test`
   expects every button in the two menu frames to be `menu` and every button
   in the title bar frames to be `window`.
 - The frame around a menu button is marked with a `selected` property by
@@ -113,7 +113,7 @@ Qt Designer and takes its look when the application runs.
   `selected` rules and the highlight would stop showing.
 
 Run `just uic` after editing the file: the stylesheet is compiled into the
-resources, and `just check` fails if the compiled copy is out of date. The
+resources, and `just test` fails if the compiled copy is out of date. The
 check reads the colours it expects from `style.qss`, so recolouring does not
 fail it as long as the few colours it samples (the surfaces, the toggle, the
 selected frames and the label text) are written as `rgb(r,g,b)`, a hex value
@@ -138,7 +138,7 @@ starts with `:/`, which works from any directory.
    browser, in Python as `QIcon(":/icons/settings.png")`, in a stylesheet as
    `url(:/icons/settings.png)`.
 
-`just check` fails if a listed file is missing, if `resources_rc.py` is out of
+`just test` fails if a listed file is missing, if `resources_rc.py` is out of
 date with the list, or if the code names a resource that is not there.
 
 ## Call the dialog box

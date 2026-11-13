@@ -32,7 +32,6 @@ site/
 
 # uv
 .python-version
-uv.lock
 
 # Environment
 .env

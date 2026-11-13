@@ -1,6 +1,6 @@
 """The fonts and the stylesheet the three windows share."""
 
-from PySide6.QtCore import QFile, QIODevice
+from PySide6.QtCore import QFile, QIODevice, QTextStream
 from PySide6.QtGui import QFont, QFontDatabase, QFontInfo
 
 from .ui import resources_rc  # noqa: F401  registers the icons and :/style.qss
@@ -19,9 +19,7 @@ def set_font_fallbacks():
     a widget keeps the font it resolved when it was built."""
     # QFontInfo gives the family the system font resolves to; the font itself
     # may only say "Sans Serif".
-    system = QFontInfo(
-        QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont)
-    ).family()
+    system = QFontInfo(QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont)).family()
     for family in SEGOE_FAMILIES:
         QFont.insertSubstitutions(family, FONT_FALLBACKS + [system])
 
@@ -38,4 +36,4 @@ def load_style():
     sheet = QFile(":/style.qss")
     if not sheet.open(QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text):
         raise RuntimeError("style.qss is not in the compiled resources: run `just uic`")
-    return bytes(sheet.readAll()).decode("utf-8")
+    return QTextStream(sheet).readAll()  # reads UTF-8

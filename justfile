@@ -6,7 +6,7 @@ set dotenv-load := false
 default:
     @just --list
 
-# Install dependencies into .venv
+# Install the app, PySide6 and the development tools into .venv
 setup:
     uv sync
 
@@ -14,8 +14,28 @@ setup:
 run:
     uv run python -m app
 
+# Format code and apply the linter's safe fixes (changes files)
+fmt:
+    uv run ruff format .
+    uv run ruff check --fix .
+
+# Verify formatting without changing anything
+fmt-check:
+    uv run ruff format --check .
+
+# Run the linter
+lint:
+    uv run ruff check .
+
+# Type-check the package
+typecheck:
+    uv run pyright
+
+# Format check, lint and type-check: changes nothing, as CI runs it
+check: fmt-check lint typecheck
+
 # Drive every window without a display; fail on a warning, a slot error or a missing icon
-check:
+test:
     QT_QPA_PLATFORM=offscreen uv run python -W error smoke.py
 
 # Serve the documentation site locally with live reload
