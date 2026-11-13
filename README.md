@@ -3,6 +3,10 @@
 A desktop application to start your own from: PySide6 (Qt 6), laid out in
 Qt Designer, for Windows, Linux and macOS.
 
+<p align="center">
+  <img src="docs/images/home.png" alt="The home page">
+</p>
+
 It is an ordinary Qt main window with a menu bar, a status bar, a sidebar and
 a stack of pages, and each example page shows one thing most applications
 need:
@@ -54,7 +58,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 | `src/app/ui/*.ui`        | Qt Designer forms, one per window or page                      |
 | `src/app/ui/ui_*.py`     | Generated from the `.ui` files; do not edit by hand            |
 | `tests/`                 | The tests behind `just test`                                   |
-| `docs/`, `mkdocs.yml`    | The documentation site                                         |
+| `docs/`, `mkdocs.yml`    | The documentation site; `just screenshots` writes its images   |
 
 ## Making it yours
 
@@ -76,7 +80,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    `uv lock`: the lock file records the project's name and version, and CI
    installs with `uv sync --locked`, which refuses a lock that is out of date.
 6. Rename the `app` package: the `src/app/` directory, the imports of `app` in
-   `src/` and `tests/`, the `[project.scripts]` line and `module-name` in
+   `src/`, `tests/` and `docs/screenshots.py`, the `[project.scripts]` line and `module-name` in
    `pyproject.toml`, and the paths in the `run` and `uic` recipes of the
    justfile.
 7. Keep the notices in `LICENSE`, which the MIT terms require of copies, and
@@ -84,9 +88,9 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 8. Replace this README and `docs/` with your own, and set `site_name`,
    `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
    If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
-   `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the
-   justfile, the Docs step in `.github/workflows/check.yml` and the `docs`
-   group in `pyproject.toml`, then run `uv lock`.
+   `.github/workflows/docs.yml`, the `docs`, `docs-build` and `screenshots`
+   recipes in the justfile, the Docs step in `.github/workflows/check.yml` and
+   the `docs` group in `pyproject.toml`, then run `uv lock`.
 9. `.github/workflows/check.yml` runs `just check`, `just test` and
    `just docs-build` on every pull request into `main`. It and `docs.yml` ask
    for Python 3.10, the oldest version `requires-python` allows: change both

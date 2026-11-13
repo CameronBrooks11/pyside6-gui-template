@@ -1,78 +1,60 @@
 # pyside6-gui-template
 
-A flat, dark desktop GUI to start a Python application from: PySide6
-(Qt 6), laid out in Qt Designer, for Windows, Linux and macOS.
+A desktop application to start your own from: PySide6 (Qt 6), laid out in
+Qt Designer, for Windows, Linux and macOS.
 
-![Home page of the template](images/home.png)
+![The home page](images/home.png)
 
-It is a PySide6 port of
-[Minimalistic-Flat-Modern-GUI-Template](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template)
-by Anjal.P, which targets PySide2. The design, the layouts and the guide these
-pages are converted from are theirs. The port, this site and the template
-tooling are by
-[Cameron Brooks](https://github.com/CameronBrooks11).
-See [Credits](credits.md).
+It is an ordinary Qt main window: the system's title bar, a menu bar, a status
+bar, a sidebar and a stack of pages. Each example page shows one thing most
+applications need, in as little code as does it properly.
 
-## What is in it
+[Getting started](getting-started.md) covers installing and running it, and
+[Customising](customising.md) covers turning it into your own application.
 
-- Flat, two-tone design with one accent colour.
-- An ordinary window with the system's title bar and border, so moving,
-  resizing and snapping behave as in any other application, and a header of
-  its own inside it for the menu toggle, the application name and the user.
-- Side menu with four example pages (Home, Bug, Android, Cloud) on a stacked
-  widget, and a toggle that widens the menu and swaps each page for its About
-  page.
-- Styled widgets: push buttons, progress bar, radio buttons, check boxes, line
-  and text edits, horizontal and vertical sliders, vertical scroll bars, combo
-  box.
-- A dialog box with a heading, a message, an icon and two buttons you set per
-  call.
-- An error box with a heading, an icon and one button you set per call.
+## Form
 
-## Where to go next
+Input with validation. Save refuses a missing name or a malformed email and
+says why under the fields. Clear asks before discarding what was typed. A
+saved contact is added to the table and named in the status bar.
 
-| Page                                  | What it covers                                                  |
-| ------------------------------------- | --------------------------------------------------------------- |
-| [Getting started](getting-started.md) | Install, run, check, and what each file is for                  |
-| [Gallery](gallery.md)                 | Every page, the dialog box and the error box                    |
-| [Layout](layout.md)                   | Colours, fonts, and the object name of every frame and widget   |
-| [Customising](customising.md)         | Adding a menu button and page, adding widgets, calling the boxes |
-| [Widgets and stylesheets](widgets.md) | The calls and the Qt stylesheet for each widget type            |
-| [Design approach](design-approach.md) | How the original author went from sketch to Qt Designer         |
+![The form refusing a malformed email](images/form.png)
 
-## Tour
+Code: `pages/form.py`, form: `ui/form_page.ui`.
+
+## Table
+
+A `QAbstractTableModel` shown in a `QTableView` through a
+`QSortFilterProxyModel`. Click a header to sort, type to filter across every
+column, and delete the selected rows after a confirmation.
+
+![The table filtered to engineers](images/table.png)
+
+Code: `pages/table.py` and `contacts.py`, form: `ui/table_page.ui`.
+
+## Task
+
+Long work on a second thread. A worker object is moved to a `QThread` and
+reports progress with a signal, so the window stays responsive, and Cancel
+stops it at the next step. Closing the window stops a running task first.
+
+![A task part way through](images/task.png)
+
+Code: `pages/task.py` and `worker.py`, form: `ui/task_page.ui`.
+
+## Settings
+
+A choice of System, Light or Dark, applied at once and remembered between
+runs with `QSettings`, as is the size of the window.
+
+![The settings page in the dark theme](images/settings-dark.png)
+
+![The table in the dark theme](images/table-dark.png)
+
+Code: `pages/settings.py` and `theme.py`, form: `ui/settings_page.ui`.
 
 !!! note
 
-    The screenshots and diagrams are of the original design, which drew its
-    own title bar with minimise, maximise and close buttons and a resize grip
-    (`bn_min`, `bn_max`, `bn_close`, `frame_drag`). The template now uses the
-    system's window frame, so those are gone; everything else is as pictured.
-
-The home page, with the parts of the window named:
-
-![Home page, annotated](images/home-annotated.png)
-
-The toggle at the top left widens the menu and shows the About page of Home.
-While the menu is wide, each menu button shows the About page of its page
-instead of the page. Pressing the toggle again narrows the menu and goes back
-to Home:
-
-![About panel toggled open](images/about-annotated.png)
-
-A page can hold its own stacked widget. The Android page has four sub-pages
-behind a second row of buttons:
-
-![A page within a page](images/android-annotated.png)
-
-The dialog box and the error box:
-
-![Dialog box and error box](images/dialog-error-annotated.png)
-
-The styled widgets:
-
-![Toggle, window and push buttons of the original design](images/widgets-buttons.png)
-
-![Menu buttons, slider, progress bar, scroll bar and text field](images/widgets-controls.png)
-
-![Text edit with scroll bar, combo box, radio button and check box](images/widgets-text-combo.png)
+    The screenshots are generated from the application by `just screenshots`,
+    on Qt's offscreen platform, so they show the window's contents without
+    the title bar your system draws, and in that platform's font.

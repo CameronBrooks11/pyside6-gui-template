@@ -1,5 +1,5 @@
 site_name: pyside6-gui-template
-site_description: Flat, dark desktop GUI template built with PySide6 and Qt Designer.
+site_description: Desktop GUI template built with PySide6 and Qt Designer.
 site_url: https://cameronbrooks11.github.io/pyside6-gui-template/
 repo_url: https://github.com/CameronBrooks11/pyside6-gui-template
 repo_name: CameronBrooks11/pyside6-gui-template
@@ -19,13 +19,14 @@ plugins:
 
 markdown_extensions:
   - admonition
+  - pymdownx.superfences
+
+# The script that writes docs/images/ is not a page of the site.
+exclude_docs: |
+  screenshots.py
 
 nav:
   - Home: index.md
   - Getting started: getting-started.md
-  - Gallery: gallery.md
-  - Layout: layout.md
   - Customising: customising.md
-  - Widgets and stylesheets: widgets.md
-  - Design approach: design-approach.md
   - Credits: credits.md

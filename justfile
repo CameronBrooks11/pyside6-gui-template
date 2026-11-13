@@ -46,6 +46,10 @@ docs:
 docs-build:
     uv run --locked --only-group docs mkdocs build --strict
 
+# Regenerate the screenshots in docs/images/ from the application
+screenshots:
+    QT_QPA_PLATFORM=offscreen uv run python docs/screenshots.py
+
 # Regenerate each ui_*.py after editing a .ui file
 uic:
     for form in src/app/ui/*.ui; do uv run pyside6-uic "$form" -o "${form%/*}/ui_$(basename "$form" .ui).py" || exit 1; done
