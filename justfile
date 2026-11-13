@@ -12,7 +12,7 @@ setup:
 
 # Launch the GUI
 run:
-    uv run python main.py
+    uv run python -m app
 
 # Drive every window without a display; fail on a warning, a slot error or a missing icon
 check:
@@ -28,6 +28,6 @@ docs-build:
 
 # Regenerate the ui_*.py files after editing a .ui file in Qt Designer
 uic:
-    uv run pyside6-uic ui_main.ui -o ui_main.py
-    uv run pyside6-uic ui_dialog.ui -o ui_dialog.py
-    uv run pyside6-uic ui_error.ui -o ui_error.py
+    uv run pyside6-uic src/app/ui/ui_main.ui -o src/app/ui/ui_main.py
+    uv run pyside6-uic src/app/ui/ui_dialog.ui -o src/app/ui/ui_dialog.py
+    uv run pyside6-uic src/app/ui/ui_error.ui -o src/app/ui/ui_error.py

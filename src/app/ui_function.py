@@ -35,7 +35,7 @@ from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QPropertyAnimation
 from PySide6.QtWidgets import QFrame, QSizeGrip
 
-from about import aboutHome
+from .about import aboutHome
 
 
 # THE MENU: FOR EACH MENU BUTTON, THE FRAME AROUND IT, ITS PAGE, ITS ABOUT PAGE AND THE NAME SHOWN IN THE BOTTOM LABEL.
