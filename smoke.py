@@ -14,10 +14,10 @@ import runpy
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import QEvent, QPointF, Qt, QtMsgType, qInstallMessageHandler
+from PySide6.QtCore import QEvent, QPoint, QPointF, Qt, QtMsgType, qInstallMessageHandler
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication, QDialog
+from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip
 
 ICON_SOURCES = ("ui_main.py", "ui_dialog.py", "ui_error.py", "ui_function.py")
 
@@ -81,6 +81,69 @@ def check_menu(ui, pages, tab_prefix):
             ui.lab_tab.text().startswith(tab_prefix + tab),
             f"{button} left the tab label at {ui.lab_tab.text()!r}",
         )
+
+
+HIGHLIGHT = "rgb(91,90,90)"
+
+
+def check_highlight(ui):
+    ui.bn_home.click()
+    ui.bn_home.click()
+    expect(
+        HIGHLIGHT in ui.frame_home.styleSheet(),
+        "clicking the current menu button removed its highlight",
+    )
+
+    ui.toodle.click()
+    ui.bn_bug.click()  # while the menu is still animating open
+    expect(
+        ui.stackedWidget.currentWidget() is ui.page_about_bug,
+        "a menu button clicked during the toggle animation did nothing",
+    )
+    expect(
+        HIGHLIGHT in ui.frame_bug.styleSheet(),
+        "a menu button clicked during the toggle animation lost its highlight",
+    )
+    QTest.qWait(400)
+    ui.toodle.click()
+    QTest.qWait(400)
+    expect(ui.frame_bottom_west.width() == 80, "the menu did not narrow again")
+
+
+def check_window_state(window):
+    ui = window.ui
+    size = window.size()
+    ui.bn_max.click()
+    expect(window.isMaximized(), "the maximise button did not maximise")
+    expect(not ui.frame_drag.isVisible(), "the resize grip shows while maximised")
+    ui.bn_max.click()
+    QApplication.processEvents()
+    expect(not window.isMaximized(), "the maximise button did not restore")
+    expect(
+        window.size() == size,
+        f"restore gave {window.size().toTuple()}, not the {size.toTuple()} it had",
+    )
+
+    window.showMaximized()  # as the window manager would, behind the button's back
+    ui.bn_max.click()
+    QApplication.processEvents()
+    expect(not window.isMaximized(), "the button maximised an already maximised window")
+
+    grip = ui.frame_drag.findChild(QSizeGrip)
+    expect(grip is not None, "there is no resize grip on the frameless window")
+    if grip is not None:
+        size = window.size()
+        QTest.mousePress(grip, Qt.MouseButton.LeftButton, pos=QPoint(5, 5))
+        QTest.mouseMove(grip, QPoint(5, 45))
+        QTest.mouseRelease(grip, Qt.MouseButton.LeftButton, pos=QPoint(5, 45))
+        expect(window.size() != size, "dragging the resize grip did not resize")
+
+    second = type(window)()
+    expect(
+        second.ui.lab_tab.text() == "Home" and HIGHLIGHT in second.ui.frame_home.styleSheet(),
+        "a second main window did not start on the Home page",
+    )
+    second.deleteLater()
 
 
 def check_page_widgets(ui):
@@ -154,12 +217,9 @@ def drive(*_):
     QTest.qWait(400)
     expect(ui.frame_bottom_west.width() == 80, "the toggle did not narrow the menu")
 
+    check_highlight(ui)
     check_page_widgets(ui)
-
-    ui.bn_max.click()
-    expect(window.isMaximized(), "the maximise button did not maximise")
-    ui.bn_max.click()
-    expect(not window.isMaximized(), "the maximise button did not restore")
+    check_window_state(window)
 
     check_drag("main window", window, ui.frame_appname)
     check_drag("dialog box", window.diag, window.diag.d.frame_top)

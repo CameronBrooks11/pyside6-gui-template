@@ -38,25 +38,21 @@ About page, which is shown instead while the menu is widened.
     )
     ```
 
-6. In `UIFunction.buttonPressed` in `ui_function.py`, add a branch that shows
-   the page when the menu is narrow and the About page when it is widened:
+6. In `ui_function.py`, add a line to `MENU` naming the frame around the
+   button, the page, the About page and the name to show in the bottom label:
 
     ```python
-    elif buttonName == "bn_settings":
-        if self.ui.frame_bottom_west.width() == 80:
-            self.ui.stackedWidget.setCurrentWidget(self.ui.page_settings)
-            self.ui.lab_tab.setText("Settings")
-            self.ui.frame_settings.setStyleSheet("background:rgb(91,90,90)")
-
-        elif self.ui.frame_bottom_west.width() == 160:
-            self.ui.stackedWidget.setCurrentWidget(self.ui.page_about_settings)
-            self.ui.lab_tab.setText("About > Settings")
-            self.ui.frame_settings.setStyleSheet("background:rgb(91,90,90)")
+    MENU = {
+        ...
+        'bn_settings': ('frame_settings', 'page_settings', 'page_about_settings', 'Settings'),
+    }
     ```
 
-    `80` and `160` are the narrow and widened widths of the menu.
-    `setStyleSheet` on the button's frame gives the selected button its
-    lighter background; `buttonPressed` resets the others first.
+    `UIFunction.buttonPressed` reads the table: it shows the page, or the About
+    page while the menu is widened, sets the label, and gives the button's
+    frame the lighter background that marks it as selected.
+
+7. Add the button to the `pages` tuple in `smoke.py` so `just check` clicks it.
 
 ## Add a sub-page to the Android page
 
