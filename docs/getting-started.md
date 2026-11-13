@@ -33,8 +33,8 @@ just test    # the app itself, driven without a display
 ```
 
 `just fmt` applies the formatting. `just test` builds every window on Qt's
-offscreen platform and clicks through the pages, the menu toggle, the window
-buttons and the example widgets. It fails on a Python or Qt warning (a
+offscreen platform and clicks through the pages, the menu toggle and the
+example widgets. It fails on a Python or Qt warning (a
 deprecated Qt call included), an exception in a slot, a page that does not
 switch, an icon path with no file or resource behind it, and a generated module
 that is out of date with its `.ui` or `.qrc` source. It does not show what the
@@ -50,10 +50,9 @@ The other pages name its files without the directory.
 | File                                        | Purpose                                                           |
 | ------------------------------------------- | ----------------------------------------------------------------- |
 | `src/app/__main__.py`                       | Entry point for `python -m app` and the `app` command             |
-| `src/app/main_window.py`                    | The main window: title bar, menu, switching pages                 |
+| `src/app/main_window.py`                    | The main window: header, menu, switching pages                    |
 | `src/app/pages.py`                          | What the widgets on the example pages do; replace with your own   |
 | `src/app/dialogs.py`                        | The dialog box and the error box                                  |
-| `src/app/frameless.py`                      | Dragging and the frameless window flags the three windows share   |
 | `src/app/theme.py`                          | Loading `style.qss`, and the font fallbacks                       |
 | `src/app/about.py`                          | Text shown in the About panel of each page                        |
 | `src/app/ui/*.ui`                           | Qt Designer sources                                               |
@@ -63,8 +62,8 @@ The other pages name its files without the directory.
 | `src/app/ui/resources_rc.py`                | The resources compiled from `resources.qrc`; do not edit by hand    |
 | `smoke.py`                                  | The test behind `just test`                                      |
 
-`MainWindow` in `main_window.py` is the window: its title bar buttons, the
-menu toggle, switching pages, maximise and restore. `ExamplePages` in
+`MainWindow` in `main_window.py` is the window: the menu toggle and switching
+pages. `ExamplePages` in
 `pages.py` is the example application logic behind the buttons on each page.
 Put the code for your own application there.
 

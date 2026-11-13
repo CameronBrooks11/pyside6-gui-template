@@ -28,7 +28,10 @@ from PySide6.QtWidgets import (
 
 The states the stylesheet produces:
 
-![Toggle, window and push buttons](images/widgets-buttons.png)
+![Toggle, window and push buttons of the original design](images/widgets-buttons.png)
+
+The window buttons in the first picture are no longer part of the template,
+which uses the system's window frame.
 
 ![Menu buttons, slider, progress bar, scroll bar and text field](images/widgets-controls.png)
 
@@ -36,9 +39,8 @@ The states the stylesheet produces:
 
 ## Push button
 
-Push buttons are used in three places: the close, minimise and maximise
-buttons; the menu buttons; and ordinary action buttons such as Save, Delete
-and Connect.
+Push buttons are used in two places: the menu buttons, and ordinary action
+buttons such as Save, Delete and Connect.
 
 ```python
 button = QPushButton(self.ui.frame_bug_main)  # create inside a frame
@@ -67,7 +69,6 @@ The other kinds are told apart by a `variant` property set in Qt Designer:
 | `variant` | Buttons                                | Rules                              |
 | --------- | -------------------------------------- | ---------------------------------- |
 | `menu`    | The side menu and the Android sub-menu | `QPushButton[variant="menu"]`      |
-| `window`  | Minimise, maximise and close           | `QPushButton[variant="window"]`    |
 | `danger`  | Delete, which turns red on hover       | `QPushButton[variant="danger"]`    |
 
 The menu toggle is styled by its object name, `#toodle`. To set a variant

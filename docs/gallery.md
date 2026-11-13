@@ -1,5 +1,12 @@
 # Gallery
 
+!!! note
+
+    The screenshots and diagrams are of the original design, which drew its
+    own title bar with minimise, maximise and close buttons and a resize grip
+    (`bn_min`, `bn_max`, `bn_close`, `frame_drag`). The template now uses the
+    system's window frame, so those are gone; everything else is as pictured.
+
 The window opens at 800 × 550. The full-screen captures are 1366 × 768.
 
 ## Home

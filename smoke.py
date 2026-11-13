@@ -5,8 +5,8 @@ This takes over at app.exec().
 Run through `just test`, from the repository root, which sets
 QT_QPA_PLATFORM=offscreen and turns Python warnings into errors so a deprecated
 Qt call fails here. Qt's own warnings, an exception in a slot, a page that does
-not switch, a drag that does not move the window, an image path with no file or
-resource behind it and a generated module that is out of date fail it too.
+not switch, an image path with no file or resource behind it and a generated
+module that is out of date fail it too.
 """
 
 import contextlib
@@ -19,16 +19,13 @@ import sys
 from pathlib import Path
 
 from PySide6.QtCore import (
-    QEvent,
     QFile,
-    QPoint,
-    QPointF,
     Qt,
     QTimer,
     QtMsgType,
     qInstallMessageHandler,
 )
-from PySide6.QtGui import QColor, QFontDatabase, QFontInfo, QIcon, QMouseEvent, QPixmap
+from PySide6.QtGui import QColor, QFontDatabase, QFontInfo, QPixmap
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import (
     QApplication,
@@ -36,7 +33,6 @@ from PySide6.QtWidgets import (
     QFrame,
     QMessageBox,
     QPushButton,
-    QSizeGrip,
     QWidget,
 )
 
@@ -112,72 +108,29 @@ def wait_until(condition, timeout_ms=2000):
     return condition()
 
 
-def really_exec(dialog, show, button):
-    """Run `show` with the real QDialog.exec and click `button` to end it.
+def really_exec(dialog, show, close, how):
+    """Run `show` with the real QDialog.exec and call `close` to end it.
 
-    A button that does not close the dialog would leave exec() blocking for
-    good, so a timer closes it and records the failure instead.
+    If that does not close the dialog, exec() would block for good, so a
+    timer closes it and records the failure instead.
     """
 
     def give_up():
         if dialog.isVisible():
-            fail(f"{button.objectName()} did not close its dialog")
+            fail(f"{how} did not close its dialog")
             dialog.done(QDialog.DialogCode.Rejected)
 
     guard = QTimer()
     guard.setSingleShot(True)
     guard.timeout.connect(give_up)
     guard.start(2000)
-    QTimer.singleShot(0, button.click)
+    QTimer.singleShot(0, close)
     QDialog.exec = real_exec
     try:
         return show()
     finally:
         guard.stop()
         QDialog.exec = fake_exec
-
-
-def drag(handle, held=Qt.MouseButton.LeftButton):
-    """Press on `handle` at (105, 105), then move to (140, 140) and on to
-    (150, 160), in screen coordinates."""
-    for kind, target, global_pos in (
-        (QEvent.Type.MouseButtonPress, handle.mousePressEvent, QPointF(105, 105)),
-        (QEvent.Type.MouseMove, handle.mouseMoveEvent, QPointF(140, 140)),
-        (QEvent.Type.MouseMove, handle.mouseMoveEvent, QPointF(150, 160)),
-    ):
-        target(
-            QMouseEvent(
-                kind,
-                QPointF(5, 5),
-                global_pos,
-                held,
-                held,
-                Qt.KeyboardModifier.NoModifier,
-            )
-        )
-
-
-def check_drag(name, window, handle):
-    expect(
-        bool(window.windowFlags() & Qt.WindowType.FramelessWindowHint),
-        f"the {name} still has the system title bar",
-    )
-    expect(
-        window.testAttribute(Qt.WidgetAttribute.WA_TranslucentBackground),
-        f"the {name} does not have a translucent background",
-    )
-    before = window.pos()
-    drag(handle)
-    moved = window.pos() - before
-    expect(
-        moved == QPoint(45, 55),
-        f"dragging the {name} by (45, 55) in two moves moved it by {moved.toTuple()}",
-    )
-    before = window.pos()
-    drag(handle, held=Qt.MouseButton.NoButton)
-    expect(window.pos() == before, f"the {name} moved with no mouse button held")
-    drag(handle, held=Qt.MouseButton.LeftButton | Qt.MouseButton.RightButton)
-    expect(window.pos() == before, f"the {name} moved with two mouse buttons held")
 
 
 def check_fonts(window):
@@ -300,7 +253,7 @@ def check_style(window):
     ui.bn_home.click()
     on, off = qss_colour('QFrame[selected="true"]'), qss_colour('QFrame[selected="false"]')
     for widget, selector, what in (
-        (ui.frame_top_east, "#frame_top_east", "the title bar"),
+        (ui.frame_top_east, "#frame_top_east", "the header"),
         (ui.page_home, "QStackedWidget > QWidget", "the page"),
         (ui.frame_toodle, "#frame_toodle", "the toggle"),
         (ui.frame_home, 'QFrame[selected="true"]', "the frame of the selected menu button"),
@@ -341,7 +294,7 @@ def check_style(window):
     wait_until(lambda: ui.frame_bottom_west.width() == 80)
 
     # Each kind of button is told apart by its `variant`. A button you add to
-    # one of these four frames has to carry the variant of the frame.
+    # one of the two menu frames has to carry the menu variant.
     expect(
         ui.bn_android_contact_delete.property("variant") == "danger",
         "the Delete button does not have the danger variant",
@@ -349,8 +302,6 @@ def check_style(window):
     for container, variant in (
         (ui.frame_bottom_west, "menu"),
         (ui.frame_android_menu, "menu"),
-        (ui.frame_top_east, "window"),
-        (window.dialog.ui.frame_top, "window"),
     ):
         for button in container.findChildren(QPushButton):
             expect(
@@ -484,78 +435,17 @@ def shows_pixmap(label, path):
     return not label.pixmap().isNull() and label.pixmap().toImage() == QPixmap(path).toImage()
 
 
-def shows(button, icon_path):
-    return button.icon().pixmap(16, 16).toImage() == QIcon(icon_path).pixmap(16, 16).toImage()
-
-
-def check_window_state(window):
-    ui = window.ui
-    size = window.size()
-    ui.bn_max.click()
-    expect(window.isMaximized(), "the maximise button did not maximise")
-    expect(not ui.frame_drag.isVisible(), "the resize grip shows while maximised")
-    ui.bn_max.click()
-    QApplication.processEvents()
-    expect(not window.isMaximized(), "the maximise button did not restore")
-    expect(
-        window.size() == size,
-        f"restore gave {window.size().toTuple()}, not the {size.toTuple()} it had",
-    )
-    expect(ui.frame_drag.isVisible(), "the resize grip did not come back after restore")
-
-    # The window manager can change the state behind the button's back.
-    window.showMaximized()
-    QApplication.processEvents()
-    expect(
-        ui.bn_max.toolTip() == "Restore" and not ui.frame_drag.isVisible(),
-        "the maximise button did not follow a maximise it did not make",
-    )
-    expect(
-        shows(ui.bn_max, ":/icons/restore.png"),
-        "the maximise button does not show the restore icon while maximised",
-    )
-    window.showNormal()
-    QApplication.processEvents()
-    expect(
-        ui.bn_max.toolTip() == "Maximize" and ui.frame_drag.isVisible(),
-        "the maximise button did not follow a restore it did not make",
-    )
-    expect(
-        shows(ui.bn_max, ":/icons/maximize.png"),
-        "the maximise button does not show the maximise icon when restored",
-    )
-
-    QTest.mouseDClick(ui.frame_appname, Qt.MouseButton.LeftButton)
-    wait_until(window.isMaximized)  # the double click maximises after 250 ms
-    expect(window.isMaximized(), "double-clicking the title bar did not maximise")
-    drag(ui.frame_appname)
-    QApplication.processEvents()
-    expect(
-        not window.isMaximized() and ui.bn_max.toolTip() == "Maximize",
-        "dragging a maximised window did not restore it",
-    )
-
-    ui.bn_min.click()
-    expect(window.isMinimized(), "the minimise button did not minimise")
-    window.showNormal()
-    QApplication.processEvents()
-
-    window.showMaximized()  # as the window manager would, behind the button's back
-    ui.bn_max.click()
-    QApplication.processEvents()
-    expect(not window.isMaximized(), "the button maximised an already maximised window")
-
-    grip = ui.frame_drag.findChild(QSizeGrip)
-    expect(grip is not None, "there is no resize grip on the frameless window")
-    if grip is not None:
-        image = grip.grab().toImage()
-        colours = {image.pixel(x, y) for x in range(image.width()) for y in range(image.height())}
-        expect(len(colours) > 1, "the resize grip is drawn as a blank square")
-        size = window.size()
-        QTest.mousePress(grip, Qt.MouseButton.LeftButton, pos=QPoint(5, 5))
-        QTest.mouseMove(grip, QPoint(5, 45))
-        QTest.mouseRelease(grip, Qt.MouseButton.LeftButton, pos=QPoint(5, 45))
-        expect(window.size() != size, "dragging the resize grip did not resize")
+def check_windows(window):
+    """The three windows are ordinary ones: the system draws their title bar
+    and border, and moves and resizes them."""
+    for made in (window, window.dialog, window.error_box):
+        expect(
+            not made.windowFlags() & Qt.WindowType.FramelessWindowHint
+            and not made.testAttribute(Qt.WidgetAttribute.WA_TranslucentBackground),
+            f"{type(made).__name__} does not have the system's window frame",
+        )
+    for gone in ("bn_min", "bn_max", "bn_close", "frame_drag"):
+        expect(not hasattr(window.ui, gone), f"the main window still has its own {gone}")
 
     second = type(window)()
     expect(
@@ -717,13 +607,15 @@ def check_page_widgets(ui):
 def check_dialog_result(window):
     icon = ":/icons/warning.png"
     box, error = window.dialog, window.error_box
-    for button, expected in (("bn_east", True), ("bn_west", False), ("bn_close", False)):
+    for how, close, expected in (
+        ("bn_east", box.ui.bn_east.click, True),
+        ("bn_west", box.ui.bn_west.click, False),
+        ("closing the box", box.close, False),
+    ):
         result = really_exec(
-            box,
-            lambda: box.ask("Heading", "Message", icon, "No", "Yes"),
-            getattr(box.ui, button),
+            box, lambda: box.ask("Heading", "Message", icon, "No", "Yes"), close, how
         )
-        expect(result is expected, f"DialogBox.ask returned {result!r} after {button}")
+        expect(result is expected, f"DialogBox.ask returned {result!r} after {how}")
     expect(
         (box.ui.bn_west.text(), box.ui.bn_east.text()) == ("No", "Yes"),
         "DialogBox.ask put the button texts on the wrong buttons",
@@ -733,13 +625,26 @@ def check_dialog_result(window):
         and shows_pixmap(box.ui.lab_icon, icon),
         "DialogBox.ask did not set the heading, the message and the icon",
     )
-    box.show()
-    box.ui.bn_min.click()
-    expect(box.isMinimized(), "the dialog box's minimise button did not minimise it")
-    box.showNormal()
-    box.hide()
+    expect(box.windowTitle() == "Heading", "DialogBox.ask did not set the window title")
+    # While the box is open, the keyboard is on the left-hand answer.
+    focused = []
 
-    really_exec(error, lambda: error.show_error("Heading", icon, "Fine"), error.ui.bn_ok)
+    def look_then_close():
+        focused.append(box.focusWidget())
+        box.reject()
+
+    really_exec(
+        box, lambda: box.ask("Heading", "Message", icon, "No", "Yes"), look_then_close, "reject"
+    )
+    expect(
+        focused == [box.ui.bn_west],
+        "the dialog box opens with the keyboard on the right-hand answer",
+    )
+
+    really_exec(
+        error, lambda: error.show_error("Heading", icon, "Fine"), error.ui.bn_ok.click, "bn_ok"
+    )
+    expect(error.windowTitle() == "Heading", "ErrorBox.show_error did not set the window title")
     expect(
         (error.ui.lab_heading.text(), error.ui.bn_ok.text()) == ("Heading", "Fine")
         and shows_pixmap(error.ui.lab_icon, icon),
@@ -780,7 +685,7 @@ def drive(*_):
     expect(window.isVisible(), "the app did not show the main window")
     expect(
         ui.lab_appname.text() == window.windowTitle() != "",
-        "the title bar does not show the application name",
+        "the header does not show the application name",
     )
     expect(ui.text_about_home.toPlainText() != "", "the About page of Home has no text")
 
@@ -818,14 +723,10 @@ def drive(*_):
     check_highlight(ui)
     check_page_widgets(ui)
     check_dialog_result(window)
-    check_window_state(window)
+    check_windows(window)
 
-    check_drag("main window", window, ui.frame_appname)
-    check_drag("dialog box", window.dialog, window.dialog.ui.frame_top)
-    check_drag("error box", window.error_box, window.error_box.ui.frame_top)
-
-    ui.bn_close.click()
-    expect(not window.isVisible(), "the close button did not close the window")
+    window.close()
+    expect(not window.isVisible(), "closing the main window left it showing")
 
     QApplication.processEvents()
     drove.append(True)

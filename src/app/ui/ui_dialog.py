@@ -59,34 +59,6 @@ class Ui_Dialog(object):
 
         self.horizontalLayout.addWidget(self.lab_heading)
 
-        self.bn_min = QPushButton(self.frame_top)
-        self.bn_min.setObjectName(u"bn_min")
-        self.bn_min.setProperty(u"variant", u"window")
-        self.bn_min.setMinimumSize(QSize(55, 55))
-        self.bn_min.setMaximumSize(QSize(55, 55))
-        icon = QIcon()
-        icon.addFile(u":/icons/minimize.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.bn_min.setIcon(icon)
-        self.bn_min.setIconSize(QSize(22, 12))
-        self.bn_min.setAutoDefault(False)
-        self.bn_min.setFlat(True)
-
-        self.horizontalLayout.addWidget(self.bn_min)
-
-        self.bn_close = QPushButton(self.frame_top)
-        self.bn_close.setObjectName(u"bn_close")
-        self.bn_close.setProperty(u"variant", u"window")
-        self.bn_close.setMinimumSize(QSize(55, 55))
-        self.bn_close.setMaximumSize(QSize(55, 55))
-        icon1 = QIcon()
-        icon1.addFile(u":/icons/close.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.bn_close.setIcon(icon1)
-        self.bn_close.setIconSize(QSize(22, 22))
-        self.bn_close.setAutoDefault(False)
-        self.bn_close.setFlat(True)
-
-        self.horizontalLayout.addWidget(self.bn_close)
-
 
         self.verticalLayout_2.addWidget(self.frame_top)
 
@@ -149,8 +121,6 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
         self.lab_heading.setText("")
-        self.bn_min.setText("")
-        self.bn_close.setText("")
         self.bn_east.setText("")
         self.lab_icon.setText("")
         self.bn_west.setText("")

@@ -14,7 +14,7 @@ APP_NAME = "App Name"
 ```
 
 The name goes to the operating system as the window title and to `lab_appname`
-in the custom title bar.
+in the header of the window.
 
 ## Add a menu button and its page
 
@@ -100,10 +100,9 @@ Qt Designer and takes its look when the application runs.
 - A plain `QPushButton` is an action button. A button that is something else
   says so with a dynamic property named `variant`, which you add in Qt
   Designer with the plus sign in the Property Editor (a String property):
-  `menu` for the side and sub-menu buttons, `window` for minimise, maximise
-  and close, `danger` for a button that turns red on hover. `just test`
-  expects every button in the two menu frames to be `menu` and every button
-  in the title bar frames to be `window`.
+  `menu` for the side and sub-menu buttons, `danger` for a button that turns
+  red on hover. `just test` expects every button in the two menu frames to be
+  `menu`.
 - The frame around a menu button is marked with a `selected` property by
   `MainWindow.select` in `main_window.py`; the two `QFrame[selected=...]`
   rules give the selected and unselected colours.

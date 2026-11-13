@@ -2,7 +2,7 @@
 
 This is the part to replace with your own application: each method here
 answers one of the buttons, boxes or fields on the Bug, Cloud and Android
-pages. The window itself (title bar, menu, switching pages) is in
+pages. The window itself (header, menu, switching pages) is in
 main_window.py.
 """
 
