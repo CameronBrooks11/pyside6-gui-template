@@ -48,7 +48,7 @@ When you add a page or a button, add it to `smoke.py` so the check covers it.
 | `ui_main.ui`, `ui_dialog.ui`, `ui_error.ui` | Qt Designer sources                                               |
 | `ui_main.py`, `ui_dialog.py`, `ui_error.py` | Generated from the `.ui` files; do not edit by hand               |
 | `icons/`                                    | Icons the application loads at run time                           |
-| `css.txt`                                   | The Qt stylesheets used on the widgets                            |
+| `css.txt`                                   | Reference copy of the stylesheets set in the `.ui` files; not loaded |
 | `smoke.py`                                  | The check behind `just check`                                     |
 
 `main.py` holds the three window classes: `MainWindow`, `dialogUi` and
