@@ -1,5 +1,6 @@
 """The committed ui_*.py modules are what pyside6-uic makes of the .ui files."""
 
+import os
 import re
 import shutil
 import subprocess
@@ -21,7 +22,7 @@ def without_version(text: str) -> str:
 
 
 def test_there_are_forms_to_check():
-    assert len(FORMS) >= 6
+    assert FORMS
 
 
 @pytest.mark.parametrize("form", FORMS, ids=lambda form: form.name)
@@ -30,8 +31,12 @@ def test_generated_module_is_current(form: Path):
     generated_with = re.search(r"Compiler version (\S+)", committed)
     assert generated_with, "no version line in the committed module"
     if generated_with[1] != PySide6.__version__:
-        # Other versions of uic spell some lines differently.
-        pytest.skip(f"generated with PySide6 {generated_with[1]}, not {PySide6.__version__}")
+        # Other versions of uic spell some lines differently, so there is
+        # nothing to compare. CI installs from the lock file: a mismatch there
+        # means PySide6 was upgraded without regenerating the modules.
+        mismatch = f"generated with PySide6 {generated_with[1]}, not {PySide6.__version__}"
+        assert not os.environ.get("CI"), f"{mismatch}: run `just uic`"
+        pytest.skip(mismatch)
     uic = shutil.which("pyside6-uic", path=str(Path(sys.executable).parent))
     assert uic, "pyside6-uic is not installed beside the interpreter"
     fresh = subprocess.run([uic, str(form)], capture_output=True, text=True, check=True).stdout

@@ -24,7 +24,9 @@ of `app` in `src/`, `tests/` and `docs/screenshots.py`, the `[project.scripts]` 
 4. Use the widget in the page's module as `self.ui.phone_edit`.
 
 `just test` fails if you forget step 3, and `just uic` stops at the first
-form that does not compile.
+form that does not compile. After upgrading PySide6, run `just uic` as well:
+the check compares against the version that wrote the modules, and on any
+other it skips, or fails in CI.
 
 ## Add a page
 
@@ -47,10 +49,13 @@ form that does not compile.
             self.ui.setupUi(self)
     ```
 
-4. Give it a line in `MainWindow.__init__` in `main_window.py`, where the
-   order of the lines is the order of the sidebar:
+4. Import it in `main_window.py` and give it a line in `MainWindow.__init__`,
+   where the order of the lines is the order of the sidebar:
 
     ```python
+    from app.pages.reports import ReportsPage
+
+    ...
     self._add_page("Reports", "reports.svg", ReportsPage())
     ```
 
@@ -106,7 +111,8 @@ pattern:
 - Cancelling sets a flag that `run` checks between steps.
 - The page waits for the thread to end before letting go of it, and the main
   window's `closeEvent` calls the page's `stop()` so the application never
-  exits with the thread still running.
+  exits with the thread still running. `stop()` returns when the step in
+  progress ends, so keep a step short or the window is slow to close.
 
 Replace the body of `Worker.run` with your work, emitting `progress` as it
 goes and checking the flag wherever it can safely stop.
