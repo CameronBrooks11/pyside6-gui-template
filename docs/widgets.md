@@ -1,7 +1,7 @@
 # Widgets and stylesheets
 
 Every widget in the template is created, sized and given its icon and text in
-Qt Designer. None of that appears in `main.py`. The Python side only says what
+Qt Designer. None of that appears in the Python. The Python side only says what
 happens when the widget is used, and the look of every widget comes from one
 stylesheet, `src/app/resources/style.qss`.
 
@@ -164,7 +164,7 @@ or any other scroll area:
 self.ui.textEdit_gamepad.setVerticalScrollBar(self.ui.vsb_gamepad)
 ```
 
-`UIFunction.stackPage` already makes this call for `textEdit_gamepad` and
+`ExamplePages.__init__` already makes this call for `textEdit_gamepad` and
 `text_about_home`. Make it once per scroll bar: the text edit takes ownership
 of the bar and deletes the one it had before, so handing it the same bar a
 second time crashes.

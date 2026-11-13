@@ -56,9 +56,12 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 
 | File                                             | Purpose                                                            |
 | ------------------------------------------------ | ------------------------------------------------------------------ |
-| `src/app/__main__.py`                            | Entry point for `python -m app`                                    |
-| `src/app/main.py`                                | The main window, the dialog box, the error box, and `main()`       |
-| `src/app/ui_function.py`                         | Behaviour: menu, page switching, window controls, widget handlers  |
+| `src/app/__main__.py`                            | Entry point for `python -m app` and the `app` command              |
+| `src/app/main_window.py`                         | The main window: title bar, menu, switching pages                  |
+| `src/app/pages.py`                               | What the widgets on the example pages do; replace with your own    |
+| `src/app/dialogs.py`                             | The dialog box and the error box                                   |
+| `src/app/frameless.py`                           | Dragging and the frameless window flags the three windows share    |
+| `src/app/theme.py`                               | Loading `style.qss`, and the font fallbacks                        |
 | `src/app/about.py`                               | Text shown in the About panel of each page                         |
 | `src/app/ui/*.ui`                                | Qt Designer sources                                                |
 | `src/app/ui/ui_*.py`                             | Generated from the `.ui` files; do not edit by hand                |
@@ -75,10 +78,9 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    there: the colours come from `style.qss` when the application runs.
 2. Change colours and widget styles in `src/app/resources/style.qss`.
 3. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
-4. Wire the widgets up in `main.py` and `ui_function.py`.
-   `UIFunction.stackPage` in `ui_function.py` wires up the example pages and
-   is the place to copy from.
-5. Set the application name in `MainWindow.__init__` in `main.py`.
+4. Wire the widgets up in `pages.py`. `ExamplePages.__init__` connects the
+   widgets of the example pages and is the place to copy from.
+5. Set the application name, `APP_NAME`, in `main_window.py`.
 6. Set `name`, `description` and `version` in `pyproject.toml`.
 7. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
    line and `module-name` in `pyproject.toml`, the paths in the `run` and
@@ -92,9 +94,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
    If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
    `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the
-   justfile and the `docs` group in `pyproject.toml`. The comments at the top
-   of `main.py` and `ui_function.py` and one in
-   `MainWindow.__init__` point into `docs/`.
+   justfile and the `docs` group in `pyproject.toml`.
 
 The documentation covers each of these steps:
 [the object name of every widget](docs/layout.md),
