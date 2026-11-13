@@ -18,7 +18,8 @@ docs = ["mkdocs-material>=9.5"]
 line-length = 100
 target-version = "py310"
 # The modules pyside6-uic and pyside6-rcc write are regenerated, not edited.
-# The patterns do not name the package, so they survive renaming it.
+# The patterns do not name the package, so they survive renaming it, but they
+# do expect the generated modules in its ui/ directory.
 # .claude/ can hold files a coding agent's sandbox makes unreadable, which
 # ruff would stop on.
 extend-exclude = ["src/*/ui/ui_*.py", "src/*/ui/resources_rc.py", ".claude"]

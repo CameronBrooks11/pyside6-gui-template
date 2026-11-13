@@ -84,8 +84,8 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    widgets of the example pages and is the place to copy from.
 5. Set the application name, `APP_NAME`, in `main_window.py`.
 6. Set `name`, `description` and `version` in `pyproject.toml`, then run
-   `uv lock`: the lock file records the project's name, and CI installs with
-   `uv sync --locked`, which refuses a lock that is out of date.
+   `uv lock`: the lock file records the project's name and version, and CI
+   installs with `uv sync --locked`, which refuses a lock that is out of date.
 7. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
    line and `module-name` in `pyproject.toml`, the paths in the `run` and
    `uic` recipes of the justfile, and `PACKAGE` at the top of `smoke.py`.
@@ -100,8 +100,10 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the
    justfile, the Docs step in `.github/workflows/check.yml` and the `docs`
    group in `pyproject.toml`, then run `uv lock`.
-10. `.github/workflows/check.yml` runs `just check` and `just test` on every
-    pull request. It names nothing specific to this template.
+10. `.github/workflows/check.yml` runs `just check`, `just test` and
+    `just docs-build` on every pull request into `main`. It and `docs.yml` ask
+    for Python 3.10, the oldest version `requires-python` allows: change both
+    if you raise that floor.
 
 The documentation covers each of these steps:
 [the object name of every widget](docs/layout.md),

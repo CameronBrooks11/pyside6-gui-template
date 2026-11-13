@@ -102,7 +102,7 @@ class MainWindow(QMainWindow):
         self.size_grip = QSizeGrip(self.ui.frame_drag)
         self.size_grip.setToolTip("Resize")
         layout = self.ui.frame_drag.layout()
-        assert layout is not None, "frame_drag has a layout in ui_main.ui"
+        assert layout is not None, "frame_drag has no layout; ui_main.ui gives it one"
         layout.addWidget(self.size_grip)
 
     def toggle_maximized(self):

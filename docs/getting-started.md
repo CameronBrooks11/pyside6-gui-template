@@ -33,11 +33,12 @@ just test    # the app itself, driven without a display
 ```
 
 `just fmt` applies the formatting. `just test` builds every window on Qt's
-offscreen platform and clicks through the pages, the menu toggle, the window buttons and the example widgets. It fails on a
-Python or Qt warning (a deprecated Qt call included), an exception in a slot,
-a page that does not switch, an icon path with no file or resource behind it,
-and a generated module that is out of date with its `.ui` or `.qrc` source. It
-does not show what the GUI looks like.
+offscreen platform and clicks through the pages, the menu toggle, the window
+buttons and the example widgets. It fails on a Python or Qt warning (a
+deprecated Qt call included), an exception in a slot, a page that does not
+switch, an icon path with no file or resource behind it, and a generated module
+that is out of date with its `.ui` or `.qrc` source. It does not show what the
+GUI looks like.
 
 When you add a page or a button, add it to `smoke.py` so the check covers it.
 
