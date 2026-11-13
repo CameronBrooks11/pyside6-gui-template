@@ -54,6 +54,7 @@ The application is the `app` package in `src/app/`.
 | `src/app/contacts.py`    | The example data and its table model                     |
 | `src/app/worker.py`      | The example long task, which runs on a second thread     |
 | `src/app/theme.py`       | The light and dark palettes, and the saved choice        |
+| `src/app/icons/`         | The sidebar icons, as SVG files                          |
 | `src/app/ui/*.ui`        | Qt Designer forms, one per window or page                |
 | `src/app/ui/ui_*.py`     | Generated from the `.ui` files; do not edit by hand      |
 | `tests/`                 | The tests behind `just test`                             |

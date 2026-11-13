@@ -2,14 +2,14 @@
 
 from PySide6.QtCore import QSettings
 from PySide6.QtGui import QColor, QPalette
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QPushButton
 
 SYSTEM = "System"
 LIGHT = "Light"
 DARK = "Dark"
 THEMES = (SYSTEM, LIGHT, DARK)
 
-_ACCENT = QColor(0, 143, 150)
+_ACCENT = QColor(0, 128, 134)
 
 
 def _palette(
@@ -40,24 +40,34 @@ def _palette(
 
 def light_palette() -> QPalette:
     return _palette(
-        window=QColor(240, 240, 240),
+        window=QColor(246, 247, 248),
         base=QColor(255, 255, 255),
-        alternate=QColor(247, 247, 247),
-        button=QColor(240, 240, 240),
-        text=QColor(20, 20, 20),
-        disabled=QColor(150, 150, 150),
+        alternate=QColor(238, 240, 242),
+        button=QColor(240, 241, 243),
+        text=QColor(28, 30, 33),
+        disabled=QColor(150, 154, 160),
     )
 
 
 def dark_palette() -> QPalette:
     return _palette(
-        window=QColor(53, 53, 53),
-        base=QColor(35, 35, 35),
-        alternate=QColor(45, 45, 45),
-        button=QColor(53, 53, 53),
-        text=QColor(240, 240, 240),
-        disabled=QColor(127, 127, 127),
+        window=QColor(43, 45, 48),
+        base=QColor(30, 31, 34),
+        alternate=QColor(52, 55, 59),
+        button=QColor(52, 55, 60),
+        text=QColor(230, 232, 235),
+        disabled=QColor(120, 124, 130),
     )
+
+
+def make_primary(button: QPushButton) -> None:
+    """Paint the button for a page's main action in the accent colour."""
+    palette = button.palette()
+    for group in (QPalette.ColorGroup.Active, QPalette.ColorGroup.Inactive):
+        # Fusion draws a button lighter than its colour, so start darker.
+        palette.setColor(group, QPalette.ColorRole.Button, _ACCENT.darker(125))
+        palette.setColor(group, QPalette.ColorRole.ButtonText, QColor("white"))
+    button.setPalette(palette)
 
 
 def apply_theme(name: str) -> None:

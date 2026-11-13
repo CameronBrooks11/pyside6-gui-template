@@ -24,8 +24,9 @@ class Ui_TablePage(object):
         if not TablePage.objectName():
             TablePage.setObjectName(u"TablePage")
         self.page_layout = QVBoxLayout(TablePage)
+        self.page_layout.setSpacing(12)
         self.page_layout.setObjectName(u"page_layout")
-        self.page_layout.setContentsMargins(24, 24, 24, 24)
+        self.page_layout.setContentsMargins(32, 24, 32, 24)
         self.heading = QLabel(TablePage)
         self.heading.setObjectName(u"heading")
         font = QFont()
@@ -36,6 +37,7 @@ class Ui_TablePage(object):
 
         self.filter_edit = QLineEdit(TablePage)
         self.filter_edit.setObjectName(u"filter_edit")
+        self.filter_edit.setMinimumSize(QSize(0, 28))
         self.filter_edit.setClearButtonEnabled(True)
 
         self.page_layout.addWidget(self.filter_edit)
@@ -45,9 +47,14 @@ class Ui_TablePage(object):
         self.table_view.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table_view.setAlternatingRowColors(True)
         self.table_view.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.table_view.setWordWrap(False)
+        self.table_view.setShowGrid(False)
         self.table_view.setSortingEnabled(True)
+        self.table_view.horizontalHeader().setMinimumSectionSize(60)
+        self.table_view.horizontalHeader().setHighlightSections(False)
         self.table_view.horizontalHeader().setStretchLastSection(True)
         self.table_view.verticalHeader().setVisible(False)
+        self.table_view.verticalHeader().setDefaultSectionSize(34)
 
         self.page_layout.addWidget(self.table_view)
 
@@ -64,6 +71,7 @@ class Ui_TablePage(object):
 
         self.delete_button = QPushButton(TablePage)
         self.delete_button.setObjectName(u"delete_button")
+        self.delete_button.setMinimumSize(QSize(0, 28))
 
         self.buttons.addWidget(self.delete_button)
 

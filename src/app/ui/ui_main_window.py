@@ -37,11 +37,10 @@ class Ui_MainWindow(object):
         self.central_layout.setContentsMargins(0, 0, 0, 0)
         self.navigation = QListWidget(self.central)
         self.navigation.setObjectName(u"navigation")
-        self.navigation.setMinimumSize(QSize(170, 0))
-        self.navigation.setMaximumSize(QSize(170, 16777215))
+        self.navigation.setMinimumSize(QSize(190, 0))
+        self.navigation.setMaximumSize(QSize(190, 16777215))
         self.navigation.setFrameShape(QFrame.Shape.NoFrame)
         self.navigation.setIconSize(QSize(20, 20))
-        self.navigation.setSpacing(2)
 
         self.central_layout.addWidget(self.navigation)
 
@@ -60,6 +59,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menu_bar)
         self.status_bar = QStatusBar(MainWindow)
         self.status_bar.setObjectName(u"status_bar")
+        self.status_bar.setSizeGripEnabled(False)
         MainWindow.setStatusBar(self.status_bar)
 
         self.menu_bar.addAction(self.menu_file.menuAction())

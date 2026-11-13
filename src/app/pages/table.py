@@ -22,7 +22,11 @@ class TablePage(QWidget):
         self._proxy.setFilterKeyColumn(-1)  # match against every column
         self.ui.table_view.setModel(self._proxy)
         self.ui.table_view.sortByColumn(0, Qt.SortOrder.AscendingOrder)
-        self.ui.table_view.resizeColumnsToContents()
+        for column, width in enumerate((150, 210, 100)):  # Notes takes the rest
+            self.ui.table_view.setColumnWidth(column, width)
+        header = self.ui.table_view.horizontalHeader()
+        header.setMinimumHeight(30)
+        header.setDefaultAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         self.ui.filter_edit.textChanged.connect(self._proxy.setFilterFixedString)
         self.ui.delete_button.clicked.connect(self.delete_selected)

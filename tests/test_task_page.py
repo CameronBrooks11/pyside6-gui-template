@@ -1,3 +1,4 @@
+import re
 import time
 
 import pytest
@@ -34,6 +35,7 @@ def test_cancel_stops_a_task_part_way(page, qtbot):
     page.ui.steps_spin.setValue(1000)
     page.ui.start_button.click()
     qtbot.waitUntil(lambda: page.ui.progress_bar.value() > 0)
+    assert re.fullmatch(r"Running… \d+ of 1000", page.ui.status_label.text())
     page.ui.cancel_button.click()
     assert not page.ui.cancel_button.isEnabled()
 
