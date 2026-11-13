@@ -3,8 +3,6 @@
 ## What you need
 
 - Python 3.10 or newer.
-- Some familiarity with Qt for Python (PySide or PyQt) and with Qt Designer.
-  [Resources](credits.md#resources) lists places to start if you have neither.
 - [uv](https://docs.astral.sh/uv/) and [just](https://just.systems/), or a
   Python environment you manage yourself.
 
@@ -22,65 +20,64 @@ just run     # launch the GUI
 
 Without just, run `uv sync` and then `uv run python -m app`, or `uv run app`.
 Without uv, `pip install -e .` in an environment of your own and run
-`python -m app`. The icons are compiled into the package, so it runs from any
-directory.
+`python -m app`.
 
 ## Check it
 
 ```sh
 just check   # formatter, linter, type checker; changes nothing
-just test    # the app itself, driven without a display
+just test    # the tests, run without a display
 ```
 
-`just fmt` applies the formatting. `just test` builds every window on Qt's
-offscreen platform and clicks through the pages, the menu toggle and the
-example widgets. It fails on a Python or Qt warning (a
-deprecated Qt call included), an exception in a slot, a page that does not
-switch, an icon path with no file or resource behind it, and a generated module
-that is out of date with its `.ui` or `.qrc` source. It does not show what the
-GUI looks like.
+`just fmt` applies the formatting. `just test` runs the tests in `tests/` with
+pytest and [pytest-qt](https://pytest-qt.readthedocs.io/) on Qt's offscreen
+platform. They click the buttons and read the widgets of the real pages. A
+test fails on a Python or Qt warning as well as on a failed assertion, and one
+of them fails when a generated `ui_*.py` module is out of date with its form.
+The tests do not show what the GUI looks like.
 
-When you add a page or a button, add it to `smoke.py` so the check covers it.
+A pull request into `main` runs `just check`, `just test` and
+`just docs-build` in GitHub Actions.
 
 ## The files
 
-The application is the `app` package in `src/app/`. Rename it to your own.
-The other pages name its files without the directory.
+The application is the `app` package in `src/app/`.
 
-| File                                        | Purpose                                                           |
-| ------------------------------------------- | ----------------------------------------------------------------- |
-| `src/app/__main__.py`                       | Entry point for `python -m app` and the `app` command             |
-| `src/app/main_window.py`                    | The main window: header, menu, switching pages                    |
-| `src/app/pages.py`                          | What the widgets on the example pages do; replace with your own   |
-| `src/app/dialogs.py`                        | The dialog box and the error box                                  |
-| `src/app/theme.py`                          | Loading `style.qss`, and the font fallbacks                       |
-| `src/app/about.py`                          | Text shown in the About panel of each page                        |
-| `src/app/ui/*.ui`                           | Qt Designer sources                                               |
-| `src/app/ui/ui_*.py`                        | Generated from the `.ui` files; do not edit by hand               |
-| `src/app/resources/style.qss`               | The one stylesheet: every colour and widget style                   |
-| `src/app/resources/`                        | The icons and `resources.qrc`, the Qt resource file that lists them |
-| `src/app/ui/resources_rc.py`                | The resources compiled from `resources.qrc`; do not edit by hand    |
-| `smoke.py`                                  | The test behind `just test`                                      |
+| File                     | Purpose                                                  |
+| ------------------------ | -------------------------------------------------------- |
+| `src/app/__init__.py`    | The application and organisation names                   |
+| `src/app/__main__.py`    | Entry point for `python -m app` and the `app` command    |
+| `src/app/main_window.py` | The main window: sidebar, pages, menu, saved window size |
+| `src/app/pages/`         | One module per page                                      |
+| `src/app/contacts.py`    | The example data and its table model                     |
+| `src/app/worker.py`      | The example long task, which runs on a second thread     |
+| `src/app/theme.py`       | The light and dark palettes, and the saved choice        |
+| `src/app/ui/*.ui`        | Qt Designer forms, one per window or page                |
+| `src/app/ui/ui_*.py`     | Generated from the `.ui` files; do not edit by hand      |
+| `tests/`                 | The tests behind `just test`                             |
+| `docs/`, `mkdocs.yml`    | This site                                                |
 
-`MainWindow` in `main_window.py` is the window: the menu toggle and switching
-pages. `ExamplePages` in
-`pages.py` is the example application logic behind the buttons on each page.
-Put the code for your own application there.
+## How a page is put together
 
-## The edit loop
+Every page is the same three pieces:
 
-1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer src/app/ui/ui_main.ui`) and
-   change the layout. Sizes, icons, labels and object names are set there, so
-   the Python side only has to say what a widget does. The forms look plain
-   in Designer: the colours and widget styles come from
-   `src/app/resources/style.qss` when the application runs.
-2. Change colours and widget styles in `style.qss`; see
-   [Change the look](customising.md#change-the-look).
-3. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
-4. Wire the widgets up in `pages.py`. `ExamplePages.__init__` connects the
-   widgets of the example pages and is the place to copy from.
-5. Set the application name, `APP_NAME`, in `main_window.py`.
+1. A form, `ui/<name>_page.ui`, drawn in Qt Designer. It holds the layout, the
+   labels and the object name of each widget, and no colours.
+2. A generated module, `ui/ui_<name>_page.py`, which `just uic` writes from
+   the form.
+3. A class in `pages/<name>.py` that builds the form and says what the widgets
+   do:
 
-[Customising](customising.md) walks through the common changes, and
-[Layout](layout.md) gives the object name of every widget you will need to
-refer to.
+```python
+class SettingsPage(QWidget):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self.ui = Ui_SettingsPage()
+        self.ui.setupUi(self)
+        self.ui.theme_combo.addItems(THEMES)
+        self.ui.theme_combo.setCurrentText(saved_theme())
+        self.ui.theme_combo.currentTextChanged.connect(self._set_theme)
+```
+
+The widgets are reached through `self.ui`, by the object names given in
+Designer. `MainWindow.__init__` creates each page and adds it to the sidebar.
