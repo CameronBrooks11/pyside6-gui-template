@@ -4,13 +4,16 @@ A flat, frameless desktop GUI to start a Python application from: PySide6
 (Qt 6), laid out in Qt Designer, for Windows, Linux and macOS.
 
 <p align="center">
-  <img src="images/homepage.png" alt="Home page of the template">
+  <img src="docs/images/home.png" alt="Home page of the template">
 </p>
 
 It is a PySide6 port of
 [Minimalistic-Flat-Modern-GUI-Template](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template)
-by Anjal.P, which targets PySide2. The design, the layouts and the
-documentation are theirs.
+by Anjal.P, which targets PySide2. The design, the layouts and the guide the
+documentation is converted from are theirs.
+
+Documentation: <https://cameronbrooks11.github.io/pyside6-gui-template/>, built
+from [`docs/`](docs/index.md).
 
 ## What is in it
 
@@ -51,8 +54,7 @@ like.
 | `ui_main.py`, `ui_dialog.py`, `ui_error.py`      | Generated from the `.ui` files; do not edit by hand                |
 | `icons/`                                         | Icons the application loads at run time                            |
 | `css.txt`                                        | The Qt stylesheets used on the widgets                             |
-| `Documentation.pdf`                              | Upstream's guide to the layout, widget names and stylesheets       |
-| `images/`                                        | Screenshots and layout diagrams                                    |
+| `docs/`, `mkdocs.yml`                            | The documentation site: layout, widget names, stylesheets          |
 | `smoke.py`                                       | The check behind `just check`                                      |
 
 `main.py` and `ui_function.py` import each other. That resolves only when
@@ -67,22 +69,14 @@ like.
    commented examples for each page.
 4. Set the application name in `MainWindow.__init__` in `main.py`.
 
-`Documentation.pdf` was written for the PySide2 original. Its layout diagrams,
-widget names and stylesheets apply here unchanged; where it says PySide2 or
-`pyside2-uic`, read PySide6 and `pyside6-uic`.
+The documentation covers each of these steps:
+[the object name of every widget](docs/layout.md),
+[adding a menu button, a page or a widget](docs/customising.md), and
+[the calls and stylesheet for each widget type](docs/widgets.md).
+`just docs` serves it locally.
 
 <p align="center">
-  <img src="images/layoutAsset%2097.png" alt="Layout of the main window">
-</p>
-
-## More screenshots
-
-<p align="center">
-  <img src="images/homeDetailed.png" alt="Home page, annotated">
-  <img src="images/about%20pageAsset%2096.png" alt="About panel toggled open">
-  <img src="images/android.png" alt="A page within a page">
-  <img src="images/dialogerro.png" alt="Dialog box and error box">
-  <img src="images/buttons.png" alt="Widgets">
+  <img src="docs/images/layout/main-window-annotated.png" alt="Main window with object names">
 </p>
 
 ## License

@@ -1,4 +1,4 @@
-####################################################CSS Code for widgets used in this Project: Refer Documentation.pdf for detailed view
+####################################################CSS Code for widgets used in this Project: Refer docs/widgets.md for detailed view
 
 						------> LABEL:
 QLabel {

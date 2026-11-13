@@ -15,7 +15,7 @@
 #                                                                                         #
 #  Each line of the code described below is commented well, such as: the purpose of the   #
 #  code, its function, returns e.t.c as in certain caes: the alternatives to that solul-  #
-#  ution, other sources like included PDF document has also the working of the code.      #
+#  ution, other sources like the guide in docs/ has also the working of the code.         #
 #  CSS stylesheet of the buttons are given seperatly in the CSS.txt in the parent folder  #
 ###########################################################################################
 

@@ -18,6 +18,14 @@ run:
 check:
     QT_QPA_PLATFORM=offscreen uv run python -W error smoke.py
 
+# Serve the documentation site locally with live reload
+docs:
+    uv run --only-group docs mkdocs serve
+
+# Build the documentation site into site/ and fail on any warning
+docs-build:
+    uv run --only-group docs mkdocs build --strict
+
 # Regenerate the ui_*.py files after editing a .ui file in Qt Designer
 uic:
     uv run pyside6-uic ui_main.ui -o ui_main.py
