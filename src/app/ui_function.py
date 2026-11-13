@@ -231,8 +231,8 @@ class UIFunction:
         ######ANDROID > PAGE CLEAN >>>>>>>>>>>>>>>>>>>>>>
         #NOTHING HERE
         self.ui.horizontalSlider_2.valueChanged.connect(lambda: print("Slider: Horizontal: ", self.ui.horizontalSlider_2.value())) #CHECK WEATHER THE SLIDER IS MOVED OR NOT
-        self.ui.checkBox.toggled.connect(lambda checked: checked and self.errorexec("Happy to Know you liked the UI", ":/icons/smile-wide.png", "Ok")) #WHEN THE CHECK BOX IS CHECKED IT ECECUTES THE ERROR BOX WITH MESSAGE.
-        self.ui.checkBox_2.toggled.connect(lambda checked: checked and self.errorexec("Even More Happy to hear this", ":/icons/smile.png", "Ok"))
+        self.ui.checkBox.toggled.connect(lambda checked: checked and self.errorexec("Happy to Know you liked the UI", ":/icons/smile.png", "Ok")) #WHEN THE CHECK BOX IS CHECKED IT ECECUTES THE ERROR BOX WITH MESSAGE.
+        self.ui.checkBox_2.toggled.connect(lambda checked: checked and self.errorexec("Even More Happy to hear this", ":/icons/grin.png", "Ok"))
 
         ##########PAGE: ABOUT HOME #############
         self.ui.text_about_home.setVerticalScrollBar(self.ui.vsb_about_home)

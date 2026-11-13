@@ -736,7 +736,7 @@ class Ui_MainWindow(object):
                         "}\n"
 "\n"
 "QComboBox::down-arrow {\n"
-"    image: url(:/icons/arrow.png);\n"
+"    image: url(:/icons/dropdown.png);\n"
 "}\n"
 "\n"
 "QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
