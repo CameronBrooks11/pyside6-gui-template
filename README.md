@@ -10,7 +10,9 @@ A flat, frameless desktop GUI to start a Python application from: PySide6
 It is a PySide6 port of
 [Minimalistic-Flat-Modern-GUI-Template](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template)
 by Anjal.P, which targets PySide2. The design, the layouts and the guide the
-documentation is converted from are theirs.
+documentation is converted from are theirs. The port to PySide6, the docs site
+and the template tooling are by
+[Cameron Brooks](https://github.com/CameronBrooks11).
 
 Documentation: <https://cameronbrooks11.github.io/pyside6-gui-template/>, built
 from [`docs/`](docs/index.md).
@@ -107,3 +109,9 @@ The documentation covers each of these steps:
 ## License
 
 MIT, copyright 2020 Anjal.P. See [LICENSE](LICENSE).
+
+## Credits
+
+- Original design, layouts and guide: [Anjal.P](https://github.com/anjalp).
+- PySide6 port, documentation site and template tooling:
+  [Cameron Brooks](https://github.com/CameronBrooks11).
