@@ -1,0 +1,28 @@
+site_name: pyside6-gui-template
+site_description: Flat, frameless desktop GUI template built with PySide6 and Qt Designer.
+site_url: https://cameronbrooks11.github.io/pyside6-gui-template/
+repo_url: https://github.com/CameronBrooks11/pyside6-gui-template
+repo_name: CameronBrooks11/pyside6-gui-template
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: teal
+  features:
+    - navigation.sections
+    - content.code.copy
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Gallery: gallery.md
+  - Layout: layout.md
+  - Customising: customising.md
+  - Widgets and stylesheets: widgets.md
+  - Design approach: design-approach.md
+  - Credits: credits.md

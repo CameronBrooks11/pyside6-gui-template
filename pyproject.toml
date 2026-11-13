@@ -6,3 +6,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 dependencies = ["pyside6>=6.7"]
+
+[dependency-groups]
+docs = ["mkdocs-material>=9.5"]

@@ -14,14 +14,14 @@
 #                                                                                         #
 #  Each line of the code described below is commented well, such as: the purpose of the   #
 #  code, its function, returns e.t.c as in certain case: the alternatives to that solul-  #
-#  ution, other sources like included PDF document has also the working of the code.      #
+#  ution, other sources like the guide in docs/ has also the working of the code.         #
 #  CSS stylesheet of the buttons are given seperatly in the CSS.txt in the parent folder  #
 ###########################################################################################
 
 ###########################################################################################
 #                                       CAUTION                                           #
 #  SINCE MOST OF THE WORK IS DONE IN THE QT DESIGNER, YOU MAY NOT SEE THE STYLESHEET HERE #
-#  FOR THAT PLEASE REFER THE Documentation.pdf                                            #
+#  FOR THAT PLEASE REFER docs/widgets.md                                                  #
 #  ALSO MANY OF THE SETTINGS IS PREDEFINED IN THE QT DESIGNER ITSELF, SO HERE IN THIS FUN-#
 #  CTION WHAT HAPPENS AFTER THIS I.E. WHEN THE USER CHANGES THE INPUT STATE, ONLY IS DONE #
 #  HERE, SO IF YOU WANT TO MODIFY THE FILE, PLEASE OPEN THE CORRESPONDING .ui FILE IN QT  #
@@ -272,7 +272,7 @@ class MainWindow(QMainWindow):
         # WIDGET PERFORMING THE SAME FUNCTION.
 
         # --ADDING A NEW MENU BUTTON------------------:
-        # REFER THE DOCUMENTATION: Documentation.pdf FILE
+        # REFER THE DOCUMENTATION: docs/customising.md
 
         # --CALLING A DIALOG BOX----------------------:
         # dialogexec("Heading", "Message", "icon", "Button1name", "button2name")
@@ -351,7 +351,7 @@ class MainWindow(QMainWindow):
         # --USING TEXT BROWSER-----------:
         # self.ui.textEdit_gamepad.setText("----")
 
-        # FOR REST OF THE WIDGET GOTO THE Documentation.pdf AND CHECK THE LAYOUT FOR MORE DETAILS.
+        # FOR REST OF THE WIDGET GOTO docs/layout.md AND CHECK THE LAYOUT FOR MORE DETAILS.
 
         # ---> MOVING THE WINDOW WHEN LEFT MOUSE PRESSED AND DRAGGED OVER APPNAME LABEL
         # SAME TO SAY AS IN COMMENT (C2)
