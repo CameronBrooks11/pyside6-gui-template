@@ -2,13 +2,14 @@
 
 This takes over at app.exec().
 
-Run through `just check`, from the repository root, which sets
+Run through `just test`, from the repository root, which sets
 QT_QPA_PLATFORM=offscreen and turns Python warnings into errors so a deprecated
 Qt call fails here. Qt's own warnings, an exception in a slot, a page that does
 not switch, a drag that does not move the window, an image path with no file or
 resource behind it and a generated module that is out of date fail it too.
 """
 
+import contextlib
 import importlib
 import re
 import runpy
@@ -208,7 +209,8 @@ GENERATED = (
 
 # What Qt's tools print about the host under a non-UTF-8 locale such as C.
 LOCALE_NOTE = re.compile(
-    r"Detected locale|Qt depends on a UTF-8 locale|If this causes problems|for more information|\s*$"
+    r"Detected locale|Qt depends on a UTF-8 locale|If this causes problems"
+    r"|for more information|\s*$"
 )
 
 # The header line of a generated module that names the Qt version.
@@ -281,10 +283,8 @@ def qss_colour(selector, prop="background"):
         # The last declaration of the last rule wins, as in Qt.
         value = values[-1].strip()
         numbers = re.fullmatch(r"rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)", value)
-        if numbers:
-            parsed = QColor(*(int(n) for n in numbers.groups()))
-        else:
-            parsed = QColor(value)  # a name or a hex value; invalid for anything else
+        # Otherwise a name or a hex value; QColor is invalid for anything else.
+        parsed = QColor(*(int(n) for n in numbers.groups())) if numbers else QColor(value)
         colour = parsed.getRgb()[:3] if parsed.isValid() else None
     if colour is None:
         fail(
@@ -355,7 +355,8 @@ def check_style(window):
         for button in container.findChildren(QPushButton):
             expect(
                 button.property("variant") == variant,
-                f"{button.objectName()} has variant {button.property('variant')!r}, not {variant!r}",
+                f"{button.objectName()} has variant {button.property('variant')!r}, "
+                f"not {variant!r}",
             )
 
     # The stylesheet stops at the content of the app's own windows. A dialog
@@ -480,9 +481,7 @@ def check_highlight(ui):
 
 
 def shows_pixmap(label, path):
-    return (
-        not label.pixmap().isNull() and label.pixmap().toImage() == QPixmap(path).toImage()
-    )
+    return not label.pixmap().isNull() and label.pixmap().toImage() == QPixmap(path).toImage()
 
 
 def shows(button, icon_path):
@@ -550,9 +549,7 @@ def check_window_state(window):
     expect(grip is not None, "there is no resize grip on the frameless window")
     if grip is not None:
         image = grip.grab().toImage()
-        colours = {
-            image.pixel(x, y) for x in range(image.width()) for y in range(image.height())
-        }
+        colours = {image.pixel(x, y) for x in range(image.width()) for y in range(image.height())}
         expect(len(colours) > 1, "the resize grip is drawn as a blank square")
         size = window.size()
         QTest.mousePress(grip, Qt.MouseButton.LeftButton, pos=QPoint(5, 5))
@@ -668,6 +665,7 @@ def check_page_widgets(ui):
         ui.line_android_email,
         ui.line_android_ph,
     )
+
     def contact_buttons():
         return tuple(
             getattr(ui, "bn_android_contact_" + name).isEnabled()
@@ -777,9 +775,7 @@ def check_dialog_result(window):
 
 
 def drive(*_):
-    (window,) = [
-        w for w in QApplication.topLevelWidgets() if type(w).__name__ == "MainWindow"
-    ]
+    (window,) = [w for w in QApplication.topLevelWidgets() if type(w).__name__ == "MainWindow"]
     ui = window.ui
     expect(window.isVisible(), "the app did not show the main window")
     expect(
@@ -852,10 +848,8 @@ sys.excepthook = on_exception
 # Importing the entry module must not start the app: only running it does.
 # exec is stubbed first, so that an app that does start returns at once.
 QApplication.exec = lambda *_: 0
-try:
+with contextlib.suppress(SystemExit):
     importlib.import_module(f"{PACKAGE}.__main__")
-except SystemExit:
-    pass
 if QApplication.instance() is not None:
     problems.append(f"importing {PACKAGE}.__main__ started the application")
 sys.modules.pop(f"{PACKAGE}.__main__", None)  # so that it can be run as the entry below

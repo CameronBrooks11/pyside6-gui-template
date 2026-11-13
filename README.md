@@ -34,7 +34,7 @@ from [`docs/`](docs/index.md).
 With [uv](https://docs.astral.sh/uv/) and [just](https://just.systems/):
 
 ```sh
-just setup   # install PySide6 into .venv
+just setup   # install the app, PySide6 and the dev tools into .venv
 just run     # launch the GUI
 ```
 
@@ -43,7 +43,9 @@ Without uv, `pip install -e .` in an environment of your own and run
 `python -m app`. The icons are compiled into the package, so it runs from any
 directory.
 
-`just check` builds every window on Qt's offscreen platform and clicks through
+`just check` runs the formatter, the linter and the type checker without
+changing anything; `just fmt` applies the formatting. `just test` builds
+every window on Qt's offscreen platform and clicks through
 the pages, the menu toggle, the window buttons and the example widgets. It
 fails on a Python or Qt warning (a deprecated Qt call included), an exception
 in a slot, a page that does not switch, an icon path with no file or resource
@@ -69,7 +71,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 | `src/app/resources/`                             | The icons and `resources.qrc`, the Qt resource file that lists them |
 | `src/app/ui/resources_rc.py`                     | The resources compiled from `resources.qrc`; do not edit by hand    |
 | `docs/`, `mkdocs.yml`                            | The documentation site: layout, widget names, stylesheets          |
-| `smoke.py`                                       | The check behind `just check`                                      |
+| `smoke.py`                                       | The test behind `just test`                                        |
 
 ## Making it yours
 
@@ -81,11 +83,13 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 4. Wire the widgets up in `pages.py`. `ExamplePages.__init__` connects the
    widgets of the example pages and is the place to copy from.
 5. Set the application name, `APP_NAME`, in `main_window.py`.
-6. Set `name`, `description` and `version` in `pyproject.toml`.
+6. Set `name`, `description` and `version` in `pyproject.toml`, then run
+   `uv lock`: the lock file records the project's name and version, and CI
+   installs with `uv sync --locked`, which refuses a lock that is out of date.
 7. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
    line and `module-name` in `pyproject.toml`, the paths in the `run` and
    `uic` recipes of the justfile, and `PACKAGE` at the top of `smoke.py`.
-   `just check` fails if the directory and `PACKAGE` disagree; it does not
+   `just test` fails if the directory and `PACKAGE` disagree; it does not
    read the script line or the justfile, so look those over yourself. The
    docs and a few comments also say `python -m app`.
 8. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
@@ -94,7 +98,12 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
    If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
    `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the
-   justfile and the `docs` group in `pyproject.toml`.
+   justfile, the Docs step in `.github/workflows/check.yml` and the `docs`
+   group in `pyproject.toml`, then run `uv lock`.
+10. `.github/workflows/check.yml` runs `just check`, `just test` and
+    `just docs-build` on every pull request into `main`. It and `docs.yml` ask
+    for Python 3.10, the oldest version `requires-python` allows: change both
+    if you raise that floor.
 
 The documentation covers each of these steps:
 [the object name of every widget](docs/layout.md),

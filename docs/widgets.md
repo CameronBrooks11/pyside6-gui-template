@@ -15,8 +15,14 @@ is organised. In the snippets, `self.ui` is the `Ui_MainWindow` instance held by
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import (
-    QCheckBox, QComboBox, QLineEdit, QProgressBar,
-    QPushButton, QRadioButton, QScrollBar, QSlider,
+    QCheckBox,
+    QComboBox,
+    QLineEdit,
+    QProgressBar,
+    QPushButton,
+    QRadioButton,
+    QScrollBar,
+    QSlider,
 )
 ```
 
@@ -70,7 +76,7 @@ from Python:
 ```python
 button.setProperty("variant", "danger")
 button.style().unpolish(button)  # a widget already shown keeps its old look
-button.style().polish(button)    # until it is polished again
+button.style().polish(button)  # until it is polished again
 ```
 
 Reference: [QPushButton](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QPushButton.html).

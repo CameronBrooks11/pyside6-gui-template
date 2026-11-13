@@ -16,7 +16,7 @@ to install.
 With uv and just:
 
 ```sh
-just setup   # install PySide6 into .venv
+just setup   # install the app, PySide6 and the dev tools into .venv
 just run     # launch the GUI
 ```
 
@@ -28,15 +28,17 @@ directory.
 ## Check it
 
 ```sh
-just check
+just check   # formatter, linter, type checker; changes nothing
+just test    # the app itself, driven without a display
 ```
 
-builds every window on Qt's offscreen platform and clicks through the pages,
-the menu toggle, the window buttons and the example widgets. It fails on a
-Python or Qt warning (a deprecated Qt call included), an exception in a slot,
-a page that does not switch, an icon path with no file or resource behind it,
-and a generated module that is out of date with its `.ui` or `.qrc` source. It
-does not show what the GUI looks like.
+`just fmt` applies the formatting. `just test` builds every window on Qt's
+offscreen platform and clicks through the pages, the menu toggle, the window
+buttons and the example widgets. It fails on a Python or Qt warning (a
+deprecated Qt call included), an exception in a slot, a page that does not
+switch, an icon path with no file or resource behind it, and a generated module
+that is out of date with its `.ui` or `.qrc` source. It does not show what the
+GUI looks like.
 
 When you add a page or a button, add it to `smoke.py` so the check covers it.
 
@@ -59,7 +61,7 @@ The other pages name its files without the directory.
 | `src/app/resources/style.qss`               | The one stylesheet: every colour and widget style                   |
 | `src/app/resources/`                        | The icons and `resources.qrc`, the Qt resource file that lists them |
 | `src/app/ui/resources_rc.py`                | The resources compiled from `resources.qrc`; do not edit by hand    |
-| `smoke.py`                                  | The check behind `just check`                                     |
+| `smoke.py`                                  | The test behind `just test`                                      |
 
 `MainWindow` in `main_window.py` is the window: its title bar buttons, the
 menu toggle, switching pages, maximise and restore. `ExamplePages` in

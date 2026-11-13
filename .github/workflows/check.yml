@@ -1,0 +1,49 @@
+name: Check
+
+# Pull requests only: a squash merge lands the tree the pull request run
+# tested, so a second run on push to main would prove the same thing again.
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install just
+        uses: extractions/setup-just@v4
+
+      # The oldest Python the project supports, so the floor in
+      # pyproject.toml is tested and not only declared. No cache: a run on a
+      # pull request cannot save one that other pull requests restore.
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.10"
+          enable-cache: false
+
+      # Qt loads these at start-up even on the offscreen platform.
+      - name: Install the libraries Qt needs
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3
+
+      - name: Setup
+        run: uv sync --locked
+
+      - name: Check (format, lint, type-check)
+        run: just check
+
+      - name: Test
+        run: just test
+
+      - name: Docs
+        run: just docs-build

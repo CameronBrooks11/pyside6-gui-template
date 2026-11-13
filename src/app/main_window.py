@@ -101,7 +101,9 @@ class MainWindow(QMainWindow):
         # corner gets a grip. Its picture is set in style.qss, under QSizeGrip.
         self.size_grip = QSizeGrip(self.ui.frame_drag)
         self.size_grip.setToolTip("Resize")
-        self.ui.frame_drag.layout().addWidget(self.size_grip)
+        layout = self.ui.frame_drag.layout()
+        assert layout is not None, "frame_drag has no layout; ui_main.ui gives it one"
+        layout.addWidget(self.size_grip)
 
     def toggle_maximized(self):
         if self.isMaximized():

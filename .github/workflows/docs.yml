@@ -22,11 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # The same Python as check.yml, so the site deployed is built with the
+      # versions the pull request's docs build was checked with.
       - name: Install uv
         uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.10"
 
       - name: Build the site
-        run: uv run --only-group docs mkdocs build --strict
+        run: uv run --locked --only-group docs mkdocs build --strict
 
       - name: Upload the site
         uses: actions/upload-pages-artifact@v5

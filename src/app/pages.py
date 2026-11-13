@@ -29,9 +29,7 @@ class ExamplePages:
         # Bug
         self.progress_timer = QTimer(window)
         self.progress_timer.timeout.connect(self._advance_progress)
-        ui.bn_bug_start.clicked.connect(
-            lambda: self.start_progress(ui.comboBox_bug.currentText())
-        )
+        ui.bn_bug_start.clicked.connect(lambda: self.start_progress(ui.comboBox_bug.currentText()))
 
         # Cloud
         ui.bn_cloud_connect.clicked.connect(self.connect_cloud)
@@ -59,15 +57,19 @@ class ExamplePages:
             lambda value: print("Slider: Horizontal: ", value)
         )
         ui.checkBox.toggled.connect(
-            lambda checked: checked
-            and window.error_box.show_error(
-                "Happy to Know you liked the UI", ":/icons/smile.png", "Ok"
+            lambda checked: (
+                checked
+                and window.error_box.show_error(
+                    "Happy to Know you liked the UI", ":/icons/smile.png", "Ok"
+                )
             )
         )
         ui.checkBox_2.toggled.connect(
-            lambda checked: checked
-            and window.error_box.show_error(
-                "Even More Happy to hear this", ":/icons/grin.png", "Ok"
+            lambda checked: (
+                checked
+                and window.error_box.show_error(
+                    "Even More Happy to hear this", ":/icons/grin.png", "Ok"
+                )
             )
         )
 
