@@ -55,7 +55,7 @@ it. It does not show what the GUI looks like.
 | `ui_main.ui`, `ui_dialog.ui`, `ui_error.ui`      | Qt Designer sources                                                |
 | `ui_main.py`, `ui_dialog.py`, `ui_error.py`      | Generated from the `.ui` files; do not edit by hand                |
 | `icons/`                                         | Icons the application loads at run time                            |
-| `css.txt`                                        | The Qt stylesheets used on the widgets                             |
+| `css.txt`                                        | Reference copy of the stylesheets set in the `.ui` files; not loaded |
 | `docs/`, `mkdocs.yml`                            | The documentation site: layout, widget names, stylesheets          |
 | `smoke.py`                                       | The check behind `just check`                                      |
 
@@ -68,6 +68,12 @@ it. It does not show what the GUI looks like.
    `UIFunction.stackPage` in `ui_function.py` has a working example for each
    page.
 4. Set the application name in `MainWindow.__init__` in `main.py`.
+5. Set `name`, `description` and `version` in `pyproject.toml`.
+6. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
+   copies, and add your own copyright line to it.
+7. Replace this README and `docs/` with your own, and `site_name`, `site_url`
+   and `repo_url` in `mkdocs.yml`, or delete `docs/`, `mkdocs.yml` and
+   `.github/workflows/docs.yml` if you do not want a docs site.
 
 The documentation covers each of these steps:
 [the object name of every widget](docs/layout.md),

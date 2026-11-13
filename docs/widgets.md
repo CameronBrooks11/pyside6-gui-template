@@ -5,7 +5,8 @@ styled in Qt Designer. None of that appears in `main.py`. The Python side only
 says what happens when the widget is used.
 
 For each widget type this page gives the calls you are likely to need and the
-stylesheet the template uses. The stylesheets are also collected in `css.txt`.
+stylesheet the template uses. The stylesheets are set on each widget in the
+`.ui` files; `css.txt` is a reference copy that the application does not load.
 In the snippets, `self.ui` is the `Ui_MainWindow` instance held by
 `MainWindow`, and the names come from:
 
