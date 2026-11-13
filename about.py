@@ -2,7 +2,7 @@
 ###                        CODE:       WRITTEN BY: ANJAL.P AUGUST 11 2020               ###
 ###                        PROJECT:    PELLIS Z1                                        ###
 ###                        PURPOSE:    WINDOWS/LINUX/MAC OS FLAT MODERN UI              ###
-###                                    BASED ON QT DESIGNER, PySide2                    ###
+###                                    BASED ON QT DESIGNER, PySide6                    ###
 ###                        USE CASE:   TEMPLATE FOR SOFTWARES                           ###
 ###                        LICENCE:    MIT OPENSOURCE LICENCE                           ###
 ###                                                                                     ###

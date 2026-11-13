@@ -1,0 +1,8 @@
+[project]
+name = "pyside6-gui-template"
+version = "0.1.0"
+description = "Flat, frameless desktop GUI template built with PySide6 and Qt Designer"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = ["pyside6>=6.7"]

@@ -1,173 +1,90 @@
-# Minimalistic Flat Modern GUI Template
-[![GitHub](https://img.shields.io/github/license/anjalp/Minimalistic-Flat-Modern-GUI-Template?logo=Github)](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/LICENSE) [![GitHub top language](https://img.shields.io/github/languages/top/anjalp/Minimalistic-Flat-Modern-GUI-Template?logo=github)](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template) [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/anjalp/Minimalistic-Flat-Modern-GUI-Template?logo=github)](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template) [![GitHub issues](https://img.shields.io/github/issues/anjalp/Minimalistic-Flat-Modern-GUI-Template?logo=github)](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/issues)
+# pyside6-gui-template
 
-A **Free** to use, Beautiful, Feature Rich, Fully Customizable Flat Modern GUI Template Using **Pyside2** designed in **Qt Designer**, supported for Windows/Linux/Mac OS, Incorporating widgets like Buttons, Progress Bar, Custom Tabs, and many more.
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/homepage.png">
-</p>
-
-Check below to see more Images of the GUI.
-
-## HIGHLIGHTS
-
-* Flat Minimalistic Design.
-* Dual Tone Color Scheme.
-* Dedicated Menu Bar.
-* Dedicated About Page.
-* Toggle Menu Button.
-* Custom Top Bar With Custom Minimize, Maximize, Restore, and Close Buttons.
-* Custom Widgets:
-  * Push Buttons
-  * Progress Bar
-  * Radio Buttons
-  * Check Boxes
-  * Text Edit Field
-  * Horizontal and Vertical Sliders
-  * Horizontal and Vertical Scroll Bar
-  * Combo Box.
-  * Text Browser
-* Custom Dialog Box with customizable Heading, Message to Display, Buttons to Display.
-* Custom Error Box with customizable Heading, Message to Display, and Button.
-
-
-
-## PREREQUISITES
-
-* Intermediate Python User
-
-* Comfortable in coding Pyside2/PyQt5/PyQt4 or has been using any other Python GUI package(refer to Resource section).
-
-* Install [PySide2](https://pypi.org/project/PySide2/), [Qt Designer](https://build-system.fman.io/qt-designer-download)
-
-* Comfortable in using Qt Designer.
-
-  If you are completely new to GUI in python, then I suggest you quickly head forward to the Resource section for help.
-
-## QUICKSTART
-
-Clone/Fork the Repository to your PC, open the `/exe` folder and run the `main.exe` file to experience the GUI in a glance(don't forget that `icons` folder is required for main.exe to work.).
-
-* If you have installed the PySide2, then try running the `main.py` 
-
-  ```basic
-  C:/User/home/minimalistic-flat-modern-ui>python3 main.py
-  ```
-
-  from your favorite terminal. 
-
-* To modify the Main Window Design open the `ui_main.py` file in **Qt Designer**, make necessary modifications, and then the action of the widget can be coded in the `main.py` and `ui_function.py` files.
-
-* To Modify the Dialog Box Design open the `ui_dialog.ui` file in Qt Designer, for coding related to Dialog Box, move to `class` `dialogUi` in `main.py`.The Same applies to the Error Box.
-
-* All the Custom Stylesheet used in this Project is provided in the `Documentation.pdf` file. Use them where ever required.
-
-* Check the `images` folder to see the GUI Images.
-
-## LAYOUT
-
-The Layout of the GUI is made using Qt Designer, gives you easy access to the *widget name* used in this project so that you can modify the GUI to fit your purpose with ease.
-
-*This below illustration only represents the superficial part of the GUI. Widget inside the Stacked pages listed in the image, is not displayed here. The full representation is given in the `Documentation.pdf` file.*
-
-
-
-![Layout](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/layoutAsset%2097.png)
+A flat, frameless desktop GUI to start a Python application from: PySide6
+(Qt 6), laid out in Qt Designer, for Windows, Linux and macOS.
 
 <p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/layout_infoAsset%20100.png">
+  <img src="images/homepage.png" alt="Home page of the template">
 </p>
 
-## DOCUMENTATION
+It is a PySide6 port of
+[Minimalistic-Flat-Modern-GUI-Template](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template)
+by Anjal.P, which targets PySide2. The design, the layouts and the
+documentation are theirs.
 
-For Complete Documentation check the `Documentation.pdf`. Each python file is commented well for your reference.The Stylesheet used in this project is also provided in the pdf itself.
+## What is in it
 
-## QUICK GLANCE
+- Frameless window with its own title bar: drag, minimise, maximise, restore
+  and close.
+- Side menu with four example pages (Home, Bug, Android, Cloud) on a stacked
+  widget, and a toggle that widens the menu into an About panel.
+- Styled widgets: push buttons, progress bar, radio buttons, check boxes, line
+  and text edits, sliders, scroll bars, combo box, text browser.
+- A dialog box and an error box, each called with one function that sets the
+  heading, message, icon and button text.
 
-**Color Scheme**
+## Quick start
+
+With [uv](https://docs.astral.sh/uv/) and [just](https://just.systems/):
+
+```sh
+just setup   # install PySide6 into .venv
+just run     # launch the GUI
+```
+
+Without them, install `pyside6` 6.7 or newer and run `python main.py` from the
+repository root. The icons load by relative path, so the working directory has
+to be the root.
+
+`just check` builds every window on Qt's offscreen platform and fails on any
+warning, a deprecated Qt call included. It does not show what the GUI looks
+like.
+
+## Layout
+
+| File                                             | Purpose                                                            |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| `main.py`                                        | Entry point: the main window, the dialog box and the error box     |
+| `ui_function.py`                                 | Behaviour: menu, page switching, window controls, widget handlers  |
+| `about.py`                                       | Text shown in the About panel of each page                         |
+| `ui_main.ui`, `ui_dialog.ui`, `ui_error.ui`      | Qt Designer sources                                                |
+| `ui_main.py`, `ui_dialog.py`, `ui_error.py`      | Generated from the `.ui` files; do not edit by hand                |
+| `icons/`                                         | Icons the application loads at run time                            |
+| `css.txt`                                        | The Qt stylesheets used on the widgets                             |
+| `Documentation.pdf`                              | Upstream's guide to the layout, widget names and stylesheets       |
+| `images/`                                        | Screenshots and layout diagrams                                    |
+| `smoke.py`                                       | The check behind `just check`                                      |
+
+`main.py` and `ui_function.py` import each other. That resolves only when
+`main.py` is the entry script, so run it rather than importing it.
+
+## Making it yours
+
+1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer`) and change the
+   layout.
+2. Run `just uic` to regenerate the matching `ui_*.py`.
+3. Wire the widgets up in `main.py` and `ui_function.py`. `main.py` carries
+   commented examples for each page.
+4. Set the application name in `MainWindow.__init__` in `main.py`.
+
+`Documentation.pdf` was written for the PySide2 original. Its layout diagrams,
+widget names and stylesheets apply here unchanged; where it says PySide2 or
+`pyside2-uic`, read PySide6 and `pyside6-uic`.
 
 <p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/color%20scheme.png">
+  <img src="images/layoutAsset%2097.png" alt="Layout of the main window">
 </p>
 
-**Fonts**
+## More screenshots
 
 <p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/font%20schem.png">
+  <img src="images/homeDetailed.png" alt="Home page, annotated">
+  <img src="images/about%20pageAsset%2096.png" alt="About panel toggled open">
+  <img src="images/android.png" alt="A page within a page">
+  <img src="images/dialogerro.png" alt="Dialog box and error box">
+  <img src="images/buttons.png" alt="Widgets">
 </p>
 
-**Home Page**
+## License
 
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/homeDetailed.png">
-</p>
-
-**Toggle About** 
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/about%20pageAsset%2096.png">
-</p>
-
-**Page Within a Page**
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/android.png">
-</p>
-
-**Dialog Box and Error Box**
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/dialogerro.png">
-</p>
-
-**Widgets** 
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/buttons.png">
-</p>
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/widget%202.png">
-</p>
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/widget3.png">
-</p>
-
-**Stock Size and Full Screen**
-
-*Stock Size*
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/about_home.PNG">
-</p>
-
-*Full Screen*
-
-<p align="center">
-  <img src="https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template/blob/master/images/about_full%20screen.PNG">
-</p>
-
-## RESOURCES
-
-* Python Library used: [Pyside2](https://pypi.org/project/PySide2/)
-
-* Qt Designer : [Download](https://build-system.fman.io/qt-designer-download)
-
-* Python Basic Pyside2 Programming:
-  * [Parwiz Forogh](https://www.youtube.com/watch?v=oQTxJrDRCxg&list=PL1FgJUcJJ03tiCC6a7sF8NKLBPY4jRjmS) PySide2 GUI Tutorial in his YouTube Channel: **One of the Best for Beginners**.
-  * GeekForGeek: best Guides for PySide2/PyQt5.
-
-  * Tutorial Point [PyQt Tutorials](https://www.tutorialspoint.com/pyqt/index.htm): Even though they are for the PyQt4, almost work with PySide2. 
-* Pyside2 Stylesheet Documentation: [Qt For Python](https://doc.qt.io/qtforpython/overviews/stylesheet-examples.html)
-
-## SUPPORT
-
-:smiley: Support my work by forking or downloading this project, check it out, and share the experience.
-
-:smiley: Support like this motivates me to do more creative, work for Open Source.
-
-:point_right: Check out my other Projects in the [My GitHub Profile](https://github.com/anjalp)
-
-* Hiding Files inside an Image: Project Image Steganography
-* Backup your PC and Android wirelessly using the Ultra Backup Software.
+MIT, copyright 2020 Anjal.P. See [LICENSE](LICENSE).
