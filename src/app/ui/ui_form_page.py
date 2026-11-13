@@ -145,8 +145,8 @@ class Ui_FormPage(object):
         QWidget.setTabOrder(self.name_edit, self.email_edit)
         QWidget.setTabOrder(self.email_edit, self.role_combo)
         QWidget.setTabOrder(self.role_combo, self.notes_edit)
-        QWidget.setTabOrder(self.notes_edit, self.save_button)
-        QWidget.setTabOrder(self.save_button, self.clear_button)
+        QWidget.setTabOrder(self.notes_edit, self.clear_button)
+        QWidget.setTabOrder(self.clear_button, self.save_button)
 
         self.retranslateUi(FormPage)
 

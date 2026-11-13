@@ -117,8 +117,8 @@
   <tabstop>email_edit</tabstop>
   <tabstop>role_combo</tabstop>
   <tabstop>notes_edit</tabstop>
-  <tabstop>save_button</tabstop>
   <tabstop>clear_button</tabstop>
+  <tabstop>save_button</tabstop>
  </tabstops>
  <resources/>
  <connections/>

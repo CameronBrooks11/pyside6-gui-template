@@ -66,10 +66,20 @@ def test_a_primary_button_is_the_accent_colour_in_both_themes(qtbot):
     button = QPushButton("Save")
     qtbot.addWidget(button)
     theme.make_primary(button)
+    plain = QPushButton("Clear")
+    qtbot.addWidget(plain)
+    group = QPalette.ColorGroup
     for name in (theme.LIGHT, theme.DARK):
         theme.apply_theme(name)
-        assert button.palette().color(QPalette.ColorRole.Button) == QColor(0, 128, 134).darker(125)
-        assert button.palette().color(QPalette.ColorRole.ButtonText) == QColor("white")
+        for state in (group.Active, group.Inactive):
+            face = button.palette().color(state, QPalette.ColorRole.Button)
+            assert face.hue() == QApplication.palette().color(QPalette.ColorRole.Highlight).hue()
+            assert face != plain.palette().color(state, QPalette.ColorRole.Button)
+            assert button.palette().color(state, QPalette.ColorRole.ButtonText) == QColor("white")
+        # Disabled, it looks like any other disabled button.
+        assert button.palette().color(group.Disabled, QPalette.ColorRole.Button) == (
+            plain.palette().color(group.Disabled, QPalette.ColorRole.Button)
+        )
 
 
 def test_the_form_error_is_a_lighter_red_on_the_dark_theme(qtbot):

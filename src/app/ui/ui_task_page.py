@@ -127,7 +127,7 @@ class Ui_TaskPage(object):
     def retranslateUi(self, TaskPage):
         self.heading.setText(QCoreApplication.translate("TaskPage", u"Background task", None))
         self.description.setText(QCoreApplication.translate("TaskPage", u"The work runs on a second thread, so the window stays responsive while it does.", None))
-        self.steps_label.setText(QCoreApplication.translate("TaskPage", u"&Steps", None))
+        self.steps_label.setText(QCoreApplication.translate("TaskPage", u"S&teps", None))
         self.status_label.setText(QCoreApplication.translate("TaskPage", u"Not started", None))
         self.cancel_button.setText(QCoreApplication.translate("TaskPage", u"&Cancel", None))
         self.start_button.setText(QCoreApplication.translate("TaskPage", u"&Start", None))
