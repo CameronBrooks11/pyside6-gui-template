@@ -7,12 +7,12 @@ from are by Anjal.P, published as
 [Minimalistic-Flat-Modern-GUI-Template](https://github.com/anjalp/Minimalistic-Flat-Modern-GUI-Template)
 for PySide2. This repository ports the code to PySide6.
 
-In their words, lightly edited for grammar:
+In their words, abridged where marked and lightly edited for grammar:
 
 > From the beginning of coding I was not a frequent GUI user, and I am quite
 > new to this space, but coding different projects in CLI made me rethink
 > whether to make the same application in GUI or not. An initial attempt was
-> unsuccessful, but finally I cracked PySide2. From creating my first GUI
+> unsuccessful, but finally I cracked PySide2. [...] From creating my first GUI
 > application to this project, I was interested in making the GUI look better
 > with some modern touch to it. With my knowledge of Adobe Illustrator I began
 > to make some initial designs, which motivated me to take on the painstaking
@@ -20,7 +20,8 @@ In their words, lightly edited for grammar:
 >
 > Searching the internet I found lots of GUI applications but no templates, so
 > I thought: why not create a GUI template, so that developers can use it in
-> their next project without investing much time on the looks. You can open
+> their next project without investing much time on the looks. [...] You can
+> open
 > the `.ui` file and modify the looks, code the functions, integrate with your
 > application in `main.py` and `ui_function.py`, and that's it: you have made
 > a simple yet powerful GUI application.

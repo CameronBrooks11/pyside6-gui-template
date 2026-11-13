@@ -13,8 +13,10 @@ A profile panel and a stats panel.
 ## Bug
 
 A push button, a progress bar and a combo box. Start fills the progress bar
-from a timer, more slowly the larger the number chosen in the combo box, and
-the window stays responsive while it runs.
+from a timer and the window stays responsive while it runs. The number chosen
+in the combo box sets the pace, 1 ms per percent for each million and never
+less than 1 ms, so the two smallest numbers both take about a tenth of a
+second and the largest about ten seconds.
 
 ![Bug page](images/bug.png)
 
@@ -53,8 +55,9 @@ Check boxes, radio buttons and sliders.
 
 ## About
 
-The toggle button widens the menu and shows the About panel of the current
-page.
+The toggle button widens the menu and shows the About page of Home, whichever
+page was showing. With the menu wide, each menu button shows the About page of
+its page.
 
 ![About panel](images/about-home.png)
 

@@ -15,7 +15,7 @@
 #  Each line of the code described below is commented well, such as: the purpose of the   #
 #  code, its function, returns e.t.c as in certain case: the alternatives to that solul-  #
 #  ution, other sources like the guide in docs/ has also the working of the code.         #
-#  CSS stylesheet of the buttons are given seperatly in the CSS.txt in the parent folder  #
+#  CSS stylesheet of the buttons are given seperatly in the css.txt in the parent folder  #
 ###########################################################################################
 
 ###########################################################################################
@@ -252,6 +252,12 @@ class MainWindow(QMainWindow):
         # WE CHOOSE THE TOPMOST FRAME WHERE THE APPLICATION NAME IS PRESENT AS THE AREA TO MOVE THE WINDOW.
         # IF MAXIMIZED, DRAGGING CHANGES IT TO NORMAL FIRST.
         dragBy(self, self.ui.frame_appname, lambda: self.isMaximized() and UIFunction.maximize_restore(self))
+
+    # ----> WHEN THE WINDOW IS MAXIMISED OR RESTORED, BY OUR BUTTON OR BY THE WINDOW MANAGER, UPDATE THE BUTTON AND THE GRIP
+    def changeEvent(self, event):
+        if event.type() == QtCore.QEvent.Type.WindowStateChange:
+            UIFunction.windowStateChanged(self)
+        super().changeEvent(event)
 
     # ----> FUNCTION TO CAPTURE THE INITIAL POSITION OF THE MOUSE: NECESSERY FOR THE moveWindow FUNCTION
     def mousePressEvent(self, event):

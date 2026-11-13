@@ -20,9 +20,10 @@ from [`docs/`](docs/index.md).
 - Frameless window with its own title bar: drag, minimise, maximise, restore
   and close.
 - Side menu with four example pages (Home, Bug, Android, Cloud) on a stacked
-  widget, and a toggle that widens the menu into an About panel.
+  widget, and a toggle that widens the menu and swaps each page for its About
+  page.
 - Styled widgets: push buttons, progress bar, radio buttons, check boxes, line
-  and text edits, sliders, scroll bars, combo box, text browser.
+  and text edits, sliders, vertical scroll bars, combo box.
 - A dialog box and an error box, each called with one function that sets the
   heading, message, icon and button text.
 
@@ -65,15 +66,19 @@ it. It does not show what the GUI looks like.
    layout.
 2. Run `just uic` to regenerate the matching `ui_*.py`.
 3. Wire the widgets up in `main.py` and `ui_function.py`.
-   `UIFunction.stackPage` in `ui_function.py` has a working example for each
-   page.
+   `UIFunction.stackPage` in `ui_function.py` wires up the example pages and
+   is the place to copy from.
 4. Set the application name in `MainWindow.__init__` in `main.py`.
 5. Set `name`, `description` and `version` in `pyproject.toml`.
 6. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
    copies, and add your own copyright line to it.
-7. Replace this README and `docs/` with your own, and `site_name`, `site_url`
-   and `repo_url` in `mkdocs.yml`, or delete `docs/`, `mkdocs.yml` and
-   `.github/workflows/docs.yml` if you do not want a docs site.
+7. Replace this README and `docs/` with your own, and set `site_name`,
+   `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
+   If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
+   `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the
+   justfile and the `docs` group in `pyproject.toml`. The comments at the top
+   of `main.py`, `ui_function.py` and `css.txt` and one in
+   `MainWindow.__init__` point into `docs/`.
 
 The documentation covers each of these steps:
 [the object name of every widget](docs/layout.md),

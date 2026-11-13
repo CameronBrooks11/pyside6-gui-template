@@ -65,8 +65,8 @@ page. Put the code for your own application there.
    all set there, so the Python side only has to say what a widget does.
 2. Run `just uic` to regenerate the matching `ui_*.py`.
 3. Wire the widgets up in `main.py` and `ui_function.py`.
-   `UIFunction.stackPage` in `ui_function.py` has a working example for each
-   page.
+   `UIFunction.stackPage` in `ui_function.py` wires up the example pages and
+   is the place to copy from.
 4. Set the application name in `MainWindow.__init__` in `main.py`.
 
 [Customising](customising.md) walks through the common changes, and

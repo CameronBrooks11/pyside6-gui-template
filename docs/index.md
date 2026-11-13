@@ -16,10 +16,11 @@ pages are converted from are theirs; see [Credits](credits.md).
 - Frameless window with its own title bar: drag, minimise, maximise, restore
   and close.
 - Side menu with four example pages (Home, Bug, Android, Cloud) on a stacked
-  widget, and a toggle that widens the menu into an About panel for each page.
+  widget, and a toggle that widens the menu and swaps each page for its About
+  page.
 - Styled widgets: push buttons, progress bar, radio buttons, check boxes, line
-  and text edits, horizontal and vertical sliders and scroll bars, combo box,
-  text browser.
+  and text edits, horizontal and vertical sliders, vertical scroll bars, combo
+  box.
 - A dialog box with a heading, a message, an icon and two buttons you set per
   call.
 - An error box with a heading, an icon and one button you set per call.
@@ -41,8 +42,10 @@ The home page, with the parts of the window named:
 
 ![Home page, annotated](images/home-annotated.png)
 
-The toggle at the top left widens the menu and switches each page to its About
-panel:
+The toggle at the top left widens the menu and shows the About page of Home.
+While the menu is wide, each menu button shows the About page of its page
+instead of the page. Pressing the toggle again narrows the menu and goes back
+to Home:
 
 ![About panel toggled open](images/about-annotated.png)
 
@@ -61,4 +64,4 @@ The styled widgets:
 
 ![Menu buttons, slider, progress bar, scroll bar and text field](images/widgets-controls.png)
 
-![Text browser, combo box, radio button and check box](images/widgets-text-combo.png)
+![Text edit with scroll bar, combo box, radio button and check box](images/widgets-text-combo.png)

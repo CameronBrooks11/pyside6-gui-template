@@ -52,7 +52,10 @@ About page, which is shown instead while the menu is widened.
     page while the menu is widened, sets the label, and gives the button's
     frame the lighter background that marks it as selected.
 
-7. Add the button to the `pages` tuple in `smoke.py` so `just check` clicks it.
+7. Add a `(button, page, label)` entry to the `pages` tuple in `smoke.py`, for
+   example `("bn_settings", "page_settings", "Settings")`, so `just check`
+   clicks it. The check finds the About page by putting `about_` after `page_`,
+   and the frame by swapping `bn_` for `frame_`, so keep to those names.
 
 ## Add a sub-page to the Android page
 
