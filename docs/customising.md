@@ -64,7 +64,8 @@ list in `check_page_widgets` in `smoke.py` as well.
 Copy the widget you want in Qt Designer, paste it where it should go, and set
 its size, alignment and object name in the Property Editor. Run
 `just uic`, then connect it. `ExamplePages.__init__` in `pages.py` is where
-the existing page widgets are connected, each to a method of the same class:
+the existing page widgets are connected, most of them to a method of the same
+class:
 
 ```python
 ui.bn_cloud_clear.clicked.connect(self.clear_cloud)

@@ -27,7 +27,7 @@ from PySide6.QtCore import (
     QtMsgType,
     qInstallMessageHandler,
 )
-from PySide6.QtGui import QColor, QFontDatabase, QFontInfo, QIcon, QMouseEvent
+from PySide6.QtGui import QColor, QFontDatabase, QFontInfo, QIcon, QMouseEvent, QPixmap
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import (
     QApplication,
@@ -54,7 +54,7 @@ ICON_SOURCES = sorted(
     str(path)
     for pattern in ("*.py", "*.ui", "*.qss")
     for path in Path(SRC).rglob(pattern)
-    if path.name != "resources_rc.py"
+    if path.is_file() and not path.name.startswith(".") and path.name != "resources_rc.py"
 )
 
 RESOURCES = f"{SRC}/resources/resources.qrc"
@@ -161,6 +161,10 @@ def check_drag(name, window, handle):
         bool(window.windowFlags() & Qt.WindowType.FramelessWindowHint),
         f"the {name} still has the system title bar",
     )
+    expect(
+        window.testAttribute(Qt.WidgetAttribute.WA_TranslucentBackground),
+        f"the {name} does not have a translucent background",
+    )
     before = window.pos()
     drag(handle)
     moved = window.pos() - before
@@ -171,6 +175,8 @@ def check_drag(name, window, handle):
     before = window.pos()
     drag(handle, held=Qt.MouseButton.NoButton)
     expect(window.pos() == before, f"the {name} moved with no mouse button held")
+    drag(handle, held=Qt.MouseButton.LeftButton | Qt.MouseButton.RightButton)
+    expect(window.pos() == before, f"the {name} moved with two mouse buttons held")
 
 
 def check_fonts(window):
@@ -371,7 +377,11 @@ def check_style(window):
 
 def check_icons():
     for source in ICON_SOURCES:
-        text = Path(source).read_text(encoding="utf-8")
+        try:
+            text = Path(source).read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            fail(f"{source} is not UTF-8 text")
+            continue
         for match in IMAGE_PATH.finditer(text):
             path = next(group for group in match.groups() if group)
             if path.startswith(":"):  # a Qt resource, compiled into resources_rc.py
@@ -403,9 +413,17 @@ def check_menu(ui, pages, tab_prefix):
             ui.stackedWidget.currentWidget() is getattr(ui, page),
             f"{button} did not show {page}",
         )
+        # Android opens on its Contact sub-page, which the label names too.
+        label = tab_prefix + tab
+        if button == "bn_android" and not tab_prefix:
+            label = "Android > Contact"
+            expect(
+                ui.stackedWidget_android.currentWidget() is ui.page_android_contact,
+                "the Android page did not open on Contact",
+            )
         expect(
-            ui.lab_tab.text().startswith(tab_prefix + tab),
-            f"{button} left the tab label at {ui.lab_tab.text()!r}",
+            ui.lab_tab.text() == label,
+            f"{button} set the tab label to {ui.lab_tab.text()!r}, not {label!r}",
         )
         frame = button.replace("bn_", "frame_")
         marked = [f.objectName() for f in ui.frame_bottom_west.findChildren(QFrame) if selected(f)]
@@ -459,6 +477,12 @@ def check_highlight(ui):
         "clicking Android again lost the sub-page that was showing",
     )
     ui.bn_home.click()
+
+
+def shows_pixmap(label, path):
+    return (
+        not label.pixmap().isNull() and label.pixmap().toImage() == QPixmap(path).toImage()
+    )
 
 
 def shows(button, icon_path):
@@ -546,6 +570,15 @@ def check_window_state(window):
 
 def check_page_widgets(ui):
     ui.bn_bug.click()
+    pages = ui.bn_bug_start.window().pages
+    ui.comboBox_bug.setCurrentText("100000000")
+    ui.bn_bug_start.click()
+    expect(
+        pages.progress_timer.interval() == 100,
+        f"Start with 100000000 ticks every {pages.progress_timer.interval()} ms, not 100",
+    )
+    pages.progress_timer.stop()
+    ui.bn_bug_start.setEnabled(True)
     ui.comboBox_bug.setCurrentIndex(
         min(
             range(ui.comboBox_bug.count()),
@@ -593,25 +626,36 @@ def check_page_widgets(ui):
         "Clear did not empty all three fields after a failed Connect",
     )
     ui.line_cloud_id.setText("asd")
+    ui.line_cloud_adress.setText("wrong")
+    ui.bn_cloud_connect.click()
+    expect(
+        len(dialogs_shown) == shown + 2,
+        "Connect with one right value of two did not raise the error box",
+    )
     ui.line_cloud_adress.setText("1234")
     ui.bn_cloud_connect.click()
     expect(
-        len(dialogs_shown) == shown + 1
-        and ui.line_cloud_proxy.text() == "Connection established",
-        "Connect with the right credentials did not report a connection",
+        len(dialogs_shown) == shown + 2
+        and ui.line_cloud_proxy.text() == "Connection established"
+        and (ui.line_cloud_id.text(), ui.line_cloud_adress.text()) == ("", ""),
+        "Connect with the right credentials did not report a connection and empty the fields",
     )
 
     ui.bn_android.click()
-    for button, page in (
-        ("bn_android_game", "page_android_game"),
-        ("bn_android_clean", "page_android_clean"),
-        ("bn_android_world", "page_android_world"),
-        ("bn_android_contact", "page_android_contact"),
+    for button, page, title in (
+        ("bn_android_game", "page_android_game", "GamePad"),
+        ("bn_android_clean", "page_android_clean", "Clean"),
+        ("bn_android_world", "page_android_world", "World"),
+        ("bn_android_contact", "page_android_contact", "Contact"),
     ):
         getattr(ui, button).click()
         expect(
             ui.stackedWidget_android.currentWidget() is getattr(ui, page),
             f"{button} did not show {page}",
+        )
+        expect(
+            ui.lab_tab.text() == "Android > " + title,
+            f"{button} set the tab label to {ui.lab_tab.text()!r}",
         )
         frame = button.replace("bn_", "frame_")
         marked = [f.objectName() for f in ui.frame_android_menu.findChildren(QFrame) if selected(f)]
@@ -624,15 +668,29 @@ def check_page_widgets(ui):
         ui.line_android_email,
         ui.line_android_ph,
     )
+    def contact_buttons():
+        return tuple(
+            getattr(ui, "bn_android_contact_" + name).isEnabled()
+            for name in ("edit", "share", "delete", "save")
+        )
+
     ui.bn_android_contact_edit.click()
     expect(
         all(field.isEnabled() for field in contact_fields),
         "Edit did not enable every contact field",
     )
+    expect(
+        contact_buttons() == (False, False, False, True),
+        f"while editing, Edit/Share/Delete/Save are enabled as {contact_buttons()}",
+    )
     ui.bn_android_contact_save.click()
     expect(
         not any(field.isEnabled() for field in contact_fields),
         "Save did not disable every contact field",
+    )
+    expect(
+        contact_buttons() == (True, True, True, False),
+        f"after Save, Edit/Share/Delete/Save are enabled as {contact_buttons()}",
     )
 
     shown = len(dialogs_shown)
@@ -659,18 +717,40 @@ def check_page_widgets(ui):
 
 
 def check_dialog_result(window):
+    icon = ":/icons/warning.png"
+    box, error = window.dialog, window.error_box
     for button, expected in (("bn_east", True), ("bn_west", False), ("bn_close", False)):
         result = really_exec(
-            window.dialog,
-            lambda: window.dialog.ask("Heading", "Message", "", "No", "Yes"),
-            getattr(window.dialog.ui, button),
+            box,
+            lambda: box.ask("Heading", "Message", icon, "No", "Yes"),
+            getattr(box.ui, button),
         )
         expect(result is expected, f"DialogBox.ask returned {result!r} after {button}")
     expect(
-        (window.dialog.ui.bn_west.text(), window.dialog.ui.bn_east.text()) == ("No", "Yes"),
+        (box.ui.bn_west.text(), box.ui.bn_east.text()) == ("No", "Yes"),
         "DialogBox.ask put the button texts on the wrong buttons",
     )
-    really_exec(window.error_box, lambda: window.error_box.show_error("Heading", "", "Ok"), window.error_box.ui.bn_ok)
+    expect(
+        (box.ui.lab_heading.text(), box.ui.lab_message.text()) == ("Heading", "Message")
+        and shows_pixmap(box.ui.lab_icon, icon),
+        "DialogBox.ask did not set the heading, the message and the icon",
+    )
+    box.show()
+    box.ui.bn_min.click()
+    expect(box.isMinimized(), "the dialog box's minimise button did not minimise it")
+    box.showNormal()
+    box.hide()
+
+    really_exec(error, lambda: error.show_error("Heading", icon, "Fine"), error.ui.bn_ok)
+    expect(
+        (error.ui.lab_heading.text(), error.ui.bn_ok.text()) == ("Heading", "Fine")
+        and shows_pixmap(error.ui.lab_icon, icon),
+        "ErrorBox.show_error did not set the heading, the button text and the icon",
+    )
+    expect(
+        box.parent() is None and error.parent() is None,
+        "the dialog box or the error box has a parent, and would take its stylesheet",
+    )
 
     ui = window.ui
     fields = (
@@ -725,8 +805,9 @@ def drive(*_):
     wait_until(lambda: ui.frame_bottom_west.width() == 160)  # it animates open
     expect(ui.frame_bottom_west.width() == 160, "the toggle did not widen the menu")
     expect(
-        ui.stackedWidget.currentWidget() is ui.page_about_home,
-        "the toggle did not show the About page of Home",
+        ui.stackedWidget.currentWidget() is ui.page_about_home
+        and ui.lab_tab.text() == "About > Home",
+        "the toggle did not show the About page of Home with its label",
     )
     about = tuple((b, p.replace("page_", "page_about_"), t) for b, p, t in pages)
     check_menu(ui, about, "About > ")
@@ -734,8 +815,8 @@ def drive(*_):
     wait_until(lambda: ui.frame_bottom_west.width() == 80)
     expect(ui.frame_bottom_west.width() == 80, "the toggle did not narrow the menu")
     expect(
-        ui.stackedWidget.currentWidget() is ui.page_home,
-        "the toggle did not go back to the Home page",
+        ui.stackedWidget.currentWidget() is ui.page_home and ui.lab_tab.text() == "Home",
+        "the toggle did not go back to the Home page with its label",
     )
 
     check_highlight(ui)
@@ -767,6 +848,18 @@ QDialog.exec = fake_exec
 
 qInstallMessageHandler(on_qt_message)
 sys.excepthook = on_exception
+
+# Importing the entry module must not start the app: only running it does.
+# exec is stubbed first, so that an app that does start returns at once.
+QApplication.exec = lambda *_: 0
+try:
+    importlib.import_module(f"{PACKAGE}.__main__")
+except SystemExit:
+    pass
+if QApplication.instance() is not None:
+    problems.append(f"importing {PACKAGE}.__main__ started the application")
+sys.modules.pop(f"{PACKAGE}.__main__", None)  # so that it can be run as the entry below
+
 QApplication.exec = drive
 
 # The verdict is given here, not through the app's exit status: the app may
