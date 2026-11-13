@@ -39,8 +39,13 @@ qt_api = "pyside6"
 # A Python or Qt warning raised while a test runs fails it.
 filterwarnings = ["error"]
 qt_log_level_fail = "WARNING"
-# The offscreen platform the tests run on says this whenever a window is shown.
-qt_log_ignore = ["This plugin does not support propagateSizeHints"]
+# What the offscreen platform the tests run on says about itself: whenever a
+# window is shown, and about its fonts on Windows and on macOS.
+qt_log_ignore = [
+    "This plugin does not support propagateSizeHints",
+    "QFontDatabase: Cannot find font directory",
+    "Populating font family aliases took",
+]
 
 [build-system]
 requires = ["uv_build>=0.13.4,<0.14.0"]
