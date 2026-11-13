@@ -5,7 +5,9 @@ description = "Desktop GUI template built with PySide6 and Qt Designer"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-dependencies = ["pyside6>=6.7"]
+# 6.12.0 loses a reference to None on every Qt call that returns nothing when
+# run on Python 3.10 or 3.11, and the interpreter aborts after a few thousand.
+dependencies = ["pyside6>=6.7,!=6.12.0"]
 
 [project.scripts]
 app = "app.__main__:main"
@@ -44,7 +46,7 @@ qt_log_level_fail = "WARNING"
 qt_log_ignore = [
     "This plugin does not support propagateSizeHints",
     "QFontDatabase: Cannot find font directory",
-    "Populating font family aliases took",
+    'Populating font family aliases took .* missing font family "Sans Serif"',
 ]
 
 [build-system]

@@ -72,11 +72,13 @@ class TaskPage(QWidget):
             return
         thread.quit()
         thread.wait()
-        self._thread = None
         # Reports the worker sent before its thread ended may still be queued.
         # Take them now, so that none is left to arrive during the next task.
+        # The task still counts as running meanwhile, so that nothing else
+        # delivered here can start another; the finished report, if it is
+        # among them, finds the thread already stopped.
         QCoreApplication.sendPostedEvents(self, QEvent.Type.MetaCall)
-        self._worker = None
+        self._thread = self._worker = None
         thread.deleteLater()
         self._show_running(False, status)
 
