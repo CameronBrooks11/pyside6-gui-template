@@ -28,7 +28,7 @@ docs-build:
 
 # Regenerate ui_*.py and resources_rc.py after editing a .ui file or the icons
 uic:
-    uv run pyside6-rcc --format-version 1 src/app/resources/resources.qrc -o src/app/ui/resources_rc.py
+    uv run pyside6-rcc --format-version 1 --no-compress src/app/resources/resources.qrc -o src/app/ui/resources_rc.py
     uv run pyside6-uic --from-imports src/app/ui/ui_main.ui -o src/app/ui/ui_main.py
     uv run pyside6-uic --from-imports src/app/ui/ui_dialog.ui -o src/app/ui/ui_dialog.py
     uv run pyside6-uic --from-imports src/app/ui/ui_error.ui -o src/app/ui/ui_error.py

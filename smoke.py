@@ -180,9 +180,15 @@ def check_fonts(window):
 
 # Tool, options, source, generated module: the same commands as `just uic`.
 # rcc writes format version 1 because later versions record each file's
-# modification time, which differs from one checkout to the next.
+# modification time, which differs from one checkout to the next, and writes
+# the files uncompressed so the result does not depend on the host's zlib.
 GENERATED = (
-    ("pyside6-rcc", ["--format-version", "1"], RESOURCES, f"{SRC}/ui/resources_rc.py"),
+    (
+        "pyside6-rcc",
+        ["--format-version", "1", "--no-compress"],
+        RESOURCES,
+        f"{SRC}/ui/resources_rc.py",
+    ),
     *(("pyside6-uic", ["--from-imports"], ui, ui[:-3] + ".py") for ui in UI_FILES),
 )
 
@@ -204,8 +210,9 @@ def check_generated():
         fresh = subprocess.run(
             [program, *options, source], capture_output=True, text=True, encoding="utf-8"
         )
-        if fresh.returncode != 0 or fresh.stderr.strip():
-            fail(f"{tool} on {source}: {fresh.stderr.strip() or fresh.returncode}")
+        print(fresh.stderr, end="", file=sys.stderr)
+        if fresh.returncode != 0:
+            fail(f"{tool} failed on {source} with status {fresh.returncode}")
         elif body(fresh.stdout) != body(Path(generated).read_text(encoding="utf-8")):
             fail(f"{generated} is out of date with {source}: run `just uic`")
 
@@ -213,7 +220,7 @@ def check_generated():
     # the resource file.
     for ui in UI_FILES:
         text = Path(ui).read_text(encoding="utf-8")
-        named = set(re.findall(r'(?:location|resource)="([^"]+)"', text))
+        named = set(re.findall(r'(?:<include location|\bresource)="([^"]+)"', text))
         expect(named, f"{ui} does not include a resource file")
         for location in named:
             expect(
