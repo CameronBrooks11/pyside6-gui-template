@@ -1,6 +1,6 @@
 import pytest
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox
 
 from app.contacts import Contact
 from app.pages.form import FormPage
@@ -92,3 +92,20 @@ def test_return_in_a_field_saves(page, qtbot):
     fill(page)
     with qtbot.waitSignal(page.submitted):
         qtbot.keyClick(page.ui.name_edit, Qt.Key.Key_Return)
+
+
+def test_tab_visits_the_fields_then_clear_then_save(window, qtbot):
+    window.ui.navigation.setCurrentRow(1)
+    form = window.form_page.ui
+    form.name_edit.setFocus()
+    visited = []
+    for _ in range(5):
+        qtbot.keyClick(QApplication.focusWidget(), Qt.Key.Key_Tab)
+        visited.append(QApplication.focusWidget())
+    assert visited == [
+        form.email_edit,
+        form.role_combo,
+        form.notes_edit,
+        form.clear_button,
+        form.save_button,
+    ]

@@ -71,9 +71,11 @@ def test_a_primary_button_is_the_accent_colour_in_both_themes(qtbot):
     group = QPalette.ColorGroup
     for name in (theme.LIGHT, theme.DARK):
         theme.apply_theme(name)
+        QApplication.processEvents()  # the new palette reaches a widget by an event
+        accent = QApplication.palette().color(QPalette.ColorRole.Highlight)
         for state in (group.Active, group.Inactive):
             face = button.palette().color(state, QPalette.ColorRole.Button)
-            assert face.hue() == QApplication.palette().color(QPalette.ColorRole.Highlight).hue()
+            assert face == accent.darker(125)
             assert face != plain.palette().color(state, QPalette.ColorRole.Button)
             assert button.palette().color(state, QPalette.ColorRole.ButtonText) == QColor("white")
         # Disabled, it looks like any other disabled button.
