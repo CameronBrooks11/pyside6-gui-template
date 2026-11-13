@@ -77,8 +77,8 @@ it. It does not show what the GUI looks like.
    If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
    `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the
    justfile and the `docs` group in `pyproject.toml`. The comments at the top
-   of `main.py` and `css.txt` and one in `MainWindow.__init__` point into
-   `docs/`.
+   of `main.py`, `ui_function.py` and `css.txt` and one in
+   `MainWindow.__init__` point into `docs/`.
 
 The documentation covers each of these steps:
 [the object name of every widget](docs/layout.md),

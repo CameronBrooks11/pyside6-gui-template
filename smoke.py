@@ -23,11 +23,11 @@ from PySide6.QtCore import (
     QtMsgType,
     qInstallMessageHandler,
 )
-from PySide6.QtGui import QFontDatabase, QFontInfo, QMouseEvent
+from PySide6.QtGui import QFontDatabase, QFontInfo, QIcon, QMouseEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip, QWidget
 
-import ui_function  # noqa: F401
+import ui_function
 
 # Every file that can name an image: the Designer sources, what is generated
 # from them, and the Python that sets one at run time.
@@ -40,6 +40,13 @@ ICON_SOURCES = (
     "ui_dialog.py",
     "ui_error.py",
     "ui_function.py",
+)
+
+# An image path as the sources write one: a quoted string, a stylesheet url()
+# or the text of an element in a .ui file. Prose in a comment is not matched.
+IMAGE_PATH = re.compile(
+    r"""["']([^"'\n]+\.png)["']|url\(([^()"'\n]+\.png)\)|>([^<>\n]+\.png)<""",
+    re.IGNORECASE,
 )
 
 problems = []
@@ -96,12 +103,16 @@ def really_exec(dialog, show, button):
             fail(f"{button.objectName()} did not close its dialog")
             dialog.done(QDialog.DialogCode.Rejected)
 
+    guard = QTimer()
+    guard.setSingleShot(True)
+    guard.timeout.connect(give_up)
+    guard.start(2000)
     QTimer.singleShot(0, button.click)
-    QTimer.singleShot(2000, give_up)
     QDialog.exec = real_exec
     try:
         return show()
     finally:
+        guard.stop()
         QDialog.exec = fake_exec
 
 
@@ -151,8 +162,10 @@ def check_fonts(window):
 def check_icons():
     for source in ICON_SOURCES:
         text = Path(source).read_text(encoding="utf-8")
-        for path in set(re.findall(r"[\w./ -]+\.png", text)):
-            path = path.strip()
+        for match in IMAGE_PATH.finditer(text):
+            path = next(group for group in match.groups() if group)
+            if path.startswith(":"):  # a Qt resource, not a file
+                continue
             expect(Path(path).is_file(), f"{source} names {path}, which is not a file")
 
 
@@ -188,10 +201,15 @@ def check_highlight(ui):
     def part_way():
         return 80 < ui.frame_bottom_west.width() < 160
 
+    window = ui.toodle.window()
     ui.toodle.click()
     expect(HIGHLIGHT in ui.frame_home.styleSheet(), "the toggle did not highlight Home")
-    expect(wait_until(part_way, 1000), "the menu did not animate open")
-    ui.bn_bug.click()  # with the menu part of the way open
+    expect(
+        (window.animation.startValue(), window.animation.endValue()) == (80, 160),
+        "the menu does not animate open from its narrow width to its wide one",
+    )
+    wait_until(part_way, 1000)
+    ui.bn_bug.click()  # with the menu part of the way open, if the wait caught it
     expect(
         ui.stackedWidget.currentWidget() is ui.page_about_bug,
         "a menu button clicked part-way through the animation did not show its About page",
@@ -202,7 +220,10 @@ def check_highlight(ui):
     )
     wait_until(lambda: ui.frame_bottom_west.width() == 160)
     ui.toodle.click()
-    expect(wait_until(part_way, 1000), "the menu did not animate closed")
+    expect(
+        (window.animation.startValue(), window.animation.endValue()) == (160, 80),
+        "the menu does not animate closed from its wide width to its narrow one",
+    )
     wait_until(lambda: ui.frame_bottom_west.width() == 80)
     expect(ui.frame_bottom_west.width() == 80, "the menu did not narrow again")
 
@@ -216,6 +237,10 @@ def check_highlight(ui):
         "clicking Android again lost the sub-page that was showing",
     )
     ui.bn_home.click()
+
+
+def shows(button, icon_path):
+    return button.icon().pixmap(16, 16).toImage() == QIcon(icon_path).pixmap(16, 16).toImage()
 
 
 def check_window_state(window):
@@ -240,11 +265,19 @@ def check_window_state(window):
         ui.bn_max.toolTip() == "Restore" and not ui.frame_drag.isVisible(),
         "the maximise button did not follow a maximise it did not make",
     )
+    expect(
+        shows(ui.bn_max, "icons/1x/restore.png"),
+        "the maximise button does not show the restore icon while maximised",
+    )
     window.showNormal()
     QApplication.processEvents()
     expect(
         ui.bn_max.toolTip() == "Maximize" and ui.frame_drag.isVisible(),
         "the maximise button did not follow a restore it did not make",
+    )
+    expect(
+        shows(ui.bn_max, "icons/1x/max.png"),
+        "the maximise button does not show the maximise icon when restored",
     )
 
     QTest.mouseDClick(ui.frame_appname, Qt.MouseButton.LeftButton)
@@ -310,6 +343,15 @@ def check_page_widgets(ui):
         not ui.bn_bug_start.window().bugTimer.isActive(),
         "the progress timer kept running after 100%",
     )
+    # A second call while the first still runs must take over cleanly.
+    ui_function.APFunction.addNumbers(ui.bn_bug_start.window(), "100000")
+    ui_function.APFunction.addNumbers(ui.bn_bug_start.window(), "100000")
+    expect(
+        len(ui.bn_bug_start.window().findChildren(QTimer)) == 1,
+        "starting the progress bar twice left more than one timer",
+    )
+    wait_until(lambda: ui.progressBar_bug.value() == 100)
+    expect(ui.bn_bug_start.isEnabled(), "Start stayed disabled after a second run")
 
     window = ui.bn_cloud_connect.window()
     cloud_fields = (ui.line_cloud_id, ui.line_cloud_adress, ui.line_cloud_proxy)

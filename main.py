@@ -255,7 +255,7 @@ class MainWindow(QMainWindow):
 
     # ----> WHEN THE WINDOW IS MAXIMISED OR RESTORED, BY OUR BUTTON OR BY THE WINDOW MANAGER, UPDATE THE BUTTON AND THE GRIP
     def changeEvent(self, event):
-        if event.type() == QtCore.QEvent.Type.WindowStateChange and hasattr(self, "ui"):
+        if event.type() == QtCore.QEvent.Type.WindowStateChange:
             UIFunction.windowStateChanged(self)
         super().changeEvent(event)
 
