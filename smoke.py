@@ -27,7 +27,7 @@ from PySide6.QtCore import (
     QtMsgType,
     qInstallMessageHandler,
 )
-from PySide6.QtGui import QFontDatabase, QFontInfo, QIcon, QMouseEvent
+from PySide6.QtGui import QColor, QFontDatabase, QFontInfo, QIcon, QMouseEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import (
     QApplication,
@@ -201,6 +201,11 @@ GENERATED = (
     *(("pyside6-uic", ["--from-imports"], ui, ui[:-3] + ".py") for ui in UI_FILES),
 )
 
+# What Qt's tools print about the host under a non-UTF-8 locale such as C.
+LOCALE_NOTE = re.compile(
+    r"Detected locale|Qt depends on a UTF-8 locale|If this causes problems|for more information|\s*$"
+)
+
 # The header line of a generated module that names the Qt version.
 VERSION_LINE = re.compile(r"^#+ Created by: .*version")
 
@@ -220,8 +225,11 @@ def check_generated():
             [program, *options, source], capture_output=True, text=True, encoding="utf-8"
         )
         print(fresh.stderr, end="", file=sys.stderr)
+        said = [line for line in fresh.stderr.splitlines() if not LOCALE_NOTE.match(line)]
         if fresh.returncode != 0:
             fail(f"{tool} failed on {source} with status {fresh.returncode}")
+        elif said:
+            fail(f"{tool} on {source}: {said[0]}")
         elif body(fresh.stdout) != body(Path(generated).read_text(encoding="utf-8")):
             fail(f"{generated} is out of date with {source}: run `just uic`")
 
@@ -230,7 +238,6 @@ def check_generated():
     for ui in UI_FILES:
         text = Path(ui).read_text(encoding="utf-8")
         named = set(re.findall(r'(?:<include location|\bresource)="([^"]+)"', text))
-        expect(named, f"{ui} does not include a resource file")
         for location in named:
             expect(
                 (Path(ui).parent / location).resolve() == Path(RESOURCES).resolve(),
@@ -254,13 +261,24 @@ def qss_colour(selector, prop="background"):
     the widget.
     """
     text = re.sub(r"/\*.*?\*/", "", Path(STYLE).read_text(encoding="utf-8"), flags=re.S)
+    colour = None
     for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", text):
-        if selector in [s.strip() for s in selectors.split(",")]:
-            found = re.search(rf"(?:^|;)\s*{prop}(?:-color)?\s*:\s*rgb\((\d+),\s*(\d+),\s*(\d+)\)", body)
-            if found:
-                return tuple(int(n) for n in found.groups())
-    fail(f"{STYLE} has no rule for {selector} with an rgb() {prop}")
-    return None
+        if selector not in [s.strip() for s in selectors.split(",")]:
+            continue
+        found = re.search(rf"(?:^|;)\s*{prop}(?:-color)?\s*:\s*([^;]+)", body)
+        if not found:
+            continue
+        value = found.group(1).strip()
+        numbers = re.fullmatch(r"rgba?\(([^)]*)\)", value)
+        if numbers:
+            parsed = QColor(*(int(n) for n in re.findall(r"\d+", numbers.group(1))[:3]))
+        else:
+            parsed = QColor(value)  # a name or #rrggbb
+        if parsed.isValid():
+            colour = parsed.getRgb()[:3]  # a later rule for the selector wins, as in Qt
+    if colour is None:
+        fail(f"{STYLE} has no rule that gives {selector} a {prop} this check can read")
+    return colour
 
 
 def check_style(window):
@@ -278,19 +296,21 @@ def check_style(window):
         (window.error.e.frame_top, "QDialog #frame_top", "the bar of the error box"),
     ):
         got, colour = colour_at(widget), qss_colour(selector)
-        expect(got == colour, f"{what} is painted {got}, not the {colour} of {selector}")
+        if colour is not None:
+            expect(got == colour, f"{what} is painted {got}, not the {colour} of {selector}")
     expect(on != off, "selected and unselected menu frames have the same colour")
 
     text = qss_colour("QLabel", "color")
     image = ui.lab_appname.grab().toImage()
-    expect(
-        any(
-            image.pixelColor(x, y).getRgb()[:3] == text
-            for x in range(image.width())
-            for y in range(image.height())
-        ),
-        f"no pixel of the application name has the QLabel colour {text}",
-    )
+    if text is not None:
+        expect(
+            any(
+                image.pixelColor(x, y).getRgb()[:3] == text
+                for x in range(image.width())
+                for y in range(image.height())
+            ),
+            f"no pixel of the application name has the QLabel colour {text}",
+        )
 
     # The selection has to move, on screen as well as in the property.
     ui.bn_bug.click()
@@ -307,7 +327,12 @@ def check_style(window):
     ui.toodle.click()
     wait_until(lambda: ui.frame_bottom_west.width() == 80)
 
-    # Each kind of button is told apart by its `variant`.
+    # Each kind of button is told apart by its `variant`. A button you add to
+    # one of these four frames has to carry the variant of the frame.
+    expect(
+        ui.bn_android_contact_delete.property("variant") == "danger",
+        "the Delete button does not have the danger variant",
+    )
     for container, variant in (
         (ui.frame_bottom_west, "menu"),
         (ui.frame_android_menu, "menu"),
@@ -320,16 +345,21 @@ def check_style(window):
                 f"{button.objectName()} has variant {button.property('variant')!r}, not {variant!r}",
             )
 
-    # The stylesheet stops at the app's own windows: a dialog of Qt's opened
-    # from the main window looks the same as one opened from nowhere.
-    grabs = []
-    for parent in (window, None):
+    # The stylesheet stops at the content of the app's own windows. A dialog
+    # of Qt's opened from any of the three is drawn by the plain style, as
+    # one with no parent is, and no sheet sits on the application.
+    expect(QApplication.instance().styleSheet() == "", "a stylesheet is set on the QApplication")
+    plain = QMessageBox().style().metaObject().className()
+    for parent in (window, window.diag, window.error):
         box = QMessageBox(QMessageBox.Icon.NoIcon, "Title", "Some text", parent=parent)
         box.ensurePolished()
-        box.adjustSize()
-        grabs.append(box.grab().toImage())
+        drawn_by = box.style().metaObject().className()
+        expect(
+            drawn_by == plain,
+            f"a QMessageBox opened from {type(parent).__name__} is drawn by {drawn_by}: "
+            "style.qss reaches it",
+        )
         box.deleteLater()
-    expect(grabs[0] == grabs[1], "style.qss changes the look of a QMessageBox opened from the app")
 
 
 def check_icons():

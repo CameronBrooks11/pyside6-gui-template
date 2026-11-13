@@ -91,11 +91,14 @@ each widget type.
 ## Change the look
 
 Every colour and widget style is in `src/app/resources/style.qss`, a Qt
-stylesheet that `main.py` sets on the content of the main window and on the
-dialog box and the error box (`loadStyle`). It is not set on the whole
-application, so a `QMessageBox` or `QFileDialog` you open keeps Qt's normal
-look. The `.ui` files carry no styles, so a form looks plain in Qt Designer
-and takes its look when the application runs.
+stylesheet that `main.py` sets on the frame holding the content of each of
+the three windows (`loadStyle`). It is not set on the windows themselves or
+on the application, so a `QMessageBox` or `QFileDialog` keeps Qt's normal
+look when you give it one of the three windows as its parent, as in
+`QMessageBox.warning(self, ...)` from `MainWindow`. Give it a widget inside a
+window as its parent and it takes the stylesheet, with white text on Qt's
+light background. The `.ui` files carry no styles, so a form looks plain in
+Qt Designer and takes its look when the application runs.
 
 - To recolour, change the colour values; the comment at the top of the file
   says what each one is used for.
@@ -103,7 +106,9 @@ and takes its look when the application runs.
   says so with a dynamic property named `variant`, which you add in Qt
   Designer with the plus sign in the Property Editor (a String property):
   `menu` for the side and sub-menu buttons, `window` for minimise, maximise
-  and close, `danger` for a button that turns red on hover.
+  and close, `danger` for a button that turns red on hover. `just check`
+  expects every button in the two menu frames to be `menu` and every button
+  in the title bar frames to be `window`.
 - The frame around a menu button is marked with a `selected` property by
   `UIFunction.select` in `ui_function.py`; the two `QFrame[selected=...]`
   rules give the selected and unselected colours.
