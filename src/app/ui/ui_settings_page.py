@@ -49,7 +49,7 @@ class Ui_SettingsPage(object):
 
         self.theme_combo = QComboBox(SettingsPage)
         self.theme_combo.setObjectName(u"theme_combo")
-        self.theme_combo.setMinimumSize(QSize(180, 0))
+        self.theme_combo.setMinimumSize(QSize(180, 28))
 
         self.fields.setWidget(0, QFormLayout.ItemRole.FieldRole, self.theme_combo)
 

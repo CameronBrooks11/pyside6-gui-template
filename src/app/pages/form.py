@@ -2,7 +2,7 @@
 
 import re
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import QEvent, Signal
 from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QMessageBox, QWidget
 
@@ -21,15 +21,26 @@ class FormPage(QWidget):
         self.ui = Ui_FormPage()
         self.ui.setupUi(self)
 
-        palette = self.ui.error_label.palette()
-        palette.setColor(QPalette.ColorRole.WindowText, QColor(220, 60, 60))
-        self.ui.error_label.setPalette(palette)
-
+        self._colour_error()
         make_primary(self.ui.save_button)
         self.ui.save_button.clicked.connect(self.save)
         self.ui.clear_button.clicked.connect(self.clear)
         self.ui.name_edit.returnPressed.connect(self.save)
         self.ui.email_edit.returnPressed.connect(self.save)
+
+    def changeEvent(self, event: QEvent) -> None:
+        if event.type() == QEvent.Type.PaletteChange:
+            self._colour_error()
+        super().changeEvent(event)
+
+    def _colour_error(self) -> None:
+        # A red that reads on the window colour of the current theme.
+        dark = self.palette().color(QPalette.ColorRole.Window).lightness() < 128
+        palette = self.ui.error_label.palette()
+        palette.setColor(
+            QPalette.ColorRole.WindowText, QColor(240, 113, 120) if dark else QColor(201, 42, 42)
+        )
+        self.ui.error_label.setPalette(palette)
 
     def save(self) -> None:
         name = self.ui.name_edit.text().strip()

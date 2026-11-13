@@ -64,7 +64,8 @@ def make_primary(button: QPushButton) -> None:
     """Paint the button for a page's main action in the accent colour."""
     palette = button.palette()
     for group in (QPalette.ColorGroup.Active, QPalette.ColorGroup.Inactive):
-        palette.setColor(group, QPalette.ColorRole.Button, _ACCENT)
+        # Fusion draws a button lighter than its colour, so start darker.
+        palette.setColor(group, QPalette.ColorRole.Button, _ACCENT.darker(125))
         palette.setColor(group, QPalette.ColorRole.ButtonText, QColor("white"))
     button.setPalette(palette)
 

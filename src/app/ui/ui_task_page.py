@@ -63,7 +63,7 @@ class Ui_TaskPage(object):
 
         self.steps_spin = QSpinBox(self.content)
         self.steps_spin.setObjectName(u"steps_spin")
-        self.steps_spin.setMinimumSize(QSize(100, 0))
+        self.steps_spin.setMinimumSize(QSize(100, 28))
         self.steps_spin.setMinimum(1)
         self.steps_spin.setMaximum(1000)
         self.steps_spin.setValue(100)
@@ -94,12 +94,14 @@ class Ui_TaskPage(object):
 
         self.cancel_button = QPushButton(self.content)
         self.cancel_button.setObjectName(u"cancel_button")
+        self.cancel_button.setMinimumSize(QSize(0, 28))
         self.cancel_button.setEnabled(False)
 
         self.buttons.addWidget(self.cancel_button)
 
         self.start_button = QPushButton(self.content)
         self.start_button.setObjectName(u"start_button")
+        self.start_button.setMinimumSize(QSize(0, 28))
 
         self.buttons.addWidget(self.start_button)
 

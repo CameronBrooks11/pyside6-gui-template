@@ -32,6 +32,7 @@
    </item>
    <item>
     <widget class="QLineEdit" name="filter_edit">
+          <property name="minimumSize"><size><width>0</width><height>28</height></size></property>
      <property name="placeholderText">
       <string>Filter</string>
      </property>
@@ -101,6 +102,7 @@
      </item>
      <item>
       <widget class="QPushButton" name="delete_button">
+          <property name="minimumSize"><size><width>0</width><height>28</height></size></property>
        <property name="text">
         <string>&amp;Delete selected</string>
        </property>

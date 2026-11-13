@@ -57,6 +57,7 @@ class Ui_FormPage(object):
 
         self.name_edit = QLineEdit(self.content)
         self.name_edit.setObjectName(u"name_edit")
+        self.name_edit.setMinimumSize(QSize(0, 28))
 
         self.fields.setWidget(0, QFormLayout.ItemRole.FieldRole, self.name_edit)
 
@@ -67,6 +68,7 @@ class Ui_FormPage(object):
 
         self.email_edit = QLineEdit(self.content)
         self.email_edit.setObjectName(u"email_edit")
+        self.email_edit.setMinimumSize(QSize(0, 28))
 
         self.fields.setWidget(1, QFormLayout.ItemRole.FieldRole, self.email_edit)
 
@@ -81,6 +83,8 @@ class Ui_FormPage(object):
         self.role_combo.addItem("")
         self.role_combo.addItem("")
         self.role_combo.setObjectName(u"role_combo")
+        self.role_combo.setMinimumSize(QSize(180, 28))
+        self.role_combo.setMaximumSize(QSize(180, 16777215))
 
         self.fields.setWidget(2, QFormLayout.ItemRole.FieldRole, self.role_combo)
 
@@ -112,11 +116,13 @@ class Ui_FormPage(object):
 
         self.clear_button = QPushButton(self.content)
         self.clear_button.setObjectName(u"clear_button")
+        self.clear_button.setMinimumSize(QSize(0, 28))
 
         self.buttons.addWidget(self.clear_button)
 
         self.save_button = QPushButton(self.content)
         self.save_button.setObjectName(u"save_button")
+        self.save_button.setMinimumSize(QSize(0, 28))
 
         self.buttons.addWidget(self.save_button)
 

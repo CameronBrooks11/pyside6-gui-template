@@ -2,6 +2,7 @@ from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QApplication, QPushButton
 
 from app import theme
+from app.pages.form import FormPage
 from app.pages.settings import SettingsPage
 
 
@@ -67,5 +68,18 @@ def test_a_primary_button_is_the_accent_colour_in_both_themes(qtbot):
     theme.make_primary(button)
     for name in (theme.LIGHT, theme.DARK):
         theme.apply_theme(name)
-        assert button.palette().color(QPalette.ColorRole.Button) == QColor(0, 128, 134)
+        assert button.palette().color(QPalette.ColorRole.Button) == QColor(0, 128, 134).darker(125)
         assert button.palette().color(QPalette.ColorRole.ButtonText) == QColor("white")
+
+
+def test_the_form_error_is_a_lighter_red_on_the_dark_theme(qtbot):
+    page = FormPage()
+    qtbot.addWidget(page)
+
+    def error_lightness() -> int:
+        return page.ui.error_label.palette().color(QPalette.ColorRole.WindowText).lightness()
+
+    theme.apply_theme(theme.LIGHT)
+    qtbot.waitUntil(lambda: error_lightness() < 140)
+    theme.apply_theme(theme.DARK)
+    qtbot.waitUntil(lambda: error_lightness() > 160)
