@@ -14,7 +14,7 @@ setup:
 run:
     uv run python main.py
 
-# Build every window without a display and fail on any Qt warning
+# Drive every window without a display; fail on a warning, a slot error or a missing icon
 check:
     QT_QPA_PLATFORM=offscreen uv run python -W error smoke.py
 

@@ -39,9 +39,11 @@ Without them, install `pyside6` 6.7 or newer and run `python main.py` from the
 repository root. The icons load by relative path, so the working directory has
 to be the root.
 
-`just check` builds every window on Qt's offscreen platform and fails on any
-warning, a deprecated Qt call included. It does not show what the GUI looks
-like.
+`just check` builds every window on Qt's offscreen platform and clicks through
+the pages, the menu toggle, the window buttons and the example widgets. It
+fails on a Python or Qt warning (a deprecated Qt call included), an exception
+in a slot, a page that does not switch, and an icon path with no file behind
+it. It does not show what the GUI looks like.
 
 ## Layout
 
