@@ -25,6 +25,8 @@ About page, which is shown instead while the menu is widened.
    layout, and name it, for example `frame_settings`.
 2. Copy one of the existing menu buttons into the new frame. Change its icon
    and its object name, for example `bn_settings`, in the Property Editor.
+   The copy keeps the dynamic property `variant` = `menu`, which is what
+   gives it the menu button style.
 3. Right-click `stackedWidget`, choose Insert Page, and add two pages. Name
    them, for example `page_settings` and `page_about_settings`, and put your
    widgets on the first.
@@ -67,7 +69,7 @@ way, connect the button in `UIFunction.stackPage`, and add a branch to
 ## Add a widget
 
 Copy the widget you want in Qt Designer, paste it where it should go, and set
-its size, alignment, stylesheet and object name in the Property Editor. Run
+its size, alignment and object name in the Property Editor. Run
 `just uic`, then connect it. `UIFunction.stackPage` in `ui_function.py` is
 where the existing page widgets are connected:
 
@@ -85,6 +87,29 @@ thread.
 
 [Widgets and stylesheets](widgets.md) lists the calls and the stylesheet for
 each widget type.
+
+## Change the look
+
+Every colour and widget style is in `src/app/resources/style.qss`, a Qt
+stylesheet that `main.py` sets on the application. The `.ui` files carry no
+styles, so a form looks plain in Qt Designer and takes its look when the
+application runs.
+
+- To recolour, change the `rgb(...)` values; the comment at the top of the
+  file says what each colour is used for.
+- A plain `QPushButton` is an action button. A button that is something else
+  says so with a dynamic property named `variant`, which you add in Qt
+  Designer with the plus sign in the Property Editor (a String property):
+  `menu` for the side and sub-menu buttons, `window` for minimise, maximise
+  and close, `danger` for a button that turns red on hover.
+- The frame around a menu button is marked with a `selected` property by
+  `UIFunction.select` in `ui_function.py`; the two `QFrame[selected=...]`
+  rules give the selected and unselected colours.
+- A widget inside a page that needs a colour of its own gets a rule by its
+  object name, for example `#frame_settings { background: ... }`.
+
+Run `just uic` after editing the file: the stylesheet is compiled into the
+resources, and `just check` fails if the compiled copy is out of date.
 
 ## Add an icon
 

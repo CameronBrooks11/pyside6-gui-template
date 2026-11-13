@@ -12,7 +12,7 @@ everything else a solid one.
 
 ![Colour swatches](images/color-scheme.png)
 
-These are the main values the stylesheets in the `.ui` files use:
+These are the main values `style.qss` uses:
 
 | Colour                  | Hex       | Used for                                                    |
 | ----------------------- | --------- | ----------------------------------------------------------- |
@@ -25,9 +25,8 @@ These are the main values the stylesheets in the `.ui` files use:
 | `rgb(112,0,0)`          | `#700000` | Hovered Delete button                                       |
 | `rgb(255,255,255)`      | `#FFFFFF` | Text                                                        |
 
-To recolour the GUI, change these in the stylesheets in Qt Designer and in the
-`setStyleSheet` calls in `ui_function.py` that highlight the selected menu
-button.
+To recolour the GUI, change these in `src/app/resources/style.qss` and run
+`just uic`; see [Change the look](customising.md#change-the-look).
 
 ## Fonts
 

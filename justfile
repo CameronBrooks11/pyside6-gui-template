@@ -26,7 +26,7 @@ docs:
 docs-build:
     uv run --only-group docs mkdocs build --strict
 
-# Regenerate ui_*.py and resources_rc.py after editing a .ui file or the icons
+# Regenerate ui_*.py and resources_rc.py after editing a .ui file, style.qss or the icons
 uic:
     uv run pyside6-rcc src/app/resources/resources.qrc -o src/app/ui/resources_rc.py
     uv run pyside6-uic --from-imports src/app/ui/ui_main.ui -o src/app/ui/ui_main.py

@@ -60,34 +60,36 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 | `src/app/about.py`                               | Text shown in the About panel of each page                         |
 | `src/app/ui/*.ui`                                | Qt Designer sources                                                |
 | `src/app/ui/ui_*.py`                             | Generated from the `.ui` files; do not edit by hand                |
+| `src/app/resources/style.qss`                    | The one stylesheet: every colour and widget style                   |
 | `src/app/resources/`                             | The icons and `resources.qrc`, the Qt resource file that lists them |
-| `src/app/ui/resources_rc.py`                     | The icons compiled from `resources.qrc`; do not edit by hand        |
-| `css.txt`                                        | Reference copy of the stylesheets set in the `.ui` files; not loaded |
+| `src/app/ui/resources_rc.py`                     | The resources compiled from `resources.qrc`; do not edit by hand    |
 | `docs/`, `mkdocs.yml`                            | The documentation site: layout, widget names, stylesheets          |
 | `smoke.py`                                       | The check behind `just check`                                      |
 
 ## Making it yours
 
 1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer
-   src/app/ui/ui_main.ui`) and change the layout.
-2. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
-3. Wire the widgets up in `main.py` and `ui_function.py`.
+   src/app/ui/ui_main.ui`) and change the layout. The forms look plain
+   there: the colours come from `style.qss` when the application runs.
+2. Change colours and widget styles in `src/app/resources/style.qss`.
+3. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
+4. Wire the widgets up in `main.py` and `ui_function.py`.
    `UIFunction.stackPage` in `ui_function.py` wires up the example pages and
    is the place to copy from.
-4. Set the application name in `MainWindow.__init__` in `main.py`.
-5. Set `name`, `description` and `version` in `pyproject.toml`.
-6. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
+5. Set the application name in `MainWindow.__init__` in `main.py`.
+6. Set `name`, `description` and `version` in `pyproject.toml`.
+7. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
    line and `module-name` in `pyproject.toml`, the paths in the `run` and
    `uic` recipes of the justfile, and the paths and the two `app` imports in
    `smoke.py`. `just check` fails until they agree.
-7. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
+8. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
    copies, and add your own copyright line to it.
-8. Replace this README and `docs/` with your own, and set `site_name`,
+9. Replace this README and `docs/` with your own, and set `site_name`,
    `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
    If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
    `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the
    justfile and the `docs` group in `pyproject.toml`. The comments at the top
-   of `main.py`, `ui_function.py` and `css.txt` and one in
+   of `main.py` and `ui_function.py` and one in
    `MainWindow.__init__` point into `docs/`.
 
 The documentation covers each of these steps:

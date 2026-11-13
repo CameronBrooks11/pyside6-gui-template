@@ -15,13 +15,13 @@
 #  Each line of the code described below is commented well, such as: the purpose of the   #
 #  code, its function, returns e.t.c as in certain case: the alternatives to that solul-  #
 #  ution, other sources like the guide in docs/ has also the working of the code.         #
-#  CSS stylesheet of the buttons are given seperatly in the css.txt in the parent folder  #
+#  The stylesheet of every widget is in resources/style.qss.                              #
 ###########################################################################################
 
 ###########################################################################################
 #                                       CAUTION                                           #
-#  SINCE MOST OF THE WORK IS DONE IN THE QT DESIGNER, YOU MAY NOT SEE THE STYLESHEET HERE #
-#  FOR THAT PLEASE REFER docs/widgets.md                                                  #
+#  SINCE THE LAYOUT IS DONE IN THE QT DESIGNER, YOU WILL NOT SEE THE STYLESHEET HERE.     #
+#  FOR THAT PLEASE REFER resources/style.qss AND docs/widgets.md                          #
 #  ALSO MANY OF THE SETTINGS IS PREDEFINED IN THE QT DESIGNER ITSELF, SO HERE IN THIS FUN-#
 #  CTION WHAT HAPPENS AFTER THIS I.E. WHEN THE USER CHANGES THE INPUT STATE, ONLY IS DONE #
 #  HERE, SO IF YOU WANT TO MODIFY THE FILE, PLEASE OPEN THE CORRESPONDING .ui FILE IN QT  #
@@ -286,9 +286,18 @@ class MainWindow(QMainWindow):
     ##############################################################
 
 
+# -----> THE LOOK OF EVERY WIDGET IS IN ONE STYLESHEET, resources/style.qss, COMPILED INTO THE RESOURCES BY `just uic`.
+# IT IS SET ON THE APPLICATION SO THAT IT REACHES THE MAIN WINDOW, THE DIALOG BOX AND THE ERROR BOX ALIKE.
+def applyStyle(app):
+    sheet = QtCore.QFile(":/style.qss")
+    sheet.open(QtCore.QIODevice.OpenModeFlag.ReadOnly | QtCore.QIODevice.OpenModeFlag.Text)
+    app.setStyleSheet(bytes(sheet.readAll()).decode("utf-8"))
+
+
 # -----> STARTS THE APPLICATION: CALLED BY __main__.py, I.E. BY `python -m app`, AND BY THE `app` COMMAND.
 def main():
     app = QApplication(sys.argv)
+    applyStyle(app)
     window = MainWindow()
     window.show()
     return app.exec()

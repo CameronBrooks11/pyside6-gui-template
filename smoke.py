@@ -193,6 +193,43 @@ def check_generated():
             fail(f"{generated} is out of date with {source}: run `just uic`")
 
 
+def colour_at(widget, x=2, y=2):
+    """The colour a widget paints at a point, as (r, g, b)."""
+    return widget.grab().toImage().pixelColor(x, y).getRgb()[:3]
+
+
+def check_style(window):
+    """style.qss has to reach the windows, and `selected` has to show."""
+    ui = window.ui
+    ui.bn_home.click()
+    for widget, colour, what in (
+        (ui.frame_top_east, (51, 51, 51), "the title bar"),
+        (ui.page_home, (91, 90, 90), "the page"),
+        (ui.frame_toodle, (0, 143, 150), "the toggle"),
+        (ui.frame_home, (91, 90, 90), "the frame of the selected menu button"),
+        (ui.frame_bug, (51, 51, 51), "the frame of an unselected menu button"),
+        (window.diag.d.frame_top, (91, 90, 90), "the bar of the dialog box"),
+        (window.error.e.frame_top, (91, 90, 90), "the bar of the error box"),
+    ):
+        got = colour_at(widget)
+        expect(got == colour, f"{what} is painted {got}, not {colour}: is style.qss applied?")
+
+    # The selection has to move, on screen as well as in the property.
+    ui.bn_bug.click()
+    expect(
+        (colour_at(ui.frame_bug), colour_at(ui.frame_home)) == ((91, 90, 90), (51, 51, 51)),
+        "selecting another menu button did not repaint the two frames",
+    )
+    ui.toodle.click()
+    expect(
+        selected(ui.frame_home) and not selected(ui.frame_bug),
+        "the toggle did not move the selection to Home",
+    )
+    wait_until(lambda: ui.frame_bottom_west.width() == 160)
+    ui.toodle.click()
+    wait_until(lambda: ui.frame_bottom_west.width() == 80)
+
+
 def check_icons():
     for source in ICON_SOURCES:
         text = Path(source).read_text(encoding="utf-8")
@@ -215,7 +252,9 @@ def check_icons():
         )
 
 
-HIGHLIGHT = "rgb(91,90,90)"
+def selected(frame):
+    """Whether a menu frame is marked as the one whose page is showing."""
+    return frame.property("selected") is True
 
 
 def check_menu(ui, pages, tab_prefix):
@@ -231,7 +270,7 @@ def check_menu(ui, pages, tab_prefix):
         )
         frame = button.replace("bn_", "frame_")
         expect(
-            HIGHLIGHT in getattr(ui, frame).styleSheet(),
+            selected(getattr(ui, frame)),
             f"{button} did not highlight {frame}",
         )
 
@@ -240,7 +279,7 @@ def check_highlight(ui):
     ui.bn_home.click()
     ui.bn_home.click()
     expect(
-        HIGHLIGHT in ui.frame_home.styleSheet(),
+        selected(ui.frame_home),
         "clicking the current menu button removed its highlight",
     )
 
@@ -249,7 +288,7 @@ def check_highlight(ui):
 
     window = ui.toodle.window()
     ui.toodle.click()
-    expect(HIGHLIGHT in ui.frame_home.styleSheet(), "the toggle did not highlight Home")
+    expect(selected(ui.frame_home), "the toggle did not highlight Home")
     expect(
         (window.animation.startValue(), window.animation.endValue()) == (80, 160),
         "the menu does not animate open from its narrow width to its wide one",
@@ -261,7 +300,7 @@ def check_highlight(ui):
         "a menu button clicked part-way through the animation did not show its About page",
     )
     expect(
-        HIGHLIGHT in ui.frame_bug.styleSheet(),
+        selected(ui.frame_bug),
         "a menu button clicked part-way through the animation lost its highlight",
     )
     wait_until(lambda: ui.frame_bottom_west.width() == 160)
@@ -279,7 +318,7 @@ def check_highlight(ui):
     expect(
         ui.stackedWidget_android.currentWidget() is ui.page_android_game
         and ui.lab_tab.text() == "Android > GamePad"
-        and HIGHLIGHT in ui.frame_android.styleSheet(),
+        and selected(ui.frame_android),
         "clicking Android again lost the sub-page that was showing",
     )
     ui.bn_home.click()
@@ -362,7 +401,7 @@ def check_window_state(window):
 
     second = type(window)()
     expect(
-        second.ui.lab_tab.text() == "Home" and HIGHLIGHT in second.ui.frame_home.styleSheet(),
+        second.ui.lab_tab.text() == "Home" and selected(second.ui.frame_home),
         "a second main window did not start on the Home page",
     )
     second.deleteLater()
@@ -439,7 +478,7 @@ def check_page_widgets(ui):
         )
         frame = button.replace("bn_", "frame_")
         expect(
-            HIGHLIGHT in getattr(ui, frame).styleSheet(),
+            selected(getattr(ui, frame)),
             f"{button} did not highlight {frame}",
         )
 
@@ -535,6 +574,7 @@ def drive(*_):
 
     check_generated()
     check_icons()
+    check_style(window)
     check_fonts(window)
 
     pages = (

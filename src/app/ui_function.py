@@ -16,13 +16,13 @@
 #  Each line of the code described below is commented well, such as: the purpose of the   #
 #  code, its function, returns e.t.c as in certain caes: the alternatives to that solul-  #
 #  ution, other sources like the guide in docs/ has also the working of the code.         #
-#  CSS stylesheet of the buttons are given seperatly in the css.txt in the parent folder  #
+#  The stylesheet of every widget is in resources/style.qss.                              #
 ###########################################################################################
 
 ###########################################################################################
 #                                       CAUTION                                           #
-#  SINCE MOST OF THE WORK IS DONE IN THE QT DESIGNER, YOU WAY NOT SEE THE STYLESHEET HERE #
-#  FOR THAT PLEASE REFER THE css.txt FILE PROVIDED IN THIS SAME FOLDER                     #
+#  SINCE THE LAYOUT IS DONE IN THE QT DESIGNER, YOU WILL NOT SEE THE STYLESHEET HERE.     #
+#  FOR THAT PLEASE REFER resources/style.qss AND docs/widgets.md                          #
 #  ALSO AMNY OF THE SETTINGS IS PREDEFINED IN THE QT DESIGNER ITSELF, SO HERE IN THIS FUN-#
 #  CTION WHAY HAPPENS AFTER THIS I.E. WHEN THE USER CHANGES THE INPUT STATE, ONLY IS DELT #
 #  HERE, SO IF YOU WANT TO MODIFY THE FILE, PLEASE OPEN THE CORRESPONDING .ui FILE IN QT  #
@@ -59,7 +59,19 @@ class UIFunction:
     def initStackTab(self):
         self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
         self.ui.lab_tab.setText("Home")
-        self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)")
+        UIFunction.select(self, self.ui.frame_bottom_west, self.ui.frame_home)
+    ################################################################################################
+
+
+    #------> MARKS frame AS THE SELECTED ONE AMONG THE FRAMES INSIDE container, AND THE REST AS NOT SELECTED.
+    #THE LOOK OF A SELECTED FRAME IS IN style.qss, UNDER QFrame[selected="true"]. A WIDGET HAS TO BE POLISHED AGAIN
+    #FOR A CHANGED PROPERTY TO SHOW.
+    def select(self, container, frame):
+        for each in container.findChildren(QFrame):
+            if each.property("selected") is not (each is frame):
+                each.setProperty("selected", each is frame)
+                each.style().unpolish(each)
+                each.style().polish(each)
     ################################################################################################
 
 
@@ -102,10 +114,6 @@ class UIFunction:
     #HOME PAGE.
     def toodleMenu(self):
 
-        #------> THIS LINE CLEARS THE BG OF PREVIOUS TABS : I.E. MAKING THEN NORMAL COLOR THAN LIGHTER COLOR.
-        for each in self.ui.frame_bottom_west.findChildren(QFrame): 
-            each.setStyleSheet("background:rgb(51,51,51)")
-
         if not UIFunction.aboutShown(self):
             extend = MENU_WIDTH_ABOUT
             #----> MAKE THE STACKED WIDGET PAGE TO ABOUT HOME PAGE
@@ -116,7 +124,7 @@ class UIFunction:
             #-----> REVERT THE ABOUT HOME PAGE TO NORMAL HOME PAGE
             self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
             self.ui.lab_tab.setText("Home")
-        self.ui.frame_home.setStyleSheet("background:rgb(91,90,90)")
+        UIFunction.select(self, self.ui.frame_bottom_west, self.ui.frame_home)
 
         #THIS ANIMATION IS RESPONSIBLE FOR THE TOODLE TO MOVE IN A SOME FIXED STATE.
         self.animation = QPropertyAnimation(self.ui.frame_bottom_west, b"minimumWidth")
@@ -141,9 +149,8 @@ class UIFunction:
         self.ui.frame_appname.mouseDoubleClickEvent = maxDoubleClick
 
         #-----> RESIZE USING DRAG: A FRAMELESS WINDOW HAS NO BORDER TO RESIZE BY, SO THE BOTTOM RIGHT CORNER GETS A GRIP.
-        #frame_drag's OWN BACKGROUND STYLE REACHES THE GRIP AND LEAVES IT BLANK, SO THE GRIP IS GIVEN ITS PICTURE HERE.
+        #ITS PICTURE IS SET IN style.qss, UNDER QSizeGrip.
         self.sizegrip = QSizeGrip(self.ui.frame_drag)
-        self.sizegrip.setStyleSheet('image: url(":/icons/grip.png");')
         self.sizegrip.setToolTip("Resize")
         self.ui.frame_drag.layout().addWidget(self.sizegrip)
 
@@ -167,10 +174,8 @@ class UIFunction:
         about = UIFunction.aboutShown(self)
         target = getattr(self.ui, aboutPage if about else page)
 
-        #------> THIS LINE CLEARS THE BG OF PREVIOUS TABS I.E. FROM THE LITER COLOR TO THE SAME BG COLOR I.E. TO CHANGE THE HIGHLIGHT.
-        for each in self.ui.frame_bottom_west.findChildren(QFrame):
-            each.setStyleSheet("background:rgb(51,51,51)")
-        getattr(self.ui, frame).setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
+        #------> HIGHLIGHT THE CLICKED BUTTON AND CLEAR THE HIGHLIGHT OF THE PREVIOUS ONE.
+        UIFunction.select(self, self.ui.frame_bottom_west, getattr(self.ui, frame))
 
         #THE BUTTON OF THE PAGE ALREADY SHOWING CHANGES NOTHING ELSE, SO A SUB PAGE OF ANDROID STAYS WHERE IT IS.
         if self.ui.stackedWidget.currentWidget() is target:
@@ -243,29 +248,25 @@ class UIFunction:
     #-----> FUNCTION TO SHOW CORRESPONDING STACK PAGE WHEN THE ANDROID BUTTONS ARE PRESSED: CONTACT, GAME, CLOUD, WORLD
     # SINCE THE ANDROID PAGE AHS A SUB STACKED WIDGET WIT FOUR MORE BUTTONS, ALL THIS 4 PAGES CONTENT: BUTTONS, TEXT, LABEL E.T.C ARE INITIALIED OVER HERE. 
     def androidStackPages(self, page):
-        #------> THIS LINE CLEARS THE BG COLOR OF PREVIOUS TABS
-        for each in self.ui.frame_android_menu.findChildren(QFrame):
-            each.setStyleSheet("background:rgb(51,51,51)")
-
         if page == "page_contact":
             self.ui.stackedWidget_android.setCurrentWidget(self.ui.page_android_contact)
             self.ui.lab_tab.setText("Android > Contact")
-            self.ui.frame_android_contact.setStyleSheet("background:rgb(91,90,90)")
+            UIFunction.select(self, self.ui.frame_android_menu, self.ui.frame_android_contact)
 
         elif page == "page_game":
             self.ui.stackedWidget_android.setCurrentWidget(self.ui.page_android_game)
             self.ui.lab_tab.setText("Android > GamePad")
-            self.ui.frame_android_game.setStyleSheet("background:rgb(91,90,90)")
+            UIFunction.select(self, self.ui.frame_android_menu, self.ui.frame_android_game)
 
         elif page == "page_clean":
             self.ui.stackedWidget_android.setCurrentWidget(self.ui.page_android_clean)
             self.ui.lab_tab.setText("Android > Clean")
-            self.ui.frame_android_clean.setStyleSheet("background:rgb(91,90,90)")
+            UIFunction.select(self, self.ui.frame_android_menu, self.ui.frame_android_clean)
 
         elif page == "page_world":
             self.ui.stackedWidget_android.setCurrentWidget(self.ui.page_android_world)
             self.ui.lab_tab.setText("Android > World")
-            self.ui.frame_android_world.setStyleSheet("background:rgb(91,90,90)")
+            UIFunction.select(self, self.ui.frame_android_menu, self.ui.frame_android_world)
 
         #ADD A ADDITIONAL ELIF STATEMNT WITH THE SIMILAR CODE UP ABOVE FOR YOUR NEW SUBMENU BUTTON IN THE ANDROID STACK PAGE.
     ##############################################################################################################
