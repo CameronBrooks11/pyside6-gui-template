@@ -16,13 +16,13 @@
 #  Each line of the code described below is commented well, such as: the purpose of the   #
 #  code, its function, returns e.t.c as in certain caes: the alternatives to that solul-  #
 #  ution, other sources like the guide in docs/ has also the working of the code.         #
-#  CSS stylesheet of the buttons are given seperatly in the CSS.txt in the parent folder  #
+#  CSS stylesheet of the buttons are given seperatly in the css.txt in the parent folder  #
 ###########################################################################################
 
 ###########################################################################################
 #                                       CAUTION                                           #
 #  SINCE MOST OF THE WORK IS DONE IN THE QT DESIGNER, YOU WAY NOT SEE THE STYLESHEET HERE #
-#  FOR THAT PLEASE REFER THE CSS.txt FILE PROVIDED IN THIS SAME FILE.                     #
+#  FOR THAT PLEASE REFER THE css.txt FILE PROVIDED IN THIS SAME FOLDER                     #
 #  ALSO AMNY OF THE SETTINGS IS PREDEFINED IN THE QT DESIGNER ITSELF, SO HERE IN THIS FUN-#
 #  CTION WHAY HAPPENS AFTER THIS I.E. WHEN THE USER CHANGES THE INPUT STATE, ONLY IS DELT #
 #  HERE, SO IF YOU WANT TO MODIFY THE FILE, PLEASE OPEN THE CORRESPONDING .ui FILE IN QT  #
@@ -75,11 +75,20 @@ class UIFunction:
     def maximize_restore(self):
         if not self.isMaximized():
             self.showMaximized()
+        else:
+            self.showNormal()
+    ################################################################################################
+
+
+    #----> KEEPS THE MAXIMISE BUTTON AND THE RESIZE GRIP IN STEP WITH THE WINDOW
+    #MainWindow CALLS THIS FROM changeEvent() WHENEVER THE WINDOW IS MAXIMISED OR RESTORED, BY THE BUTTON ABOVE OR BY
+    #THE WINDOW MANAGER, SO THE BUTTON NEVER SHOWS A STATE THE WINDOW IS NOT IN.
+    def windowStateChanged(self):
+        if self.isMaximized():
             self.ui.bn_max.setToolTip("Restore")
             self.ui.bn_max.setIcon(QtGui.QIcon("icons/1x/restore.png")) #CHANGE THE MAXIMISE ICON TO RESTOR ICON
             self.ui.frame_drag.hide() #HIDE DRAG AS NOT NECESSERY
         else:
-            self.showNormal()
             self.ui.bn_max.setToolTip("Maximize")
             self.ui.bn_max.setIcon(QtGui.QIcon("icons/1x/max.png")) #CHANGE BACK TO MAXIMISE ICON
             self.ui.frame_drag.show()
@@ -132,7 +141,10 @@ class UIFunction:
         self.ui.frame_appname.mouseDoubleClickEvent = maxDoubleClick
 
         #-----> RESIZE USING DRAG: A FRAMELESS WINDOW HAS NO BORDER TO RESIZE BY, SO THE BOTTOM RIGHT CORNER GETS A GRIP.
+        #frame_drag's OWN BACKGROUND STYLE REACHES THE GRIP AND LEAVES IT BLANK, SO THE GRIP IS GIVEN ITS PICTURE HERE.
         self.sizegrip = QSizeGrip(self.ui.frame_drag)
+        self.sizegrip.setStyleSheet('image: url("icons/1x/dragAsset 52.png");')
+        self.sizegrip.setToolTip("Resize")
         self.ui.frame_drag.layout().addWidget(self.sizegrip)
 
         #SINCE THERE IS NO WINDOWS TOPBAR, THE CLOSE MIN, MAX BUTTON ARE ABSENT AND SO THERE IS A NEED FOR THE ALTERNATIVE BUTTONS IN OUR
@@ -153,14 +165,19 @@ class UIFunction:
     def buttonPressed(self, buttonName):
         frame, page, aboutPage, title = MENU[buttonName]
         about = UIFunction.aboutShown(self)
+        target = getattr(self.ui, aboutPage if about else page)
 
         #------> THIS LINE CLEARS THE BG OF PREVIOUS TABS I.E. FROM THE LITER COLOR TO THE SAME BG COLOR I.E. TO CHANGE THE HIGHLIGHT.
         for each in self.ui.frame_bottom_west.findChildren(QFrame):
             each.setStyleSheet("background:rgb(51,51,51)")
-
-        self.ui.stackedWidget.setCurrentWidget(getattr(self.ui, aboutPage if about else page))
-        self.ui.lab_tab.setText("About > " + title if about else title)
         getattr(self.ui, frame).setStyleSheet("background:rgb(91,90,90)") # SETS THE BACKGROUND OF THE CLICKED BUTTON TO LITER COLOR THAN THE REST
+
+        #THE BUTTON OF THE PAGE ALREADY SHOWING CHANGES NOTHING ELSE, SO A SUB PAGE OF ANDROID STAYS WHERE IT IS.
+        if self.ui.stackedWidget.currentWidget() is target:
+            return
+
+        self.ui.stackedWidget.setCurrentWidget(target)
+        self.ui.lab_tab.setText("About > " + title if about else title)
 
         if buttonName=='bn_android' and not about:
             UIFunction.androidStackPages(self, "page_contact")
@@ -262,12 +279,14 @@ class UIFunction:
 class APFunction():
     #-----> ILLUSTRATES THE PROGRESS BAR WHEN THE 'START' BUTTON IS PRESSED
     # A TIMER MOVES THE BAR ONE PERCENT AT A TIME, SO THE WINDOW STAYS RESPONSIVE WHILE IT RUNS. A LOOP HERE WOULD
-    # BLOCK THE WINDOW UNTIL IT FINISHED. THE BIGGER THE NUMBER THE SLOWER THE BAR: 1 MS PER PERCENT FOR EACH MILLION.
+    # BLOCK THE WINDOW UNTIL IT FINISHED. THE BIGGER THE NUMBER THE SLOWER THE BAR: 1 MS PER PERCENT FOR EACH MILLION,
+    # AND NEVER LESS THAN 1 MS. THE ONE TIMER IS KEPT AND RESTARTED, SO A SECOND CALL DOES NOT LEAVE A FIRST ONE RUNNING.
     def addNumbers(self, number):
         self.ui.bn_bug_start.setEnabled(False)
         self.ui.progressBar_bug.setValue(0)
-        self.bugTimer = QtCore.QTimer(self)
-        self.bugTimer.timeout.connect(lambda: APFunction.addNumbersStep(self))
+        if not hasattr(self, "bugTimer"):
+            self.bugTimer = QtCore.QTimer(self)
+            self.bugTimer.timeout.connect(lambda: APFunction.addNumbersStep(self))
         self.bugTimer.start(max(1, int(number)//1000000))
 
     def addNumbersStep(self):
@@ -275,7 +294,6 @@ class APFunction():
         self.ui.progressBar_bug.setValue(progress)
         if progress >= 100:
             self.bugTimer.stop()
-            self.bugTimer.deleteLater()
             self.ui.bn_bug_start.setEnabled(True)
     ###########################
 
@@ -298,7 +316,7 @@ class APFunction():
     #-----> FUNCTION IN ACCOUNT OF CONTACT PAGE IN ANDROID MENU
     # dialogexec() RETURNS True WHEN THE RIGHT HAND BUTTON OF THE DIALOG BOX, HERE 'Yes', WAS PRESSED.
     def deleteContact(self):
-        if self.dialogexec("Warning", "The Contact Infromtion will be Deleted, Do you want to continue.", "icons/1x/errorAsset 55.png", "Cancel", "Yes"):
+        if self.dialogexec("Warning", "The contact information will be deleted. Do you want to continue?", "icons/1x/errorAsset 55.png", "Cancel", "Yes"):
             self.ui.line_android_name.setText("")
             self.ui.line_android_adress.setText("")
             self.ui.line_android_org.setText("")

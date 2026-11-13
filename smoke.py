@@ -1,4 +1,7 @@
-"""Build the windows without a display and drive what needs no user.
+"""Run main.py as a script, without a display, and drive what needs no user.
+
+main.py runs as the entry script, as `just run` runs it, and this takes over at
+app.exec().
 
 Run through `just check`, which sets QT_QPA_PLATFORM=offscreen and turns Python
 warnings into errors so a deprecated Qt call fails here. Qt's own warnings, an
@@ -7,6 +10,7 @@ window and an icon path with no file behind it fail it too.
 """
 
 import re
+import runpy
 import sys
 from pathlib import Path
 
@@ -23,32 +27,85 @@ from PySide6.QtGui import QFontDatabase, QFontInfo, QMouseEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip, QWidget
 
-import ui_function  # noqa: F401  first and on its own: it must not need main
-import main
+import ui_function  # noqa: F401
 
-ICON_SOURCES = ("ui_main.py", "ui_dialog.py", "ui_error.py", "ui_function.py")
+# Every file that can name an image: the Designer sources, what is generated
+# from them, and the Python that sets one at run time.
+ICON_SOURCES = (
+    "main.py",
+    "ui_main.ui",
+    "ui_dialog.ui",
+    "ui_error.ui",
+    "ui_main.py",
+    "ui_dialog.py",
+    "ui_error.py",
+    "ui_function.py",
+)
 
 problems = []
 dialogs_shown = []
 
+# ui_function has to import without main: when it needed main, the two modules
+# imported each other and only one import order worked.
+if "main" in sys.modules:
+    problems.append("importing ui_function imported main")
+drove = []
+
+
+def fail(what):
+    if what not in problems:
+        problems.append(what)
+
 
 def on_qt_message(kind, _context, message):
     print(message, file=sys.stderr)
+    # Qt says this about the host, under LC_ALL=C for one, not about the app.
+    if message.startswith("Detected locale"):
+        return
     if kind != QtMsgType.QtDebugMsg and kind != QtMsgType.QtInfoMsg:
-        problems.append(f"Qt message: {message}")
+        fail(f"Qt message: {message}")
 
 
 def on_exception(kind, value, traceback):
     sys.__excepthook__(kind, value, traceback)
-    problems.append(f"exception in a slot: {kind.__name__}: {value}")
+    fail(f"uncaught exception: {kind.__name__}: {value}")
 
 
 def expect(condition, what):
     if not condition:
-        problems.append(what)
+        fail(what)
 
 
-def drag(press_target, move_target):
+def wait_until(condition, timeout_ms=2000):
+    for _ in range(timeout_ms // 10):
+        if condition():
+            return True
+        QTest.qWait(10)
+    return condition()
+
+
+def really_exec(dialog, show, button):
+    """Run `show` with the real QDialog.exec and click `button` to end it.
+
+    A button that does not close the dialog would leave exec() blocking for
+    good, so a timer closes it and records the failure instead.
+    """
+
+    def give_up():
+        if dialog.isVisible():
+            fail(f"{button.objectName()} did not close its dialog")
+            dialog.done(QDialog.DialogCode.Rejected)
+
+    QTimer.singleShot(0, button.click)
+    QTimer.singleShot(2000, give_up)
+    QDialog.exec = real_exec
+    try:
+        return show()
+    finally:
+        QDialog.exec = fake_exec
+
+
+def drag(press_target, move_target, held=Qt.MouseButton.LeftButton):
     for kind, target, global_pos in (
         (QEvent.Type.MouseButtonPress, press_target.mousePressEvent, QPointF(105, 105)),
         (QEvent.Type.MouseMove, move_target.mouseMoveEvent, QPointF(140, 140)),
@@ -58,8 +115,8 @@ def drag(press_target, move_target):
                 kind,
                 QPointF(5, 5),
                 global_pos,
-                Qt.MouseButton.LeftButton,
-                Qt.MouseButton.LeftButton,
+                held,
+                held,
                 Qt.KeyboardModifier.NoModifier,
             )
         )
@@ -67,8 +124,15 @@ def drag(press_target, move_target):
 
 def check_drag(name, window, handle):
     before = window.pos()
-    drag(window, handle)
-    expect(window.pos() != before, f"dragging the {name} did not move it")
+    drag(window, handle)  # pressed at (105, 105) and moved to (140, 140)
+    moved = window.pos() - before
+    expect(
+        moved == QPoint(35, 35),
+        f"dragging the {name} by (35, 35) moved it by {moved.toTuple()}",
+    )
+    before = window.pos()
+    drag(window, handle, held=Qt.MouseButton.NoButton)
+    expect(window.pos() == before, f"the {name} moved with no mouse button held")
 
 
 def check_fonts(window):
@@ -86,8 +150,13 @@ def check_fonts(window):
 
 def check_icons():
     for source in ICON_SOURCES:
-        for path in set(re.findall(r"icons/[^\"']+\.png", Path(source).read_text())):
+        text = Path(source).read_text(encoding="utf-8")
+        for path in set(re.findall(r"[\w./ -]+\.png", text)):
+            path = path.strip()
             expect(Path(path).is_file(), f"{source} names {path}, which is not a file")
+
+
+HIGHLIGHT = "rgb(91,90,90)"
 
 
 def check_menu(ui, pages, tab_prefix):
@@ -101,9 +170,11 @@ def check_menu(ui, pages, tab_prefix):
             ui.lab_tab.text().startswith(tab_prefix + tab),
             f"{button} left the tab label at {ui.lab_tab.text()!r}",
         )
-
-
-HIGHLIGHT = "rgb(91,90,90)"
+        frame = button.replace("bn_", "frame_")
+        expect(
+            HIGHLIGHT in getattr(ui, frame).styleSheet(),
+            f"{button} did not highlight {frame}",
+        )
 
 
 def check_highlight(ui):
@@ -114,20 +185,37 @@ def check_highlight(ui):
         "clicking the current menu button removed its highlight",
     )
 
+    def part_way():
+        return 80 < ui.frame_bottom_west.width() < 160
+
     ui.toodle.click()
-    ui.bn_bug.click()  # while the menu is still animating open
+    expect(HIGHLIGHT in ui.frame_home.styleSheet(), "the toggle did not highlight Home")
+    expect(wait_until(part_way, 1000), "the menu did not animate open")
+    ui.bn_bug.click()  # with the menu part of the way open
     expect(
         ui.stackedWidget.currentWidget() is ui.page_about_bug,
-        "a menu button clicked during the toggle animation did nothing",
+        "a menu button clicked part-way through the animation did not show its About page",
     )
     expect(
         HIGHLIGHT in ui.frame_bug.styleSheet(),
-        "a menu button clicked during the toggle animation lost its highlight",
+        "a menu button clicked part-way through the animation lost its highlight",
     )
-    QTest.qWait(400)
+    wait_until(lambda: ui.frame_bottom_west.width() == 160)
     ui.toodle.click()
-    QTest.qWait(400)
+    expect(wait_until(part_way, 1000), "the menu did not animate closed")
+    wait_until(lambda: ui.frame_bottom_west.width() == 80)
     expect(ui.frame_bottom_west.width() == 80, "the menu did not narrow again")
+
+    ui.bn_android.click()
+    ui.bn_android_game.click()
+    ui.bn_android.click()
+    expect(
+        ui.stackedWidget_android.currentWidget() is ui.page_android_game
+        and ui.lab_tab.text() == "Android > GamePad"
+        and HIGHLIGHT in ui.frame_android.styleSheet(),
+        "clicking Android again lost the sub-page that was showing",
+    )
+    ui.bn_home.click()
 
 
 def check_window_state(window):
@@ -143,12 +231,31 @@ def check_window_state(window):
         window.size() == size,
         f"restore gave {window.size().toTuple()}, not the {size.toTuple()} it had",
     )
+    expect(ui.frame_drag.isVisible(), "the resize grip did not come back after restore")
+
+    # The window manager can change the state behind the button's back.
+    window.showMaximized()
+    QApplication.processEvents()
+    expect(
+        ui.bn_max.toolTip() == "Restore" and not ui.frame_drag.isVisible(),
+        "the maximise button did not follow a maximise it did not make",
+    )
+    window.showNormal()
+    QApplication.processEvents()
+    expect(
+        ui.bn_max.toolTip() == "Maximize" and ui.frame_drag.isVisible(),
+        "the maximise button did not follow a restore it did not make",
+    )
 
     QTest.mouseDClick(ui.frame_appname, Qt.MouseButton.LeftButton)
-    QTest.qWait(300)  # the double click maximises after 250 ms
+    wait_until(window.isMaximized)  # the double click maximises after 250 ms
     expect(window.isMaximized(), "double-clicking the title bar did not maximise")
-    ui.bn_max.click()
+    drag(window, ui.frame_appname)
     QApplication.processEvents()
+    expect(
+        not window.isMaximized() and ui.bn_max.toolTip() == "Maximize",
+        "dragging a maximised window did not restore it",
+    )
 
     ui.bn_min.click()
     expect(window.isMinimized(), "the minimise button did not minimise")
@@ -163,13 +270,18 @@ def check_window_state(window):
     grip = ui.frame_drag.findChild(QSizeGrip)
     expect(grip is not None, "there is no resize grip on the frameless window")
     if grip is not None:
+        image = grip.grab().toImage()
+        colours = {
+            image.pixel(x, y) for x in range(image.width()) for y in range(image.height())
+        }
+        expect(len(colours) > 1, "the resize grip is drawn as a blank square")
         size = window.size()
         QTest.mousePress(grip, Qt.MouseButton.LeftButton, pos=QPoint(5, 5))
         QTest.mouseMove(grip, QPoint(5, 45))
         QTest.mouseRelease(grip, Qt.MouseButton.LeftButton, pos=QPoint(5, 45))
         expect(window.size() != size, "dragging the resize grip did not resize")
 
-    second = main.MainWindow()
+    second = type(window)()
     expect(
         second.ui.lab_tab.text() == "Home" and HIGHLIGHT in second.ui.frame_home.styleSheet(),
         "a second main window did not start on the Home page",
@@ -190,19 +302,40 @@ def check_page_widgets(ui):
         ui.progressBar_bug.value() < 100,
         "Start ran to 100% inside the click, blocking the GUI while it did",
     )
-    for _ in range(200):  # up to 2 s
-        if ui.progressBar_bug.value() == 100:
-            break
-        QTest.qWait(10)
+    expect(not ui.bn_bug_start.isEnabled(), "Start can be clicked again mid-run")
+    wait_until(lambda: ui.progressBar_bug.value() == 100)
     expect(ui.progressBar_bug.value() == 100, "Start did not fill the progress bar")
     expect(ui.bn_bug_start.isEnabled(), "Start stayed disabled after the run")
+    expect(
+        not ui.bn_bug_start.window().bugTimer.isActive(),
+        "the progress timer kept running after 100%",
+    )
 
+    window = ui.bn_cloud_connect.window()
+    cloud_fields = (ui.line_cloud_id, ui.line_cloud_adress, ui.line_cloud_proxy)
     shown = len(dialogs_shown)
     ui.bn_cloud_connect.click()
-    expect(len(dialogs_shown) == shown + 1, "Connect did not raise the error box")
-    ui.line_cloud_id.setText("x")
+    expect(
+        len(dialogs_shown) == shown + 1
+        and dialogs_shown[-1] is window.error
+        and window.error.e.lab_heading.text() == "Incorrect Credentials",
+        "Connect did not raise the error box saying Incorrect Credentials",
+    )
+    for field in cloud_fields:
+        field.setText("x")
     ui.bn_cloud_clear.click()
-    expect(ui.line_cloud_id.text() == "", "Clear did nothing after a failed Connect")
+    expect(
+        all(field.text() == "" for field in cloud_fields),
+        "Clear did not empty all three fields after a failed Connect",
+    )
+    ui.line_cloud_id.setText("asd")
+    ui.line_cloud_adress.setText("1234")
+    ui.bn_cloud_connect.click()
+    expect(
+        len(dialogs_shown) == shown + 1
+        and ui.line_cloud_proxy.text() == "Connection established",
+        "Connect with the right credentials did not report a connection",
+    )
 
     ui.bn_android.click()
     for button, page in (
@@ -216,45 +349,101 @@ def check_page_widgets(ui):
             ui.stackedWidget_android.currentWidget() is getattr(ui, page),
             f"{button} did not show {page}",
         )
+        frame = button.replace("bn_", "frame_")
+        expect(
+            HIGHLIGHT in getattr(ui, frame).styleSheet(),
+            f"{button} did not highlight {frame}",
+        )
 
+    contact_fields = (
+        ui.line_android_name,
+        ui.line_android_adress,
+        ui.line_android_org,
+        ui.line_android_email,
+        ui.line_android_ph,
+    )
     ui.bn_android_contact_edit.click()
-    expect(ui.line_android_name.isEnabled(), "Edit did not enable the name field")
+    expect(
+        all(field.isEnabled() for field in contact_fields),
+        "Edit did not enable every contact field",
+    )
     ui.bn_android_contact_save.click()
-    expect(not ui.line_android_name.isEnabled(), "Save did not disable the name field")
+    expect(
+        not any(field.isEnabled() for field in contact_fields),
+        "Save did not disable every contact field",
+    )
 
     shown = len(dialogs_shown)
     ui.bn_android_contact_delete.click()
-    expect(len(dialogs_shown) == shown + 1, "Delete did not raise the dialog box")
+    expect(
+        len(dialogs_shown) == shown + 1
+        and dialogs_shown[-1] is window.diag
+        and window.diag.d.lab_heading.text() == "Warning",
+        "Delete did not raise the dialog box headed Warning",
+    )
 
-    shown = len(dialogs_shown)
-    ui.checkBox.setChecked(True)
-    expect(len(dialogs_shown) == shown + 1, "the check box did not raise the error box")
-    ui.checkBox.setChecked(False)
-    expect(len(dialogs_shown) == shown + 1, "unchecking the box raised the error box again")
+    for box in (ui.checkBox, ui.checkBox_2):
+        name = box.objectName()
+        shown = len(dialogs_shown)
+        box.setChecked(True)
+        expect(
+            len(dialogs_shown) == shown + 1 and dialogs_shown[-1] is window.error,
+            f"{name} did not raise the error box",
+        )
+        box.setChecked(False)
+        expect(len(dialogs_shown) == shown + 1, f"unchecking {name} raised the error box")
+
+    ui.horizontalSlider_2.setValue(ui.horizontalSlider_2.value() + 1)
 
 
 def check_dialog_result(window):
     for button, expected in (("bn_east", True), ("bn_west", False), ("bn_close", False)):
-        QTimer.singleShot(0, getattr(window.diag.d, button).click)
-        QDialog.exec = real_exec
-        try:
-            result = window.dialogexec("Heading", "Message", "", "No", "Yes")
-        finally:
-            QDialog.exec = fake_exec
+        result = really_exec(
+            window.diag,
+            lambda: window.dialogexec("Heading", "Message", "", "No", "Yes"),
+            getattr(window.diag.d, button),
+        )
         expect(result is expected, f"dialogexec returned {result!r} after {button}")
+    expect(
+        (window.diag.d.bn_west.text(), window.diag.d.bn_east.text()) == ("No", "Yes"),
+        "dialogexec put the button texts on the wrong buttons",
+    )
+    really_exec(window.error, lambda: window.errorexec("Heading", "", "Ok"), window.error.e.bn_ok)
 
     ui = window.ui
-    ui.line_android_name.setText("someone")
+    fields = (
+        ui.line_android_name,
+        ui.line_android_adress,
+        ui.line_android_org,
+        ui.line_android_email,
+        ui.line_android_ph,
+    )
+    for field in fields:
+        field.setText("someone")
     answers.append(False)
     ui.bn_android_contact_delete.click()
-    expect(ui.line_android_name.text() == "someone", "Cancel deleted the contact anyway")
+    expect(
+        all(field.text() == "someone" for field in fields),
+        "Cancel deleted the contact anyway",
+    )
     answers.append(True)
     ui.bn_android_contact_delete.click()
-    expect(ui.line_android_name.text() == "", "Yes did not delete the contact")
+    expect(
+        all(field.text() == "" for field in fields),
+        "Yes did not empty every field of the contact",
+    )
 
 
-def drive(window):
+def drive(*_):
+    (window,) = [
+        w for w in QApplication.topLevelWidgets() if type(w).__name__ == "MainWindow"
+    ]
     ui = window.ui
+    expect(window.isVisible(), "main.py did not show the main window")
+    expect(
+        ui.lab_appname.text() == window.windowTitle() != "",
+        "the title bar does not show the application name",
+    )
 
     check_icons()
     check_fonts(window)
@@ -268,13 +457,21 @@ def drive(window):
     check_menu(ui, pages, "")
 
     ui.toodle.click()
-    QTest.qWait(400)  # the menu animates open over 300 ms
+    wait_until(lambda: ui.frame_bottom_west.width() == 160)  # it animates open
     expect(ui.frame_bottom_west.width() == 160, "the toggle did not widen the menu")
+    expect(
+        ui.stackedWidget.currentWidget() is ui.page_about_home,
+        "the toggle did not show the About page of Home",
+    )
     about = tuple((b, p.replace("page_", "page_about_"), t) for b, p, t in pages)
     check_menu(ui, about, "About > ")
     ui.toodle.click()
-    QTest.qWait(400)
+    wait_until(lambda: ui.frame_bottom_west.width() == 80)
     expect(ui.frame_bottom_west.width() == 80, "the toggle did not narrow the menu")
+    expect(
+        ui.stackedWidget.currentWidget() is ui.page_home,
+        "the toggle did not go back to the Home page",
+    )
 
     check_highlight(ui)
     check_page_widgets(ui)
@@ -285,16 +482,14 @@ def drive(window):
     check_drag("dialog box", window.diag, window.diag.d.frame_top)
     check_drag("error box", window.error, window.error.e.frame_top)
 
+    ui.bn_close.click()
+    expect(not window.isVisible(), "the close button did not close the window")
+
     QApplication.processEvents()
-    for problem in problems:
-        print("FAIL:", problem, file=sys.stderr)
-    if not problems:
-        print("smoke ok")
-    return 1 if problems else 0
+    drove.append(True)
+    return 0
 
 
-qInstallMessageHandler(on_qt_message)
-sys.excepthook = on_exception
 def fake_exec(dialog):
     dialogs_shown.append(dialog)
     accepted = answers.pop() if answers else False
@@ -305,7 +500,22 @@ answers = []
 real_exec = QDialog.exec
 QDialog.exec = fake_exec
 
-app = QApplication(sys.argv)
-window = main.MainWindow()
-window.show()
-sys.exit(drive(window))
+qInstallMessageHandler(on_qt_message)
+sys.excepthook = on_exception
+QApplication.exec = drive
+
+# The verdict is given here, not through main.py's exit status: main.py may
+# not pass it on, and may not reach app.exec() at all.
+try:
+    runpy.run_path("main.py", run_name="__main__")
+except SystemExit:
+    pass
+except Exception:
+    on_exception(*sys.exc_info())
+if not drove:
+    fail("the windows were not driven to the end")
+for problem in problems:
+    print("FAIL:", problem, file=sys.stderr)
+if not problems:
+    print("smoke ok")
+sys.exit(1 if problems else 0)
