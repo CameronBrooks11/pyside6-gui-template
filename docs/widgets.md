@@ -102,7 +102,7 @@ combo.setMaximumSize(QSize(16777215, 25))  # 16777215 is Qt's "no limit"
 
 Styled by the `QComboBox` rules in `style.qss`, with
 `QComboBox QAbstractItemView` for the list it drops down. The arrow is the
-resource `:/icons/arrow.png`.
+resource `:/icons/dropdown.png`.
 
 See [Add an icon](customising.md#add-an-icon) for how resources work.
 

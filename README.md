@@ -80,8 +80,10 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 6. Set `name`, `description` and `version` in `pyproject.toml`.
 7. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
    line and `module-name` in `pyproject.toml`, the paths in the `run` and
-   `uic` recipes of the justfile, and the paths and the two `app` imports in
-   `smoke.py`. `just check` fails until they agree.
+   `uic` recipes of the justfile, and `PACKAGE` at the top of `smoke.py`.
+   `just check` fails if the directory and `PACKAGE` disagree; it does not
+   read the script line or the justfile, so look those over yourself. The
+   docs and a few comments also say `python -m app`.
 8. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
    copies, and add your own copyright line to it.
 9. Replace this README and `docs/` with your own, and set `site_name`,

@@ -193,7 +193,7 @@ QComboBox::drop-down {
     border-bottom-right-radius: 5px;
 }
 QComboBox::down-arrow {
-    image: url(:/icons/arrow.png);
+    image: url(:/icons/dropdown.png);
 }
 QComboBox::down-arrow:on {
     top: 1px;
