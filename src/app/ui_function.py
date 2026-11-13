@@ -86,11 +86,11 @@ class UIFunction:
     def windowStateChanged(self):
         if self.isMaximized():
             self.ui.bn_max.setToolTip("Restore")
-            self.ui.bn_max.setIcon(QtGui.QIcon("icons/1x/restore.png")) #CHANGE THE MAXIMISE ICON TO RESTOR ICON
+            self.ui.bn_max.setIcon(QtGui.QIcon(":/icons/restore.png")) #CHANGE THE MAXIMISE ICON TO RESTOR ICON
             self.ui.frame_drag.hide() #HIDE DRAG AS NOT NECESSERY
         else:
             self.ui.bn_max.setToolTip("Maximize")
-            self.ui.bn_max.setIcon(QtGui.QIcon("icons/1x/max.png")) #CHANGE BACK TO MAXIMISE ICON
+            self.ui.bn_max.setIcon(QtGui.QIcon(":/icons/maximize.png")) #CHANGE BACK TO MAXIMISE ICON
             self.ui.frame_drag.show()
     ################################################################################################
 
@@ -143,7 +143,7 @@ class UIFunction:
         #-----> RESIZE USING DRAG: A FRAMELESS WINDOW HAS NO BORDER TO RESIZE BY, SO THE BOTTOM RIGHT CORNER GETS A GRIP.
         #frame_drag's OWN BACKGROUND STYLE REACHES THE GRIP AND LEAVES IT BLANK, SO THE GRIP IS GIVEN ITS PICTURE HERE.
         self.sizegrip = QSizeGrip(self.ui.frame_drag)
-        self.sizegrip.setStyleSheet('image: url("icons/1x/dragAsset 52.png");')
+        self.sizegrip.setStyleSheet('image: url(":/icons/grip.png");')
         self.sizegrip.setToolTip("Resize")
         self.ui.frame_drag.layout().addWidget(self.sizegrip)
 
@@ -208,7 +208,7 @@ class UIFunction:
 
         #########PAGE CLOUD #############
         self.ui.bn_cloud_connect.clicked.connect(lambda: APFunction.cloudConnect(self))
-        #self.ui.bn_cloud_clear.clicked.connect(lambda: self.dialogexec("Warning", "Do you want to save the file", "icons/1x/errorAsset 55.png", "Cancel", "Save"))
+        #self.ui.bn_cloud_clear.clicked.connect(lambda: self.dialogexec("Warning", "Do you want to save the file", ":/icons/warning.png", "Cancel", "Save"))
         self.ui.bn_cloud_clear.clicked.connect(lambda: APFunction.cloudClear(self))
 
         #########PAGE ANDROID WIDGET AND ITS STACKANDROID WIDGET PAGES
@@ -231,8 +231,8 @@ class UIFunction:
         ######ANDROID > PAGE CLEAN >>>>>>>>>>>>>>>>>>>>>>
         #NOTHING HERE
         self.ui.horizontalSlider_2.valueChanged.connect(lambda: print("Slider: Horizontal: ", self.ui.horizontalSlider_2.value())) #CHECK WEATHER THE SLIDER IS MOVED OR NOT
-        self.ui.checkBox.toggled.connect(lambda checked: checked and self.errorexec("Happy to Know you liked the UI", "icons/1x/smile2Asset 1.png", "Ok")) #WHEN THE CHECK BOX IS CHECKED IT ECECUTES THE ERROR BOX WITH MESSAGE.
-        self.ui.checkBox_2.toggled.connect(lambda checked: checked and self.errorexec("Even More Happy to hear this", "icons/1x/smileAsset 1.png", "Ok"))
+        self.ui.checkBox.toggled.connect(lambda checked: checked and self.errorexec("Happy to Know you liked the UI", ":/icons/smile.png", "Ok")) #WHEN THE CHECK BOX IS CHECKED IT ECECUTES THE ERROR BOX WITH MESSAGE.
+        self.ui.checkBox_2.toggled.connect(lambda checked: checked and self.errorexec("Even More Happy to hear this", ":/icons/grin.png", "Ok"))
 
         ##########PAGE: ABOUT HOME #############
         self.ui.text_about_home.setVerticalScrollBar(self.ui.vsb_about_home)
@@ -306,7 +306,7 @@ class APFunction():
             self.ui.line_cloud_id.setText("")
             self.ui.line_cloud_proxy.setText("Connection established")
         else:
-            self.errorexec("Incorrect Credentials", "icons/1x/errorAsset 55.png", "Retry")
+            self.errorexec("Incorrect Credentials", ":/icons/warning.png", "Retry")
 
     def cloudClear(self):
         self.ui.line_cloud_proxy.setText("")
@@ -316,7 +316,7 @@ class APFunction():
     #-----> FUNCTION IN ACCOUNT OF CONTACT PAGE IN ANDROID MENU
     # dialogexec() RETURNS True WHEN THE RIGHT HAND BUTTON OF THE DIALOG BOX, HERE 'Yes', WAS PRESSED.
     def deleteContact(self):
-        if self.dialogexec("Warning", "The contact information will be deleted. Do you want to continue?", "icons/1x/errorAsset 55.png", "Cancel", "Yes"):
+        if self.dialogexec("Warning", "The contact information will be deleted. Do you want to continue?", ":/icons/warning.png", "Cancel", "Yes"):
             self.ui.line_android_name.setText("")
             self.ui.line_android_adress.setText("")
             self.ui.line_android_org.setText("")

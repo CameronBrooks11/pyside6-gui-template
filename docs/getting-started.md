@@ -20,9 +20,10 @@ just setup   # install PySide6 into .venv
 just run     # launch the GUI
 ```
 
-Without just, run `uv sync` and then `uv run python -m app` from the
-repository root. The icons load by relative path, so the working directory has
-to be the root.
+Without just, run `uv sync` and then `uv run python -m app`, or `uv run app`.
+Without uv, `pip install -e .` in an environment of your own and run
+`python -m app`. The icons are compiled into the package, so it runs from any
+directory.
 
 ## Check it
 
@@ -33,8 +34,9 @@ just check
 builds every window on Qt's offscreen platform and clicks through the pages,
 the menu toggle, the window buttons and the example widgets. It fails on a
 Python or Qt warning (a deprecated Qt call included), an exception in a slot,
-a page that does not switch, and an icon path with no file behind it. It does
-not show what the GUI looks like.
+a page that does not switch, an icon path with no file or resource behind it,
+and a generated module that is out of date with its `.ui` or `.qrc` source. It
+does not show what the GUI looks like.
 
 When you add a page or a button, add it to `smoke.py` so the check covers it.
 
@@ -51,7 +53,8 @@ The other pages name its files without the directory.
 | `src/app/about.py`                          | Text shown in the About panel of each page                        |
 | `src/app/ui/*.ui`                           | Qt Designer sources                                               |
 | `src/app/ui/ui_*.py`                        | Generated from the `.ui` files; do not edit by hand               |
-| `icons/`                                    | Icons the application loads at run time                           |
+| `src/app/resources/`                        | The icons and `resources.qrc`, the Qt resource file that lists them |
+| `src/app/ui/resources_rc.py`                | The icons compiled from `resources.qrc`; do not edit by hand        |
 | `css.txt`                                   | Reference copy of the stylesheets set in the `.ui` files; not loaded |
 | `smoke.py`                                  | The check behind `just check`                                     |
 
@@ -67,7 +70,7 @@ page. Put the code for your own application there.
 1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer src/app/ui/ui_main.ui`) and
    change the layout. Sizes, icons, labels, stylesheets and object names are
    all set there, so the Python side only has to say what a widget does.
-2. Run `just uic` to regenerate the matching `ui_*.py`.
+2. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
 3. Wire the widgets up in `main.py` and `ui_function.py`.
    `UIFunction.stackPage` in `ui_function.py` wires up the example pages and
    is the place to copy from.

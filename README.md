@@ -38,15 +38,17 @@ just setup   # install PySide6 into .venv
 just run     # launch the GUI
 ```
 
-Without just, run `uv sync` and then `uv run python -m app` from the
-repository root. The icons load by relative path, so the working directory has
-to be the root.
+Without just, run `uv sync` and then `uv run python -m app`, or `uv run app`.
+Without uv, `pip install -e .` in an environment of your own and run
+`python -m app`. The icons are compiled into the package, so it runs from any
+directory.
 
 `just check` builds every window on Qt's offscreen platform and clicks through
 the pages, the menu toggle, the window buttons and the example widgets. It
 fails on a Python or Qt warning (a deprecated Qt call included), an exception
-in a slot, a page that does not switch, and an icon path with no file behind
-it. It does not show what the GUI looks like.
+in a slot, a page that does not switch, an icon path with no file or resource
+behind it, and a generated module that is out of date with its `.ui` or `.qrc`
+source. It does not show what the GUI looks like.
 
 ## Layout
 
@@ -60,7 +62,8 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 | `src/app/about.py`                               | Text shown in the About panel of each page                         |
 | `src/app/ui/*.ui`                                | Qt Designer sources                                                |
 | `src/app/ui/ui_*.py`                             | Generated from the `.ui` files; do not edit by hand                |
-| `icons/`                                         | Icons the application loads at run time                            |
+| `src/app/resources/`                             | The icons and `resources.qrc`, the Qt resource file that lists them |
+| `src/app/ui/resources_rc.py`                     | The icons compiled from `resources.qrc`; do not edit by hand        |
 | `css.txt`                                        | Reference copy of the stylesheets set in the `.ui` files; not loaded |
 | `docs/`, `mkdocs.yml`                            | The documentation site: layout, widget names, stylesheets          |
 | `smoke.py`                                       | The check behind `just check`                                      |
@@ -69,15 +72,21 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 
 1. Open a `.ui` file in Qt Designer (`uv run pyside6-designer
    src/app/ui/ui_main.ui`) and change the layout.
-2. Run `just uic` to regenerate the matching `ui_*.py`.
+2. Run `just uic` to regenerate the `ui_*.py` modules and `resources_rc.py`.
 3. Wire the widgets up in `main.py` and `ui_function.py`.
    `UIFunction.stackPage` in `ui_function.py` wires up the example pages and
    is the place to copy from.
 4. Set the application name in `MainWindow.__init__` in `main.py`.
 5. Set `name`, `description` and `version` in `pyproject.toml`.
-6. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
+6. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
+   line and `module-name` in `pyproject.toml`, the paths in the `run` and
+   `uic` recipes of the justfile, and `PACKAGE` at the top of `smoke.py`.
+   `just check` fails if the directory and `PACKAGE` disagree; it does not
+   read the script line or the justfile, so look those over yourself. The
+   docs and a few comments also say `python -m app`.
+7. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
    copies, and add your own copyright line to it.
-7. Replace this README and `docs/` with your own, and set `site_name`,
+8. Replace this README and `docs/` with your own, and set `site_name`,
    `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
    If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
    `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the

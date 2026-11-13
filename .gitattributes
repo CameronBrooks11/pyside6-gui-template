@@ -1,0 +1,5 @@
+# Text files are checked out with LF on every platform. resources.qrc is
+# compiled into resources_rc.py byte for byte, and `just check` compares the
+# result, so a CRLF checkout would make it look out of date.
+* text=auto eol=lf
+*.png binary

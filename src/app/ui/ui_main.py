@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QRadioButton, QScrollBar, QSizePolicy, QSlider,
     QSpacerItem, QStackedWidget, QTextEdit, QVBoxLayout,
     QWidget)
+from . import resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -70,7 +71,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon = QIcon()
-        icon.addFile(u"icons/1x/logo.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/icons/menu.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.toodle.setIcon(icon)
         self.toodle.setIconSize(QSize(22, 12))
         self.toodle.setFlat(True)
@@ -143,7 +144,7 @@ class Ui_MainWindow(object):
         self.lab_person = QLabel(self.frame_person)
         self.lab_person.setObjectName(u"lab_person")
         self.lab_person.setMaximumSize(QSize(55, 55))
-        self.lab_person.setPixmap(QPixmap(u"icons/1x/peple.png"))
+        self.lab_person.setPixmap(QPixmap(u":/icons/user.png"))
         self.lab_person.setScaledContents(False)
         self.lab_person.setAlignment(Qt.AlignCenter)
 
@@ -176,7 +177,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon1 = QIcon()
-        icon1.addFile(u"icons/1x/hideAsset 53.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/icons/minimize.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_min.setIcon(icon1)
         self.bn_min.setIconSize(QSize(22, 22))
         self.bn_min.setFlat(True)
@@ -210,7 +211,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon2 = QIcon()
-        icon2.addFile(u"icons/1x/max.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u":/icons/maximize.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_max.setIcon(icon2)
         self.bn_max.setIconSize(QSize(22, 22))
         self.bn_max.setFlat(True)
@@ -244,7 +245,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon3 = QIcon()
-        icon3.addFile(u"icons/1x/closeAsset 43.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon3.addFile(u":/icons/close.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_close.setIcon(icon3)
         self.bn_close.setIconSize(QSize(22, 22))
         self.bn_close.setFlat(True)
@@ -304,7 +305,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon4 = QIcon()
-        icon4.addFile(u"icons/1x/homeAsset 46.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon4.addFile(u":/icons/home.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_home.setIcon(icon4)
         self.bn_home.setIconSize(QSize(22, 22))
         self.bn_home.setFlat(True)
@@ -339,7 +340,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon5 = QIcon()
-        icon5.addFile(u"icons/1x/bugAsset 47.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon5.addFile(u":/icons/bug.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_bug.setIcon(icon5)
         self.bn_bug.setIconSize(QSize(22, 22))
         self.bn_bug.setFlat(True)
@@ -374,7 +375,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon6 = QIcon()
-        icon6.addFile(u"icons/1x/cloudAsset 48.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon6.addFile(u":/icons/cloud.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_cloud.setIcon(icon6)
         self.bn_cloud.setIconSize(QSize(22, 12))
         self.bn_cloud.setFlat(True)
@@ -409,7 +410,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon7 = QIcon()
-        icon7.addFile(u"icons/1x/androidAsset 49.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon7.addFile(u":/icons/android.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_android.setIcon(icon7)
         self.bn_android.setIconSize(QSize(20, 22))
         self.bn_android.setFlat(True)
@@ -658,7 +659,7 @@ class Ui_MainWindow(object):
         self.lab_bullet = QLabel(self.frame_bug_main)
         self.lab_bullet.setObjectName(u"lab_bullet")
         self.lab_bullet.setMaximumSize(QSize(5, 16777215))
-        self.lab_bullet.setPixmap(QPixmap(u"icons/1x/bulletAsset 54.png"))
+        self.lab_bullet.setPixmap(QPixmap(u":/icons/bullet.png"))
         self.lab_bullet.setAlignment(Qt.AlignCenter)
 
         self.gridLayout.addWidget(self.lab_bullet, 0, 0, 1, 1)
@@ -666,7 +667,7 @@ class Ui_MainWindow(object):
         self.lab_bullet3 = QLabel(self.frame_bug_main)
         self.lab_bullet3.setObjectName(u"lab_bullet3")
         self.lab_bullet3.setMaximumSize(QSize(5, 16777215))
-        self.lab_bullet3.setPixmap(QPixmap(u"icons/1x/bulletAsset 54.png"))
+        self.lab_bullet3.setPixmap(QPixmap(u":/icons/bullet.png"))
 
         self.gridLayout.addWidget(self.lab_bullet3, 2, 0, 1, 1)
 
@@ -735,7 +736,7 @@ class Ui_MainWindow(object):
                         "}\n"
 "\n"
 "QComboBox::down-arrow {\n"
-"    image: url(icons/1x/arrow.png);\n"
+"    image: url(:/icons/dropdown.png);\n"
 "}\n"
 "\n"
 "QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
@@ -767,7 +768,7 @@ class Ui_MainWindow(object):
         self.lab_bullet2 = QLabel(self.frame_bug_main)
         self.lab_bullet2.setObjectName(u"lab_bullet2")
         self.lab_bullet2.setMaximumSize(QSize(5, 16777215))
-        self.lab_bullet2.setPixmap(QPixmap(u"icons/1x/bulletAsset 54.png"))
+        self.lab_bullet2.setPixmap(QPixmap(u":/icons/bullet.png"))
 
         self.gridLayout.addWidget(self.lab_bullet2, 1, 0, 1, 1)
 
@@ -1085,7 +1086,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon8 = QIcon()
-        icon8.addFile(u"icons/1x/bookAsset 57.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon8.addFile(u":/icons/contact.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_android_contact.setIcon(icon8)
         self.bn_android_contact.setIconSize(QSize(13, 16))
         self.bn_android_contact.setFlat(True)
@@ -1120,7 +1121,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon9 = QIcon()
-        icon9.addFile(u"icons/1x/gameAsset 61.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon9.addFile(u":/icons/game.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_android_game.setIcon(icon9)
         self.bn_android_game.setIconSize(QSize(20, 13))
         self.bn_android_game.setFlat(True)
@@ -1155,7 +1156,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon10 = QIcon()
-        icon10.addFile(u"icons/1x/cleanAsset 59.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon10.addFile(u":/icons/clean.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_android_clean.setIcon(icon10)
         self.bn_android_clean.setFlat(True)
 
@@ -1189,7 +1190,7 @@ class Ui_MainWindow(object):
 "	background-color: rgba(0,0,0,0);\n"
 "}")
         icon11 = QIcon()
-        icon11.addFile(u"icons/1x/worldAsset 60.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon11.addFile(u":/icons/world.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_android_world.setIcon(icon11)
         self.bn_android_world.setFlat(True)
 
@@ -1236,7 +1237,7 @@ class Ui_MainWindow(object):
         self.lab_person_icon.setObjectName(u"lab_person_icon")
         self.lab_person_icon.setMinimumSize(QSize(200, 160))
         self.lab_person_icon.setMaximumSize(QSize(200, 160))
-        self.lab_person_icon.setPixmap(QPixmap(u"icons/1x/peopleAsset 62.png"))
+        self.lab_person_icon.setPixmap(QPixmap(u":/icons/people.png"))
 
         self.gridLayout_3.addWidget(self.lab_person_icon, 0, 0, 1, 1)
 

@@ -1,20 +1,25 @@
-"""Run the app as `python -m app` does, without a display, and drive what needs no user.
+"""Run the app as `python -m <package>` does, without a display, and drive what needs no user.
 
 This takes over at app.exec().
 
-Run through `just check`, which sets QT_QPA_PLATFORM=offscreen and turns Python
-warnings into errors so a deprecated Qt call fails here. Qt's own warnings, an
-exception in a slot, a page that does not switch, a drag that does not move the
-window and an icon path with no file behind it fail it too.
+Run through `just check`, from the repository root, which sets
+QT_QPA_PLATFORM=offscreen and turns Python warnings into errors so a deprecated
+Qt call fails here. Qt's own warnings, an exception in a slot, a page that does
+not switch, a drag that does not move the window, an image path with no file or
+resource behind it and a generated module that is out of date fail it too.
 """
 
+import importlib
 import re
 import runpy
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
 from PySide6.QtCore import (
     QEvent,
+    QFile,
     QPoint,
     QPointF,
     Qt,
@@ -26,20 +31,27 @@ from PySide6.QtGui import QFontDatabase, QFontInfo, QIcon, QMouseEvent
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip, QWidget
 
-from app import ui_function
+# The name of the application package under src/. Change it here when you
+# rename the package.
+PACKAGE = "app"
+SRC = f"src/{PACKAGE}"
+
+ui_function = importlib.import_module(f"{PACKAGE}.ui_function")
+
+UI_FILES = (f"{SRC}/ui/ui_main.ui", f"{SRC}/ui/ui_dialog.ui", f"{SRC}/ui/ui_error.ui")
 
 # Every file that can name an image: the Designer sources, what is generated
 # from them, and the Python that sets one at run time.
 ICON_SOURCES = (
-    "src/app/main.py",
-    "src/app/ui_function.py",
-    "src/app/ui/ui_main.ui",
-    "src/app/ui/ui_dialog.ui",
-    "src/app/ui/ui_error.ui",
-    "src/app/ui/ui_main.py",
-    "src/app/ui/ui_dialog.py",
-    "src/app/ui/ui_error.py",
+    f"{SRC}/main.py",
+    f"{SRC}/ui_function.py",
+    *UI_FILES,
+    f"{SRC}/ui/ui_main.py",
+    f"{SRC}/ui/ui_dialog.py",
+    f"{SRC}/ui/ui_error.py",
 )
+
+RESOURCES = f"{SRC}/resources/resources.qrc"
 
 # An image path as the sources write one: a quoted string, a stylesheet url()
 # or the text of an element in a .ui file. Prose in a comment is not matched.
@@ -53,8 +65,16 @@ dialogs_shown = []
 
 # ui_function has to import without main: when it needed main, the two modules
 # imported each other and only one import order worked.
-if "app.main" in sys.modules:
-    problems.append("importing app.ui_function imported app.main")
+if f"{PACKAGE}.main" in sys.modules:
+    problems.append(f"importing {PACKAGE}.ui_function imported {PACKAGE}.main")
+
+# The check reads the sources under src/, so the package it runs has to be that
+# one and not a copy installed somewhere else.
+if Path(ui_function.__file__).resolve().parent != Path(SRC).resolve():
+    problems.append(f"the {PACKAGE} package imported is {ui_function.__file__}, not {SRC}")
+
+# What app.exec() returns, to see that the app passes it on as its exit status.
+STATUS = 7
 drove = []
 
 
@@ -158,14 +178,77 @@ def check_fonts(window):
     expect(len(resolved) == 1, f"the Segoe UI families fall back to {sorted(resolved)}")
 
 
+# Tool, options, source, generated module: the same commands as `just uic`.
+# rcc writes format version 1 because later versions record each file's
+# modification time, which differs from one checkout to the next, and writes
+# the files uncompressed so the result does not depend on the host's zlib.
+GENERATED = (
+    (
+        "pyside6-rcc",
+        ["--format-version", "1", "--no-compress"],
+        RESOURCES,
+        f"{SRC}/ui/resources_rc.py",
+    ),
+    *(("pyside6-uic", ["--from-imports"], ui, ui[:-3] + ".py") for ui in UI_FILES),
+)
+
+# The header line of a generated module that names the Qt version.
+VERSION_LINE = re.compile(r"^#+ Created by: .*version")
+
+
+def check_generated():
+    """The generated modules must be what their sources produce now."""
+
+    def body(text):
+        return [line for line in text.splitlines() if not VERSION_LINE.match(line)]
+
+    for tool, options, source, generated in GENERATED:
+        program = shutil.which(tool, path=str(Path(sys.executable).parent)) or shutil.which(tool)
+        if program is None:
+            fail(f"{tool} was not found, so {generated} could not be checked against {source}")
+            continue
+        fresh = subprocess.run(
+            [program, *options, source], capture_output=True, text=True, encoding="utf-8"
+        )
+        print(fresh.stderr, end="", file=sys.stderr)
+        if fresh.returncode != 0:
+            fail(f"{tool} failed on {source} with status {fresh.returncode}")
+        elif body(fresh.stdout) != body(Path(generated).read_text(encoding="utf-8")):
+            fail(f"{generated} is out of date with {source}: run `just uic`")
+
+    # What Qt Designer follows from a form to the icons: it has to lead to
+    # the resource file.
+    for ui in UI_FILES:
+        text = Path(ui).read_text(encoding="utf-8")
+        named = set(re.findall(r'(?:<include location|\bresource)="([^"]+)"', text))
+        expect(named, f"{ui} does not include a resource file")
+        for location in named:
+            expect(
+                (Path(ui).parent / location).resolve() == Path(RESOURCES).resolve(),
+                f"{ui} names the resource file {location}, which is not {RESOURCES}",
+            )
+
+
 def check_icons():
     for source in ICON_SOURCES:
         text = Path(source).read_text(encoding="utf-8")
         for match in IMAGE_PATH.finditer(text):
             path = next(group for group in match.groups() if group)
-            if path.startswith(":"):  # a Qt resource, not a file
-                continue
-            expect(Path(path).is_file(), f"{source} names {path}, which is not a file")
+            if path.startswith(":"):  # a Qt resource, compiled into resources_rc.py
+                expect(QFile.exists(path), f"{source} names {path}, which is not a resource")
+            else:
+                expect(Path(path).is_file(), f"{source} names {path}, which is not a file")
+    listed = re.findall(r"<file>([^<]+)</file>", Path(RESOURCES).read_text(encoding="utf-8"))
+    expect(listed, f"{RESOURCES} lists no files")
+    for name in listed:
+        expect(
+            (Path(RESOURCES).parent / name).is_file(),
+            f"{RESOURCES} lists {name}, which is not a file",
+        )
+        expect(
+            QFile.exists(":/" + name),
+            f"{name} is not in resources_rc.py: run `just uic`",
+        )
 
 
 HIGHLIGHT = "rgb(91,90,90)"
@@ -265,7 +348,7 @@ def check_window_state(window):
         "the maximise button did not follow a maximise it did not make",
     )
     expect(
-        shows(ui.bn_max, "icons/1x/restore.png"),
+        shows(ui.bn_max, ":/icons/restore.png"),
         "the maximise button does not show the restore icon while maximised",
     )
     window.showNormal()
@@ -275,7 +358,7 @@ def check_window_state(window):
         "the maximise button did not follow a restore it did not make",
     )
     expect(
-        shows(ui.bn_max, "icons/1x/max.png"),
+        shows(ui.bn_max, ":/icons/maximize.png"),
         "the maximise button does not show the maximise icon when restored",
     )
 
@@ -486,6 +569,7 @@ def drive(*_):
         "the title bar does not show the application name",
     )
 
+    check_generated()
     check_icons()
     check_fonts(window)
 
@@ -528,7 +612,7 @@ def drive(*_):
 
     QApplication.processEvents()
     drove.append(True)
-    return 0
+    return STATUS
 
 
 def fake_exec(dialog):
@@ -547,14 +631,17 @@ QApplication.exec = drive
 
 # The verdict is given here, not through the app's exit status: the app may
 # not pass it on, and may not reach app.exec() at all.
+status = None
 try:
-    runpy.run_module("app", run_name="__main__", alter_sys=True)
-except SystemExit:
-    pass
+    runpy.run_module(PACKAGE, run_name="__main__", alter_sys=True)
+except SystemExit as exit_:
+    status = exit_.code
 except Exception:
     on_exception(*sys.exc_info())
 if not drove:
     fail("the windows were not driven to the end")
+elif status != STATUS:
+    fail(f"app.exec() returned {STATUS} and the app exited with {status!r}")
 for problem in problems:
     print("FAIL:", problem, file=sys.stderr)
 if not problems:

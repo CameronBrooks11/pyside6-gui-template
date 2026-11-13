@@ -18,6 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QDialog, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QPushButton, QSizePolicy,
     QVBoxLayout, QWidget)
+from . import resources_rc
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -79,7 +80,7 @@ class Ui_Dialog(object):
 "	background-color: rgb(51,51,51);\n"
 "}")
         icon = QIcon()
-        icon.addFile(u"icons/1x/hideAsset 53.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/icons/minimize.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_min.setIcon(icon)
         self.bn_min.setIconSize(QSize(22, 12))
         self.bn_min.setAutoDefault(False)
@@ -102,7 +103,7 @@ class Ui_Dialog(object):
 "	background-color: rgb(51,51,51);\n"
 "}")
         icon1 = QIcon()
-        icon1.addFile(u"icons/1x/closeAsset 43.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/icons/close.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.bn_close.setIcon(icon1)
         self.bn_close.setIconSize(QSize(22, 22))
         self.bn_close.setAutoDefault(False)
