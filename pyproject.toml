@@ -18,21 +18,22 @@ docs = ["mkdocs-material>=9.5"]
 line-length = 100
 target-version = "py310"
 # The modules pyside6-uic and pyside6-rcc write are regenerated, not edited.
-# Inside a Claude Code session the sandbox plants unreadable placeholder files
-# under .claude/, which ruff would otherwise stop on.
-extend-exclude = ["src/app/ui/ui_*.py", "src/app/ui/resources_rc.py", ".claude"]
+# The patterns do not name the package, so they survive renaming it.
+# .claude/ can hold files a coding agent's sandbox makes unreadable, which
+# ruff would stop on.
+extend-exclude = ["src/*/ui/ui_*.py", "src/*/ui/resources_rc.py", ".claude"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.ruff.lint.per-file-ignores]
-"src/app/about.py" = ["E501"]  # paragraphs of placeholder text, one per line
+"src/*/about.py" = ["E501"]  # paragraphs of placeholder text, one per line
 
 [tool.pyright]
 pythonVersion = "3.10"
 typeCheckingMode = "standard"
 include = ["src"]
-exclude = ["src/app/ui/ui_*.py", "src/app/ui/resources_rc.py"]
+exclude = ["src/*/ui/ui_*.py", "src/*/ui/resources_rc.py"]
 
 [build-system]
 requires = ["uv_build>=0.13.4,<0.14.0"]

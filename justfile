@@ -40,11 +40,11 @@ test:
 
 # Serve the documentation site locally with live reload
 docs:
-    uv run --only-group docs mkdocs serve
+    uv run --locked --only-group docs mkdocs serve
 
 # Build the documentation site into site/ and fail on any warning
 docs-build:
-    uv run --only-group docs mkdocs build --strict
+    uv run --locked --only-group docs mkdocs build --strict
 
 # Regenerate ui_*.py and resources_rc.py after editing a .ui file, style.qss or the icons
 uic:

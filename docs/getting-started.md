@@ -16,7 +16,7 @@ to install.
 With uv and just:
 
 ```sh
-just setup   # install PySide6 into .venv
+just setup   # install the app, PySide6 and the dev tools into .venv
 just run     # launch the GUI
 ```
 
@@ -32,8 +32,8 @@ just check   # formatter, linter, type checker; changes nothing
 just test    # the app itself, driven without a display
 ```
 
-`just fmt` applies the formatting. `just test` builds every window on Qt's offscreen platform and clicks through the pages,
-the menu toggle, the window buttons and the example widgets. It fails on a
+`just fmt` applies the formatting. `just test` builds every window on Qt's
+offscreen platform and clicks through the pages, the menu toggle, the window buttons and the example widgets. It fails on a
 Python or Qt warning (a deprecated Qt call included), an exception in a slot,
 a page that does not switch, an icon path with no file or resource behind it,
 and a generated module that is out of date with its `.ui` or `.qrc` source. It
