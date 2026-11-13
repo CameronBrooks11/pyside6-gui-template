@@ -34,9 +34,9 @@ typecheck:
 # Format check, lint and type-check: changes nothing, as CI runs it
 check: fmt-check lint typecheck
 
-# Drive every window without a display; fail on a warning, a slot error or a missing icon
+# Run the tests without a display
 test:
-    QT_QPA_PLATFORM=offscreen uv run python -W error smoke.py
+    QT_QPA_PLATFORM=offscreen uv run pytest
 
 # Serve the documentation site locally with live reload
 docs:
@@ -46,9 +46,6 @@ docs:
 docs-build:
     uv run --locked --only-group docs mkdocs build --strict
 
-# Regenerate ui_*.py and resources_rc.py after editing a .ui file, style.qss or the icons
+# Regenerate each ui_*.py after editing a .ui file
 uic:
-    uv run pyside6-rcc --format-version 1 --no-compress src/app/resources/resources.qrc -o src/app/ui/resources_rc.py
-    uv run pyside6-uic --from-imports src/app/ui/ui_main.ui -o src/app/ui/ui_main.py
-    uv run pyside6-uic --from-imports src/app/ui/ui_dialog.ui -o src/app/ui/ui_dialog.py
-    uv run pyside6-uic --from-imports src/app/ui/ui_error.ui -o src/app/ui/ui_error.py
+    for form in src/app/ui/*.ui; do uv run pyside6-uic "$form" -o "${form%/*}/ui_$(basename "$form" .ui).py" || exit 1; done

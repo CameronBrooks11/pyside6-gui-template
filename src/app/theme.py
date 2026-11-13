@@ -1,39 +1,79 @@
-"""The fonts and the stylesheet the three windows share."""
+"""The light and dark themes, and remembering which one was chosen."""
 
-from PySide6.QtCore import QFile, QIODevice, QTextStream
-from PySide6.QtGui import QFont, QFontDatabase, QFontInfo
+from PySide6.QtCore import QSettings
+from PySide6.QtGui import QColor, QPalette
+from PySide6.QtWidgets import QApplication
 
-from .ui import resources_rc  # noqa: F401  registers the icons and :/style.qss
+SYSTEM = "System"
+LIGHT = "Light"
+DARK = "Dark"
+THEMES = (SYSTEM, LIGHT, DARK)
 
-# The .ui files ask for Segoe UI, which ships with Windows. Where it is
-# missing, the first of these that is installed stands in for all three of
-# its families, and the system's own font if none is, so a window does not end
-# up mixing two typefaces. A substitute has to be the name of an installed
-# family: a generic name such as "Sans Serif" is ignored.
-FONT_FALLBACKS = ["Noto Sans", "Helvetica Neue", "Arial"]
-SEGOE_FAMILIES = ("Segoe UI", "Segoe UI Light", "Segoe UI Semilight")
+_ACCENT = QColor(0, 143, 150)
 
 
-def set_font_fallbacks():
-    """Register the fallbacks. Call it before building a window's widgets:
-    a widget keeps the font it resolved when it was built."""
-    # QFontInfo gives the family the system font resolves to; the font itself
-    # may only say "Sans Serif".
-    system = QFontInfo(QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont)).family()
-    for family in SEGOE_FAMILIES:
-        QFont.insertSubstitutions(family, FONT_FALLBACKS + [system])
+def _palette(
+    window: QColor, base: QColor, alternate: QColor, button: QColor, text: QColor, disabled: QColor
+) -> QPalette:
+    # This constructor derives the shades used for frames and bevels.
+    palette = QPalette(button, window)
+    role = QPalette.ColorRole
+    colours = {
+        role.WindowText: text,
+        role.Text: text,
+        role.ButtonText: text,
+        role.ToolTipText: text,
+        role.Base: base,
+        role.ToolTipBase: base,
+        role.AlternateBase: alternate,
+        role.PlaceholderText: disabled,
+        role.Highlight: _ACCENT,
+        role.HighlightedText: QColor("white"),
+        role.Link: _ACCENT,
+    }
+    for colour_role, colour in colours.items():
+        palette.setColor(colour_role, colour)
+    for colour_role in (role.WindowText, role.Text, role.ButtonText):
+        palette.setColor(QPalette.ColorGroup.Disabled, colour_role, disabled)
+    return palette
 
 
-def load_style():
-    """Return resources/style.qss, which `just uic` compiles into the resources.
+def light_palette() -> QPalette:
+    return _palette(
+        window=QColor(240, 240, 240),
+        base=QColor(255, 255, 255),
+        alternate=QColor(247, 247, 247),
+        button=QColor(240, 240, 240),
+        text=QColor(20, 20, 20),
+        disabled=QColor(150, 150, 150),
+    )
 
-    Each window sets it on the frame that holds its content, not on itself and
-    not on the application, so that it does not reach Qt's own dialogs: a
-    QMessageBox or QFileDialog given one of the three windows as its parent
-    keeps its normal look. Given a widget inside a window as its parent, it
-    would take the sheet.
-    """
-    sheet = QFile(":/style.qss")
-    if not sheet.open(QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text):
-        raise RuntimeError("style.qss is not in the compiled resources: run `just uic`")
-    return QTextStream(sheet).readAll()  # reads UTF-8
+
+def dark_palette() -> QPalette:
+    return _palette(
+        window=QColor(53, 53, 53),
+        base=QColor(35, 35, 35),
+        alternate=QColor(45, 45, 45),
+        button=QColor(53, 53, 53),
+        text=QColor(240, 240, 240),
+        disabled=QColor(127, 127, 127),
+    )
+
+
+def apply_theme(name: str) -> None:
+    """Repaint the whole application in the named theme."""
+    if name == DARK:
+        QApplication.setPalette(dark_palette())
+    elif name == LIGHT:
+        QApplication.setPalette(light_palette())
+    else:
+        QApplication.setPalette(QApplication.style().standardPalette())
+
+
+def saved_theme() -> str:
+    name = QSettings().value("theme", SYSTEM)
+    return name if name in THEMES else SYSTEM
+
+
+def save_theme(name: str) -> None:
+    QSettings().setValue("theme", name)

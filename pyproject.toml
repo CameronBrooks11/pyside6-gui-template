@@ -1,7 +1,7 @@
 [project]
 name = "pyside6-gui-template"
 version = "0.1.0"
-description = "Flat, dark desktop GUI template built with PySide6 and Qt Designer"
+description = "Desktop GUI template built with PySide6 and Qt Designer"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -11,30 +11,36 @@ dependencies = ["pyside6>=6.7"]
 app = "app.__main__:main"
 
 [dependency-groups]
-dev = ["ruff>=0.11", "pyright>=1.1"]
+dev = ["ruff>=0.11", "pyright>=1.1", "pytest>=8", "pytest-qt>=4.4"]
 docs = ["mkdocs-material>=9.5"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
-# The modules pyside6-uic and pyside6-rcc write are regenerated, not edited.
-# The patterns do not name the package, so they survive renaming it, but they
-# do expect the generated modules in its ui/ directory.
+# The modules pyside6-uic writes are regenerated, not edited. The pattern does
+# not name the package, so it survives renaming it, but it does expect the
+# generated modules in its ui/ directory.
 # .claude/ can hold files a coding agent's sandbox makes unreadable, which
 # ruff would stop on.
-extend-exclude = ["src/*/ui/ui_*.py", "src/*/ui/resources_rc.py", ".claude"]
+extend-exclude = ["src/*/ui/ui_*.py", ".claude"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
-
-[tool.ruff.lint.per-file-ignores]
-"src/*/about.py" = ["E501"]  # paragraphs of placeholder text, one per line
 
 [tool.pyright]
 pythonVersion = "3.10"
 typeCheckingMode = "standard"
 include = ["src"]
-exclude = ["src/*/ui/ui_*.py", "src/*/ui/resources_rc.py"]
+exclude = ["src/*/ui/ui_*.py"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+qt_api = "pyside6"
+# A Python or Qt warning raised while a test runs fails it.
+filterwarnings = ["error"]
+qt_log_level_fail = "WARNING"
+# The offscreen platform the tests run on says this whenever a window is shown.
+qt_log_ignore = ["This plugin does not support propagateSizeHints"]
 
 [build-system]
 requires = ["uv_build>=0.13.4,<0.14.0"]

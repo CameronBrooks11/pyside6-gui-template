@@ -1,5 +1,5 @@
-"""The template application. Rename this package to your own.
+"""A PySide6 desktop application to start your own from."""
 
-Design, layouts and original code: Minimalistic-Flat-Modern-GUI-Template by
-Anjal.P, 2020, MIT licence (see LICENSE). Ported to PySide6 and restructured.
-"""
+APP_NAME = "PySide6 GUI Template"
+# With APP_NAME, decides where QSettings keeps the saved theme and window size.
+ORGANISATION = "Example"
