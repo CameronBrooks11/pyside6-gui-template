@@ -21,7 +21,9 @@ just run     # launch the GUI
 ```
 
 Without just, run `uv sync` and then `uv run python -m app`, or `uv run app`.
-The icons are compiled into the package, so it runs from any directory.
+Without uv, `pip install -e .` in an environment of your own and run
+`python -m app`. The icons are compiled into the package, so it runs from any
+directory.
 
 ## Check it
 
@@ -32,8 +34,9 @@ just check
 builds every window on Qt's offscreen platform and clicks through the pages,
 the menu toggle, the window buttons and the example widgets. It fails on a
 Python or Qt warning (a deprecated Qt call included), an exception in a slot,
-a page that does not switch, and an icon path with no file behind it. It does
-not show what the GUI looks like.
+a page that does not switch, an icon path with no file or resource behind it,
+and a generated module that is out of date with its `.ui` or `.qrc` source. It
+does not show what the GUI looks like.
 
 When you add a page or a button, add it to `smoke.py` so the check covers it.
 

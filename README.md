@@ -37,13 +37,16 @@ just run     # launch the GUI
 ```
 
 Without just, run `uv sync` and then `uv run python -m app`, or `uv run app`.
-The icons are compiled into the package, so it runs from any directory.
+Without uv, `pip install -e .` in an environment of your own and run
+`python -m app`. The icons are compiled into the package, so it runs from any
+directory.
 
 `just check` builds every window on Qt's offscreen platform and clicks through
 the pages, the menu toggle, the window buttons and the example widgets. It
 fails on a Python or Qt warning (a deprecated Qt call included), an exception
-in a slot, a page that does not switch, and an icon path with no file behind
-it. It does not show what the GUI looks like.
+in a slot, a page that does not switch, an icon path with no file or resource
+behind it, and a generated module that is out of date with its `.ui` or `.qrc`
+source. It does not show what the GUI looks like.
 
 ## Layout
 
@@ -73,9 +76,13 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    is the place to copy from.
 4. Set the application name in `MainWindow.__init__` in `main.py`.
 5. Set `name`, `description` and `version` in `pyproject.toml`.
-6. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
+6. Rename the `app` package: the `src/app/` directory, the `[project.scripts]`
+   line and `module-name` in `pyproject.toml`, the paths in the `run` and
+   `uic` recipes of the justfile, and the paths and the two `app` imports in
+   `smoke.py`. `just check` fails until they agree.
+7. Keep `LICENSE` with its Anjal.P notice, which the MIT terms require of
    copies, and add your own copyright line to it.
-7. Replace this README and `docs/` with your own, and set `site_name`,
+8. Replace this README and `docs/` with your own, and set `site_name`,
    `site_description`, `site_url`, `repo_url` and `repo_name` in `mkdocs.yml`.
    If you do not want a docs site, delete `docs/`, `mkdocs.yml` and
    `.github/workflows/docs.yml`, the `docs` and `docs-build` recipes in the

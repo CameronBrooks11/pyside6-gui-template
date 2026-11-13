@@ -10,6 +10,7 @@ window and an icon path with no file behind it fail it too.
 
 import re
 import runpy
+import subprocess
 import sys
 from pathlib import Path
 
@@ -58,6 +59,14 @@ dialogs_shown = []
 # imported each other and only one import order worked.
 if "app.main" in sys.modules:
     problems.append("importing app.ui_function imported app.main")
+
+# The check reads the sources under src/, so the package it runs has to be that
+# one and not a copy installed somewhere else.
+if Path(ui_function.__file__).resolve().parent != Path("src/app").resolve():
+    problems.append(f"the app package imported is {ui_function.__file__}, not src/app")
+
+# What app.exec() returns, to see that the app passes it on as its exit status.
+STATUS = 7
 drove = []
 
 
@@ -159,6 +168,29 @@ def check_fonts(window):
         if w.font().family().startswith("Segoe UI")
     }
     expect(len(resolved) == 1, f"the Segoe UI families fall back to {sorted(resolved)}")
+
+
+GENERATED = (
+    ("pyside6-rcc", [], "src/app/resources/resources.qrc", "src/app/ui/resources_rc.py"),
+    ("pyside6-uic", ["--from-imports"], "src/app/ui/ui_main.ui", "src/app/ui/ui_main.py"),
+    ("pyside6-uic", ["--from-imports"], "src/app/ui/ui_dialog.ui", "src/app/ui/ui_dialog.py"),
+    ("pyside6-uic", ["--from-imports"], "src/app/ui/ui_error.ui", "src/app/ui/ui_error.py"),
+)
+
+
+def check_generated():
+    """The generated modules must be what their sources produce now."""
+
+    def body(text):  # without the header line that carries the Qt version
+        return [line for line in text.splitlines() if "Created by" not in line]
+
+    for tool, options, source, generated in GENERATED:
+        command = [str(Path(sys.executable).parent / tool), *options, source]
+        fresh = subprocess.run(command, capture_output=True, text=True, encoding="utf-8")
+        if fresh.returncode != 0:
+            fail(f"{tool} failed on {source}: {fresh.stderr.strip()}")
+        elif body(fresh.stdout) != body(Path(generated).read_text(encoding="utf-8")):
+            fail(f"{generated} is out of date with {source}: run `just uic`")
 
 
 def check_icons():
@@ -501,6 +533,7 @@ def drive(*_):
         "the title bar does not show the application name",
     )
 
+    check_generated()
     check_icons()
     check_fonts(window)
 
@@ -543,7 +576,7 @@ def drive(*_):
 
     QApplication.processEvents()
     drove.append(True)
-    return 0
+    return STATUS
 
 
 def fake_exec(dialog):
@@ -562,14 +595,17 @@ QApplication.exec = drive
 
 # The verdict is given here, not through the app's exit status: the app may
 # not pass it on, and may not reach app.exec() at all.
+status = None
 try:
     runpy.run_module("app", run_name="__main__", alter_sys=True)
-except SystemExit:
-    pass
+except SystemExit as exit_:
+    status = exit_.code
 except Exception:
     on_exception(*sys.exc_info())
 if not drove:
     fail("the windows were not driven to the end")
+elif status != STATUS:
+    fail(f"app.exec() returned {STATUS} and the app exited with {status!r}")
 for problem in problems:
     print("FAIL:", problem, file=sys.stderr)
 if not problems:
