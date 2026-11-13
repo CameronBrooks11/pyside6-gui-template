@@ -67,5 +67,5 @@ def test_a_primary_button_is_the_accent_colour_in_both_themes(qtbot):
     theme.make_primary(button)
     for name in (theme.LIGHT, theme.DARK):
         theme.apply_theme(name)
-        assert button.palette().color(QPalette.ColorRole.Button) == QColor(0, 143, 150)
+        assert button.palette().color(QPalette.ColorRole.Button) == QColor(0, 128, 134)
         assert button.palette().color(QPalette.ColorRole.ButtonText) == QColor("white")

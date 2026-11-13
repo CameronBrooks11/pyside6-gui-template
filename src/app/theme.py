@@ -9,7 +9,7 @@ LIGHT = "Light"
 DARK = "Dark"
 THEMES = (SYSTEM, LIGHT, DARK)
 
-_ACCENT = QColor(0, 143, 150)
+_ACCENT = QColor(0, 128, 134)
 
 
 def _palette(
@@ -54,7 +54,7 @@ def dark_palette() -> QPalette:
         window=QColor(43, 45, 48),
         base=QColor(30, 31, 34),
         alternate=QColor(52, 55, 59),
-        button=QColor(58, 61, 66),
+        button=QColor(52, 55, 60),
         text=QColor(230, 232, 235),
         disabled=QColor(120, 124, 130),
     )

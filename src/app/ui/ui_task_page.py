@@ -35,21 +35,35 @@ class Ui_TaskPage(object):
 
         self.page_layout.addWidget(self.heading)
 
-        self.description = QLabel(TaskPage)
+        self.heading_gap = QSpacerItem(20, 4, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.page_layout.addItem(self.heading_gap)
+
+        self.content = QWidget(TaskPage)
+        self.content.setObjectName(u"content")
+        self.content.setMaximumSize(QSize(620, 16777215))
+        self.content_layout = QVBoxLayout(self.content)
+        self.content_layout.setSpacing(12)
+        self.content_layout.setObjectName(u"content_layout")
+        self.content_layout.setContentsMargins(0, 0, 0, 0)
+        self.description = QLabel(self.content)
         self.description.setObjectName(u"description")
         self.description.setWordWrap(True)
 
-        self.page_layout.addWidget(self.description)
+        self.content_layout.addWidget(self.description)
 
         self.fields = QFormLayout()
         self.fields.setObjectName(u"fields")
-        self.steps_label = QLabel(TaskPage)
+        self.fields.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.FieldsStayAtSizeHint)
+        self.fields.setHorizontalSpacing(12)
+        self.steps_label = QLabel(self.content)
         self.steps_label.setObjectName(u"steps_label")
 
         self.fields.setWidget(0, QFormLayout.ItemRole.LabelRole, self.steps_label)
 
-        self.steps_spin = QSpinBox(TaskPage)
+        self.steps_spin = QSpinBox(self.content)
         self.steps_spin.setObjectName(u"steps_spin")
+        self.steps_spin.setMinimumSize(QSize(100, 0))
         self.steps_spin.setMinimum(1)
         self.steps_spin.setMaximum(1000)
         self.steps_spin.setValue(100)
@@ -57,18 +71,20 @@ class Ui_TaskPage(object):
         self.fields.setWidget(0, QFormLayout.ItemRole.FieldRole, self.steps_spin)
 
 
-        self.page_layout.addLayout(self.fields)
+        self.content_layout.addLayout(self.fields)
 
-        self.progress_bar = QProgressBar(TaskPage)
+        self.progress_bar = QProgressBar(self.content)
         self.progress_bar.setObjectName(u"progress_bar")
+        self.progress_bar.setMaximumSize(QSize(16777215, 8))
         self.progress_bar.setValue(0)
+        self.progress_bar.setTextVisible(False)
 
-        self.page_layout.addWidget(self.progress_bar)
+        self.content_layout.addWidget(self.progress_bar)
 
-        self.status_label = QLabel(TaskPage)
+        self.status_label = QLabel(self.content)
         self.status_label.setObjectName(u"status_label")
 
-        self.page_layout.addWidget(self.status_label)
+        self.content_layout.addWidget(self.status_label)
 
         self.buttons = QHBoxLayout()
         self.buttons.setObjectName(u"buttons")
@@ -76,19 +92,22 @@ class Ui_TaskPage(object):
 
         self.buttons.addItem(self.filler)
 
-        self.cancel_button = QPushButton(TaskPage)
+        self.cancel_button = QPushButton(self.content)
         self.cancel_button.setObjectName(u"cancel_button")
         self.cancel_button.setEnabled(False)
 
         self.buttons.addWidget(self.cancel_button)
 
-        self.start_button = QPushButton(TaskPage)
+        self.start_button = QPushButton(self.content)
         self.start_button.setObjectName(u"start_button")
 
         self.buttons.addWidget(self.start_button)
 
 
-        self.page_layout.addLayout(self.buttons)
+        self.content_layout.addLayout(self.buttons)
+
+
+        self.page_layout.addWidget(self.content)
 
         self.bottom_filler = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 

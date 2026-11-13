@@ -35,34 +35,47 @@ class Ui_FormPage(object):
 
         self.page_layout.addWidget(self.heading)
 
+        self.heading_gap = QSpacerItem(20, 4, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.page_layout.addItem(self.heading_gap)
+
+        self.content = QWidget(FormPage)
+        self.content.setObjectName(u"content")
+        self.content.setMaximumSize(QSize(620, 16777215))
+        self.content_layout = QVBoxLayout(self.content)
+        self.content_layout.setSpacing(12)
+        self.content_layout.setObjectName(u"content_layout")
+        self.content_layout.setContentsMargins(0, 0, 0, 0)
         self.fields = QFormLayout()
         self.fields.setObjectName(u"fields")
-        self.name_label = QLabel(FormPage)
+        self.fields.setHorizontalSpacing(12)
+        self.fields.setVerticalSpacing(10)
+        self.name_label = QLabel(self.content)
         self.name_label.setObjectName(u"name_label")
 
         self.fields.setWidget(0, QFormLayout.ItemRole.LabelRole, self.name_label)
 
-        self.name_edit = QLineEdit(FormPage)
+        self.name_edit = QLineEdit(self.content)
         self.name_edit.setObjectName(u"name_edit")
 
         self.fields.setWidget(0, QFormLayout.ItemRole.FieldRole, self.name_edit)
 
-        self.email_label = QLabel(FormPage)
+        self.email_label = QLabel(self.content)
         self.email_label.setObjectName(u"email_label")
 
         self.fields.setWidget(1, QFormLayout.ItemRole.LabelRole, self.email_label)
 
-        self.email_edit = QLineEdit(FormPage)
+        self.email_edit = QLineEdit(self.content)
         self.email_edit.setObjectName(u"email_edit")
 
         self.fields.setWidget(1, QFormLayout.ItemRole.FieldRole, self.email_edit)
 
-        self.role_label = QLabel(FormPage)
+        self.role_label = QLabel(self.content)
         self.role_label.setObjectName(u"role_label")
 
         self.fields.setWidget(2, QFormLayout.ItemRole.LabelRole, self.role_label)
 
-        self.role_combo = QComboBox(FormPage)
+        self.role_combo = QComboBox(self.content)
         self.role_combo.addItem("")
         self.role_combo.addItem("")
         self.role_combo.addItem("")
@@ -71,24 +84,25 @@ class Ui_FormPage(object):
 
         self.fields.setWidget(2, QFormLayout.ItemRole.FieldRole, self.role_combo)
 
-        self.notes_label = QLabel(FormPage)
+        self.notes_label = QLabel(self.content)
         self.notes_label.setObjectName(u"notes_label")
 
         self.fields.setWidget(3, QFormLayout.ItemRole.LabelRole, self.notes_label)
 
-        self.notes_edit = QPlainTextEdit(FormPage)
+        self.notes_edit = QPlainTextEdit(self.content)
         self.notes_edit.setObjectName(u"notes_edit")
+        self.notes_edit.setMaximumSize(QSize(16777215, 130))
         self.notes_edit.setTabChangesFocus(True)
 
         self.fields.setWidget(3, QFormLayout.ItemRole.FieldRole, self.notes_edit)
 
-
-        self.page_layout.addLayout(self.fields)
-
-        self.error_label = QLabel(FormPage)
+        self.error_label = QLabel(self.content)
         self.error_label.setObjectName(u"error_label")
 
-        self.page_layout.addWidget(self.error_label)
+        self.fields.setWidget(4, QFormLayout.ItemRole.FieldRole, self.error_label)
+
+
+        self.content_layout.addLayout(self.fields)
 
         self.buttons = QHBoxLayout()
         self.buttons.setObjectName(u"buttons")
@@ -96,18 +110,25 @@ class Ui_FormPage(object):
 
         self.buttons.addItem(self.filler)
 
-        self.clear_button = QPushButton(FormPage)
+        self.clear_button = QPushButton(self.content)
         self.clear_button.setObjectName(u"clear_button")
 
         self.buttons.addWidget(self.clear_button)
 
-        self.save_button = QPushButton(FormPage)
+        self.save_button = QPushButton(self.content)
         self.save_button.setObjectName(u"save_button")
 
         self.buttons.addWidget(self.save_button)
 
 
-        self.page_layout.addLayout(self.buttons)
+        self.content_layout.addLayout(self.buttons)
+
+
+        self.page_layout.addWidget(self.content)
+
+        self.bottom_filler = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.page_layout.addItem(self.bottom_filler)
 
 #if QT_CONFIG(shortcut)
         self.name_label.setBuddy(self.name_edit)

@@ -50,9 +50,6 @@
         <height>20</height>
        </size>
       </property>
-      <property name="spacing">
-       <number>2</number>
-      </property>
      </widget>
     </item>
     <item>
@@ -76,7 +73,11 @@
    <addaction name="menu_file"/>
    <addaction name="menu_help"/>
   </widget>
-  <widget class="QStatusBar" name="status_bar"/>
+  <widget class="QStatusBar" name="status_bar">
+   <property name="sizeGripEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
   <action name="action_quit">
    <property name="text">
     <string>&amp;Quit</string>

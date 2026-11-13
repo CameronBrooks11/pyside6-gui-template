@@ -34,8 +34,14 @@ class Ui_SettingsPage(object):
 
         self.page_layout.addWidget(self.heading)
 
+        self.heading_gap = QSpacerItem(20, 4, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.page_layout.addItem(self.heading_gap)
+
         self.fields = QFormLayout()
         self.fields.setObjectName(u"fields")
+        self.fields.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.FieldsStayAtSizeHint)
+        self.fields.setHorizontalSpacing(12)
         self.theme_label = QLabel(SettingsPage)
         self.theme_label.setObjectName(u"theme_label")
 
@@ -43,6 +49,7 @@ class Ui_SettingsPage(object):
 
         self.theme_combo = QComboBox(SettingsPage)
         self.theme_combo.setObjectName(u"theme_combo")
+        self.theme_combo.setMinimumSize(QSize(180, 0))
 
         self.fields.setWidget(0, QFormLayout.ItemRole.FieldRole, self.theme_combo)
 

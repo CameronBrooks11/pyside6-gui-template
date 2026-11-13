@@ -66,6 +66,7 @@ class TaskPage(QWidget):
     def _on_progress(self, step: int) -> None:
         if self._is_current():
             self.ui.progress_bar.setValue(step)
+            self.ui.status_label.setText(f"Running… {step} of {self.ui.progress_bar.maximum()}")
 
     def _on_finished(self, completed: bool) -> None:
         if self._is_current():
