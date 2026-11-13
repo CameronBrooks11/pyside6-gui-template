@@ -25,7 +25,7 @@ The states each stylesheet produces:
 
 ![Menu buttons, slider, progress bar, scroll bar and text field](images/widgets-controls.png)
 
-![Text browser, combo box, radio button and check box](images/widgets-text-combo.png)
+![Text edit with scroll bar, combo box, radio button and check box](images/widgets-text-combo.png)
 
 ## Push button
 
@@ -84,7 +84,7 @@ QPushButton:pressed {
 }
 ```
 
-Start, Save, Close, Restore, Connect, Edit:
+Action buttons (Start, Clear, Connect, Edit, Share, Save):
 
 ```css
 QPushButton {
@@ -108,7 +108,7 @@ QPushButton:disabled {
 }
 ```
 
-Delete, Remove:
+The Delete button, which turns red on hover:
 
 ```css
 QPushButton {
@@ -260,7 +260,7 @@ Reference: [QRadioButton](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QRad
 box = self.ui.checkBox
 box.setTristate(False)  # True adds a third, partially checked state
 box.isChecked()
-box.stateChanged.connect(lambda state: print(state))
+box.toggled.connect(lambda checked: print(checked))  # True when it becomes checked
 ```
 
 ```css

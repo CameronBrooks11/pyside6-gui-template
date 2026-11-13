@@ -12,7 +12,7 @@ everything else a solid one.
 
 ![Colour swatches](images/color-scheme.png)
 
-These are the values the stylesheets in the `.ui` files use:
+These are the main values the stylesheets in the `.ui` files use:
 
 | Colour                  | Hex       | Used for                                                    |
 | ----------------------- | --------- | ----------------------------------------------------------- |
@@ -20,6 +20,7 @@ These are the values the stylesheets in the `.ui` files use:
 | `rgb(91,90,90)`         | `#5B5A5A` | Page background, hovered and selected menu buttons          |
 | `rgb(0,143,150)`        | `#008F96` | Accent: toggle button, hovered window and push buttons      |
 | `rgb(0,143,170)`        | `#008FAA` | Accent on progress chunks, slider and scroll handles, combo box hover, checked indicators |
+| `rgb(0,178,178)`        | `#00B2B2` | Hovered toggle button                                       |
 | `rgb(112,112,112)`      | `#707070` | Disabled buttons and fields                                 |
 | `rgb(112,0,0)`          | `#700000` | Hovered Delete button                                       |
 | `rgb(255,255,255)`      | `#FFFFFF` | Text                                                        |
@@ -105,8 +106,8 @@ There are no diagrams for these three. Their widgets:
 
 | Page                 | Widgets                                                                 |
 | -------------------- | ----------------------------------------------------------------------- |
-| `page_android_game`  | `lab_gamepad`, `textEdit_gamepad`, `vsb_gamepad`                         |
-| `page_android_clean` | `lab_clean`, `radioButton` to `radioButton_4`, `checkBox` to `checkBox_4`, `horizontalSlider_2`, `verticalSlider` |
+| `page_android_game`  | `lab_gamepad`, `frame_textbar`, `textEdit_gamepad`, `vsb_gamepad`        |
+| `page_android_clean` | `lab_clean`, `groupBox_clean`, `groupBox`, `radioButton` to `radioButton_4`, `checkBox` to `checkBox_4`, `horizontalSlider_2`, `verticalSlider` |
 | `page_android_world` | `label_9`                                                                |
 
 [Widgets and stylesheets](widgets.md) has the calls and the stylesheet for
