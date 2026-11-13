@@ -1,6 +1,6 @@
 """The main window: a sidebar that switches between pages."""
 
-from PySide6.QtCore import QSettings
+from PySide6.QtCore import QByteArray, QSettings
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QListWidgetItem, QMainWindow, QMessageBox, QStyle, QWidget
 
@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
         self.ui.action_about.triggered.connect(self.show_about)
 
         geometry = QSettings().value("geometry")
-        if geometry is not None:
+        if isinstance(geometry, QByteArray):
             self.restoreGeometry(geometry)
 
     def show_about(self) -> None:

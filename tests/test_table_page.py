@@ -100,3 +100,15 @@ def test_the_count_includes_an_added_contact_the_filter_hides(page, model):
     model.add(Contact("Aaron", "aaron@example.com", "Other"))
     assert names(page) == ["bea"]
     assert page.ui.count_label.text() == "1 of 4 contacts"
+
+
+def test_the_count_is_singular_for_one_contact(page, model):
+    model.remove([0, 1])
+    assert page.ui.count_label.text() == "1 contact"
+
+
+def test_delete_without_a_selection_asks_nothing(page, model, answer):
+    asked = answer(QMessageBox.StandardButton.Yes)
+    page.delete_selected()
+    assert asked == []
+    assert model.rowCount() == 3

@@ -1,7 +1,8 @@
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QCoreApplication, QSettings, QSize
+from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import QApplication, QMessageBox
 
-from app import APP_NAME, __main__
+from app import APP_NAME, ORGANISATION, __main__, theme
 from app.main_window import MainWindow
 
 
@@ -41,6 +42,15 @@ def test_window_size_is_restored(window, qtbot):
     assert reopened.size() == QSize(640, 480)
 
 
+def test_a_saved_geometry_of_the_wrong_type_is_ignored(qtbot):
+    QSettings().setValue("geometry", "garbage")
+    qtbot.addWidget(MainWindow())
+
+
+def test_the_window_title_is_the_application_name(window):
+    assert window.windowTitle() == APP_NAME
+
+
 def test_main_shows_a_window_and_returns_the_exit_status(monkeypatch, qapp):
     visible = []
 
@@ -53,3 +63,28 @@ def test_main_shows_a_window_and_returns_the_exit_status(monkeypatch, qapp):
     assert [type(w) for w in visible] == [MainWindow]
     for widget in visible:
         widget.close()
+
+
+def test_main_sets_the_names_the_style_and_the_saved_theme(monkeypatch, qapp):
+    # Saved under the names main() sets, which is where it will look.
+    QCoreApplication.setOrganizationName(ORGANISATION)
+    QCoreApplication.setApplicationName(APP_NAME)
+    theme.save_theme(theme.DARK)
+    QCoreApplication.setOrganizationName("")
+    QCoreApplication.setApplicationName("")
+    QApplication.setStyle("Windows")
+    seen = {}
+
+    def exec_(*_):
+        seen["names"] = (QCoreApplication.organizationName(), QCoreApplication.applicationName())
+        seen["style"] = QApplication.style().name()
+        seen["window"] = QApplication.palette().color(QPalette.ColorRole.Window).lightness()
+        return 0
+
+    monkeypatch.setattr(QApplication, "exec", exec_)
+    __main__.main()
+    for widget in QApplication.topLevelWidgets():
+        widget.close()
+    assert seen["names"] == (ORGANISATION, APP_NAME)
+    assert seen["style"] == "fusion"
+    assert seen["window"] < 80
