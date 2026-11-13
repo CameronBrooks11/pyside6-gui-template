@@ -11,7 +11,7 @@ Set `name`, `description` and `version` in `pyproject.toml`, then run
 installs with `uv sync --locked`, which refuses a lock that is out of date.
 
 To rename the `app` package, change the `src/app/` directory, the imports
-that start `from app`, the `[project.scripts]` line and `module-name` in
+of `app` in `src/`, `tests/` and `docs/screenshots.py`, the `[project.scripts]` line and `module-name` in
 `pyproject.toml`, and the paths in the `run` and `uic` recipes of the justfile.
 
 ## Change a page
@@ -23,7 +23,8 @@ that start `from app`, the `[project.scripts]` line and `module-name` in
 3. Run `just uic` to regenerate the `ui_*.py` modules.
 4. Use the widget in the page's module as `self.ui.phone_edit`.
 
-`just test` fails if you forget step 3.
+`just test` fails if you forget step 3, and `just uic` stops at the first
+form that does not compile.
 
 ## Add a page
 

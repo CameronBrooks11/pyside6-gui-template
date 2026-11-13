@@ -79,7 +79,7 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    `uv lock`: the lock file records the project's name and version, and CI
    installs with `uv sync --locked`, which refuses a lock that is out of date.
 6. Rename the `app` package: the `src/app/` directory, the imports of `app` in
-   `src/` and `tests/`, the `[project.scripts]` line and `module-name` in
+   `src/`, `tests/` and `docs/screenshots.py`, the `[project.scripts]` line and `module-name` in
    `pyproject.toml`, and the paths in the `run` and `uic` recipes of the
    justfile.
 7. Keep the notices in `LICENSE`, which the MIT terms require of copies, and
