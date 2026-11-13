@@ -36,7 +36,7 @@ exclude = ["src/*/ui/ui_*.py"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 qt_api = "pyside6"
-# A Python warning or a Qt warning fails the test that caused it.
+# A Python or Qt warning raised while a test runs fails it.
 filterwarnings = ["error"]
 qt_log_level_fail = "WARNING"
 # The offscreen platform the tests run on says this whenever a window is shown.

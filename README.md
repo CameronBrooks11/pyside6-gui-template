@@ -39,8 +39,8 @@ Without uv, `pip install -e .` in an environment of your own and run
 `just check` runs the formatter, the linter and the type checker without
 changing anything; `just fmt` applies the formatting. `just test` runs the
 tests in `tests/` with pytest and pytest-qt on Qt's offscreen platform, so it
-needs no display. A test fails on a Python or Qt warning as well as on a
-failed assertion. The tests do not show what the GUI looks like.
+needs no display. A Python or Qt warning raised while a test runs fails it,
+as a failed assertion does. The tests do not show what the GUI looks like.
 
 ## Layout
 
@@ -68,7 +68,8 @@ The application is the `app` package in `src/app/`. Rename it to your own.
    (`uv run pyside6-designer src/app/ui/form_page.ui`), run `just uic` to
    regenerate the `ui_*.py` modules, and wire the widgets up in the page's
    module in `src/app/pages/`. `just test` fails when a generated module is
-   out of date with its form.
+   out of date with its form, as long as the installed PySide6 is the version
+   that generated it; the lock file keeps the two the same.
 3. To add a page, make a form and a module for it the same way and give it a
    line in `MainWindow.__init__`, which lists the pages in sidebar order.
 4. Change the colours in `src/app/theme.py`. The application uses Qt's Fusion
@@ -77,8 +78,8 @@ The application is the `app` package in `src/app/`. Rename it to your own.
 5. Set `name`, `description` and `version` in `pyproject.toml`, then run
    `uv lock`: the lock file records the project's name and version, and CI
    installs with `uv sync --locked`, which refuses a lock that is out of date.
-6. Rename the `app` package: the `src/app/` directory, the imports that start
-   `from app`, the `[project.scripts]` line and `module-name` in
+6. Rename the `app` package: the `src/app/` directory, the imports of `app` in
+   `src/` and `tests/`, the `[project.scripts]` line and `module-name` in
    `pyproject.toml`, and the paths in the `run` and `uic` recipes of the
    justfile.
 7. Keep the notices in `LICENSE`, which the MIT terms require of copies, and

@@ -32,8 +32,6 @@ class TablePage(QWidget):
             contacts.rowsRemoved,
             self._proxy.rowsInserted,
             self._proxy.rowsRemoved,
-            self._proxy.modelReset,
-            self._proxy.layoutChanged,
         ):
             signal.connect(self._update_count)
         self._update_count()
@@ -51,10 +49,11 @@ class TablePage(QWidget):
 
     def _update_count(self) -> None:
         shown, total = self._proxy.rowCount(), self._contacts.rowCount()
+        noun = "contact" if total == 1 else "contacts"
         if shown == total:
-            self.ui.count_label.setText(f"{total} contacts")
+            self.ui.count_label.setText(f"{total} {noun}")
         else:
-            self.ui.count_label.setText(f"{shown} of {total} contacts")
+            self.ui.count_label.setText(f"{shown} of {total} {noun}")
 
     def _update_delete_button(self) -> None:
         self.ui.delete_button.setEnabled(self.ui.table_view.selectionModel().hasSelection())

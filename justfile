@@ -52,4 +52,4 @@ screenshots:
 
 # Regenerate each ui_*.py after editing a .ui file
 uic:
-    for form in src/app/ui/*.ui; do uv run pyside6-uic "$form" -o "${form%/*}/ui_$(basename "$form" .ui).py"; done
+    for form in src/app/ui/*.ui; do uv run pyside6-uic "$form" -o "${form%/*}/ui_$(basename "$form" .ui).py" || exit 1; done

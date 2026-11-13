@@ -1,10 +1,12 @@
 """The committed ui_*.py modules are what pyside6-uic makes of the .ui files."""
 
+import re
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+import PySide6
 import pytest
 
 import app.ui
@@ -24,8 +26,13 @@ def test_there_are_forms_to_check():
 
 @pytest.mark.parametrize("form", FORMS, ids=lambda form: form.name)
 def test_generated_module_is_current(form: Path):
+    committed = (UI_DIR / f"ui_{form.stem}.py").read_text(encoding="utf-8")
+    generated_with = re.search(r"Compiler version (\S+)", committed)
+    assert generated_with, "no version line in the committed module"
+    if generated_with[1] != PySide6.__version__:
+        # Other versions of uic spell some lines differently.
+        pytest.skip(f"generated with PySide6 {generated_with[1]}, not {PySide6.__version__}")
     uic = shutil.which("pyside6-uic", path=str(Path(sys.executable).parent))
     assert uic, "pyside6-uic is not installed beside the interpreter"
     fresh = subprocess.run([uic, str(form)], capture_output=True, text=True, check=True).stdout
-    committed = (UI_DIR / f"ui_{form.stem}.py").read_text(encoding="utf-8")
     assert without_version(committed) == without_version(fresh), "run `just uic`"

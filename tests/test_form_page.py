@@ -1,4 +1,5 @@
 import pytest
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QMessageBox
 
 from app.contacts import Contact
@@ -82,3 +83,12 @@ def test_a_saved_contact_reaches_the_table_and_the_status_bar(window):
     window.form_page.ui.save_button.click()
     assert window.contacts.rowCount() == before + 1
     assert "Linus" in window.ui.status_bar.currentMessage()
+
+
+def test_return_in_a_field_saves(page, qtbot):
+    fill(page)
+    with qtbot.waitSignal(page.submitted):
+        qtbot.keyClick(page.ui.email_edit, Qt.Key.Key_Return)
+    fill(page)
+    with qtbot.waitSignal(page.submitted):
+        qtbot.keyClick(page.ui.name_edit, Qt.Key.Key_Return)

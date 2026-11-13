@@ -35,7 +35,7 @@ class TaskPage(QWidget):
         worker = Worker(steps, self.step_seconds)
         worker.moveToThread(thread)
         thread.started.connect(worker.run)
-        worker.progress.connect(self.ui.progress_bar.setValue)
+        worker.progress.connect(self._on_progress)
         worker.finished.connect(self._on_finished)
         self._thread, self._worker = thread, worker
         thread.start()
@@ -48,14 +48,25 @@ class TaskPage(QWidget):
             self.ui.cancel_button.setEnabled(False)
 
     def stop(self) -> None:
-        """Cancel and wait for the thread to end, as before closing the window."""
+        """Cancel and wait for the thread to end.
+
+        Call this before the page is destroyed: Qt aborts the process when a
+        QThread is deleted while it is running. MainWindow.closeEvent does.
+        """
         if self._worker is not None:
             self._worker.cancel()
             self._end("Cancelled")
 
-    def _on_finished(self, completed: bool) -> None:
+    def _is_current(self) -> bool:
         # A report from a task that stop() has already ended is out of date.
-        if self.sender() is self._worker:
+        return self._worker is not None and self.sender() is self._worker
+
+    def _on_progress(self, step: int) -> None:
+        if self._is_current():
+            self.ui.progress_bar.setValue(step)
+
+    def _on_finished(self, completed: bool) -> None:
+        if self._is_current():
             self._end("Finished" if completed else "Cancelled")
 
     def _end(self, status: str) -> None:
