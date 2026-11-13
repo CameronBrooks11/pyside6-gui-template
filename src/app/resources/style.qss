@@ -1,7 +1,7 @@
-/* The one stylesheet of the application. main.py applies it to the
-   QApplication, so it reaches the main window, the dialog box and the
-   error box. After editing it, run `just uic` to compile it into the
-   resources.
+/* The one stylesheet of the application. main.py sets it on the content of
+   the main window and on the dialog box and the error box, not on the whole
+   application, so Qt's own dialogs keep their normal look. After editing
+   it, run `just uic` to compile it into the resources.
 
    The colours:
      rgb(51,51,51)    title bar, menu, buttons and fields at rest
@@ -10,6 +10,9 @@
      rgb(0,143,170)   accent: progress, slider and scroll handles, checked marks
      rgb(112,112,112) disabled
      rgb(112,0,0)     hovered delete button
+     rgb(0,178,178)   hovered toggle
+     rgb(255,255,255) text
+     darkgray         the line beside the combo box arrow
 */
 
 /* ---- Surfaces ---- */
@@ -217,7 +220,7 @@ QProgressBar::chunk {
 
 QRadioButton {
     background: rgb(91,90,90);
-    color: white;
+    color: rgb(255,255,255);
 }
 QRadioButton::indicator {
     width: 10px;
@@ -275,7 +278,7 @@ QScrollBar::sub-page:vertical {
 QGroupBox {
     border: 1px solid rgb(51,51,51);
     border-radius: 4px;
-    color: white;
+    color: rgb(255,255,255);
     background: rgb(91,90,90);
 }
 

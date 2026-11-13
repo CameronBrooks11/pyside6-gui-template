@@ -69,6 +69,8 @@ from Python:
 
 ```python
 button.setProperty("variant", "danger")
+button.style().unpolish(button)  # a widget already shown keeps its old look
+button.style().polish(button)    # until it is polished again
 ```
 
 Reference: [QPushButton](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/QPushButton.html).

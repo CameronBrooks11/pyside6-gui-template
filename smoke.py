@@ -29,7 +29,15 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import QFontDatabase, QFontInfo, QIcon, QMouseEvent
 from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication, QDialog, QSizeGrip, QWidget
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QFrame,
+    QMessageBox,
+    QPushButton,
+    QSizeGrip,
+    QWidget,
+)
 
 # The name of the application package under src/. Change it here when you
 # rename the package.
@@ -49,6 +57,7 @@ ICON_SOURCES = (
     f"{SRC}/ui/ui_main.py",
     f"{SRC}/ui/ui_dialog.py",
     f"{SRC}/ui/ui_error.py",
+    f"{SRC}/resources/style.qss",
 )
 
 RESOURCES = f"{SRC}/resources/resources.qrc"
@@ -180,9 +189,15 @@ def check_fonts(window):
 
 # Tool, options, source, generated module: the same commands as `just uic`.
 # rcc writes format version 1 because later versions record each file's
-# modification time, which differs from one checkout to the next.
+# modification time, which differs from one checkout to the next, and writes
+# the files uncompressed so the result does not depend on the host's zlib.
 GENERATED = (
-    ("pyside6-rcc", ["--format-version", "1"], RESOURCES, f"{SRC}/ui/resources_rc.py"),
+    (
+        "pyside6-rcc",
+        ["--format-version", "1", "--no-compress"],
+        RESOURCES,
+        f"{SRC}/ui/resources_rc.py",
+    ),
     *(("pyside6-uic", ["--from-imports"], ui, ui[:-3] + ".py") for ui in UI_FILES),
 )
 
@@ -204,8 +219,9 @@ def check_generated():
         fresh = subprocess.run(
             [program, *options, source], capture_output=True, text=True, encoding="utf-8"
         )
-        if fresh.returncode != 0 or fresh.stderr.strip():
-            fail(f"{tool} on {source}: {fresh.stderr.strip() or fresh.returncode}")
+        print(fresh.stderr, end="", file=sys.stderr)
+        if fresh.returncode != 0:
+            fail(f"{tool} failed on {source} with status {fresh.returncode}")
         elif body(fresh.stdout) != body(Path(generated).read_text(encoding="utf-8")):
             fail(f"{generated} is out of date with {source}: run `just uic`")
 
@@ -213,7 +229,7 @@ def check_generated():
     # the resource file.
     for ui in UI_FILES:
         text = Path(ui).read_text(encoding="utf-8")
-        named = set(re.findall(r'(?:location|resource)="([^"]+)"', text))
+        named = set(re.findall(r'(?:<include location|\bresource)="([^"]+)"', text))
         expect(named, f"{ui} does not include a resource file")
         for location in named:
             expect(
@@ -227,26 +243,59 @@ def colour_at(widget, x=2, y=2):
     return widget.grab().toImage().pixelColor(x, y).getRgb()[:3]
 
 
+STYLE = f"{SRC}/resources/style.qss"
+
+
+def qss_colour(selector, prop="background"):
+    """The rgb() that style.qss gives `prop` in the rule listing `selector`.
+
+    The check reads its expected colours from the stylesheet, so recolouring
+    the template does not fail it; what it tests is that the rule reaches
+    the widget.
+    """
+    text = re.sub(r"/\*.*?\*/", "", Path(STYLE).read_text(encoding="utf-8"), flags=re.S)
+    for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", text):
+        if selector in [s.strip() for s in selectors.split(",")]:
+            found = re.search(rf"(?:^|;)\s*{prop}(?:-color)?\s*:\s*rgb\((\d+),\s*(\d+),\s*(\d+)\)", body)
+            if found:
+                return tuple(int(n) for n in found.groups())
+    fail(f"{STYLE} has no rule for {selector} with an rgb() {prop}")
+    return None
+
+
 def check_style(window):
     """style.qss has to reach the windows, and `selected` has to show."""
     ui = window.ui
     ui.bn_home.click()
-    for widget, colour, what in (
-        (ui.frame_top_east, (51, 51, 51), "the title bar"),
-        (ui.page_home, (91, 90, 90), "the page"),
-        (ui.frame_toodle, (0, 143, 150), "the toggle"),
-        (ui.frame_home, (91, 90, 90), "the frame of the selected menu button"),
-        (ui.frame_bug, (51, 51, 51), "the frame of an unselected menu button"),
-        (window.diag.d.frame_top, (91, 90, 90), "the bar of the dialog box"),
-        (window.error.e.frame_top, (91, 90, 90), "the bar of the error box"),
+    on, off = qss_colour('QFrame[selected="true"]'), qss_colour('QFrame[selected="false"]')
+    for widget, selector, what in (
+        (ui.frame_top_east, "#frame_top_east", "the title bar"),
+        (ui.page_home, "QStackedWidget > QWidget", "the page"),
+        (ui.frame_toodle, "#frame_toodle", "the toggle"),
+        (ui.frame_home, 'QFrame[selected="true"]', "the frame of the selected menu button"),
+        (ui.frame_bug, 'QFrame[selected="false"]', "the frame of an unselected menu button"),
+        (window.diag.d.frame_top, "QDialog #frame_top", "the bar of the dialog box"),
+        (window.error.e.frame_top, "QDialog #frame_top", "the bar of the error box"),
     ):
-        got = colour_at(widget)
-        expect(got == colour, f"{what} is painted {got}, not {colour}: is style.qss applied?")
+        got, colour = colour_at(widget), qss_colour(selector)
+        expect(got == colour, f"{what} is painted {got}, not the {colour} of {selector}")
+    expect(on != off, "selected and unselected menu frames have the same colour")
+
+    text = qss_colour("QLabel", "color")
+    image = ui.lab_appname.grab().toImage()
+    expect(
+        any(
+            image.pixelColor(x, y).getRgb()[:3] == text
+            for x in range(image.width())
+            for y in range(image.height())
+        ),
+        f"no pixel of the application name has the QLabel colour {text}",
+    )
 
     # The selection has to move, on screen as well as in the property.
     ui.bn_bug.click()
     expect(
-        (colour_at(ui.frame_bug), colour_at(ui.frame_home)) == ((91, 90, 90), (51, 51, 51)),
+        (colour_at(ui.frame_bug), colour_at(ui.frame_home)) == (on, off),
         "selecting another menu button did not repaint the two frames",
     )
     ui.toodle.click()
@@ -257,6 +306,30 @@ def check_style(window):
     wait_until(lambda: ui.frame_bottom_west.width() == 160)
     ui.toodle.click()
     wait_until(lambda: ui.frame_bottom_west.width() == 80)
+
+    # Each kind of button is told apart by its `variant`.
+    for container, variant in (
+        (ui.frame_bottom_west, "menu"),
+        (ui.frame_android_menu, "menu"),
+        (ui.frame_top_east, "window"),
+        (window.diag.d.frame_top, "window"),
+    ):
+        for button in container.findChildren(QPushButton):
+            expect(
+                button.property("variant") == variant,
+                f"{button.objectName()} has variant {button.property('variant')!r}, not {variant!r}",
+            )
+
+    # The stylesheet stops at the app's own windows: a dialog of Qt's opened
+    # from the main window looks the same as one opened from nowhere.
+    grabs = []
+    for parent in (window, None):
+        box = QMessageBox(QMessageBox.Icon.NoIcon, "Title", "Some text", parent=parent)
+        box.ensurePolished()
+        box.adjustSize()
+        grabs.append(box.grab().toImage())
+        box.deleteLater()
+    expect(grabs[0] == grabs[1], "style.qss changes the look of a QMessageBox opened from the app")
 
 
 def check_icons():
@@ -298,10 +371,8 @@ def check_menu(ui, pages, tab_prefix):
             f"{button} left the tab label at {ui.lab_tab.text()!r}",
         )
         frame = button.replace("bn_", "frame_")
-        expect(
-            selected(getattr(ui, frame)),
-            f"{button} did not highlight {frame}",
-        )
+        marked = [f.objectName() for f in ui.frame_bottom_west.findChildren(QFrame) if selected(f)]
+        expect(marked == [frame], f"{button} left {marked} selected, not only {frame}")
 
 
 def check_highlight(ui):
@@ -506,10 +577,8 @@ def check_page_widgets(ui):
             f"{button} did not show {page}",
         )
         frame = button.replace("bn_", "frame_")
-        expect(
-            selected(getattr(ui, frame)),
-            f"{button} did not highlight {frame}",
-        )
+        marked = [f.objectName() for f in ui.frame_android_menu.findChildren(QFrame) if selected(f)]
+        expect(marked == [frame], f"{button} left {marked} selected, not only {frame}")
 
     contact_fields = (
         ui.line_android_name,

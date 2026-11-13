@@ -81,6 +81,16 @@ def setFontFallbacks():
         QtGui.QFont.insertSubstitutions(family, FONT_FALLBACKS + [systemFamily])
 
 
+# ----> THE LOOK OF EVERY WIDGET IS IN ONE STYLESHEET, resources/style.qss, COMPILED INTO THE RESOURCES BY `just uic`.
+# EACH OF THE THREE WINDOWS SETS IT ON ITS OWN CONTENT RATHER THAN ON THE WHOLE APPLICATION, SO THAT IT DOES NOT REACH
+# QT'S OWN DIALOGS: A QMessageBox OR A QFileDialog OPENED FROM THE APP KEEPS ITS NORMAL LOOK.
+def loadStyle():
+    sheet = QtCore.QFile(":/style.qss")
+    if not sheet.open(QtCore.QIODevice.OpenModeFlag.ReadOnly | QtCore.QIODevice.OpenModeFlag.Text):
+        raise RuntimeError("style.qss is not in the compiled resources: run `just uic`")
+    return bytes(sheet.readAll()).decode("utf-8")
+
+
 # DIALOGBOX CLASS WHICH MAKE THE DIALOGBOX WHEN CALLED.
 # ------> DIALOG BOX CLASS : DIALOGBOX CONTAINING TWO BUTTONS, ONE MAEEAGE BAR, ONE ICON HOLDER, ONE HEADING DEFINING
 class dialogUi(QDialog):
@@ -90,6 +100,7 @@ class dialogUi(QDialog):
         setFontFallbacks()
         self.d = Ui_Dialog()
         self.d.setupUi(self)
+        self.setStyleSheet(loadStyle())
         self.setWindowFlags(
             QtCore.Qt.FramelessWindowHint
         )  # REMOVING WINDOWS TOP BAR AND MAKING IT FRAMELESS (AS WE HAVE AMDE A CUSTOME FRAME IN THE WINDOW ITSELF)
@@ -147,6 +158,7 @@ class errorUi(QDialog):
         setFontFallbacks()
         self.e = Ui_Error()
         self.e.setupUi(self)
+        self.setStyleSheet(loadStyle())
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
@@ -181,6 +193,7 @@ class MainWindow(QMainWindow):
         setFontFallbacks()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.centralwidget.setStyleSheet(loadStyle())  # NOT ON THE WINDOW ITSELF: SEE loadStyle()
 
         # ----> SET WINDOW TITLE AND ICON
         applicationName = "App Name"
@@ -286,18 +299,9 @@ class MainWindow(QMainWindow):
     ##############################################################
 
 
-# -----> THE LOOK OF EVERY WIDGET IS IN ONE STYLESHEET, resources/style.qss, COMPILED INTO THE RESOURCES BY `just uic`.
-# IT IS SET ON THE APPLICATION SO THAT IT REACHES THE MAIN WINDOW, THE DIALOG BOX AND THE ERROR BOX ALIKE.
-def applyStyle(app):
-    sheet = QtCore.QFile(":/style.qss")
-    sheet.open(QtCore.QIODevice.OpenModeFlag.ReadOnly | QtCore.QIODevice.OpenModeFlag.Text)
-    app.setStyleSheet(bytes(sheet.readAll()).decode("utf-8"))
-
-
 # -----> STARTS THE APPLICATION: CALLED BY __main__.py, I.E. BY `python -m app`, AND BY THE `app` COMMAND.
 def main():
     app = QApplication(sys.argv)
-    applyStyle(app)
     window = MainWindow()
     window.show()
     return app.exec()

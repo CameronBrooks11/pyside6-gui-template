@@ -91,12 +91,14 @@ each widget type.
 ## Change the look
 
 Every colour and widget style is in `src/app/resources/style.qss`, a Qt
-stylesheet that `main.py` sets on the application. The `.ui` files carry no
-styles, so a form looks plain in Qt Designer and takes its look when the
-application runs.
+stylesheet that `main.py` sets on the content of the main window and on the
+dialog box and the error box (`loadStyle`). It is not set on the whole
+application, so a `QMessageBox` or `QFileDialog` you open keeps Qt's normal
+look. The `.ui` files carry no styles, so a form looks plain in Qt Designer
+and takes its look when the application runs.
 
-- To recolour, change the `rgb(...)` values; the comment at the top of the
-  file says what each colour is used for.
+- To recolour, change the colour values; the comment at the top of the file
+  says what each one is used for.
 - A plain `QPushButton` is an action button. A button that is something else
   says so with a dynamic property named `variant`, which you add in Qt
   Designer with the plus sign in the Property Editor (a String property):
@@ -106,10 +108,14 @@ application runs.
   `UIFunction.select` in `ui_function.py`; the two `QFrame[selected=...]`
   rules give the selected and unselected colours.
 - A widget inside a page that needs a colour of its own gets a rule by its
-  object name, for example `#frame_settings { background: ... }`.
+  object name, for example `#frame_chart { background: ... }`. Do not give
+  one to the frame around a menu button: a rule by name outranks the
+  `selected` rules and the highlight would stop showing.
 
 Run `just uic` after editing the file: the stylesheet is compiled into the
-resources, and `just check` fails if the compiled copy is out of date.
+resources, and `just check` fails if the compiled copy is out of date. The
+check reads the colours it expects from `style.qss`, so recolouring does not
+fail it.
 
 ## Add an icon
 
